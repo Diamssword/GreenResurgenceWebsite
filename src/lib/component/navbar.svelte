@@ -1,0 +1,20 @@
+<script lang="ts">
+    import { page } from '$app/stores';
+    import { Navbar, NavBrand, NavLi, NavUl, NavHamburger } from 'flowbite-svelte';
+    $: activeUrl = $page.url.pathname;
+  </script>
+  
+  <Navbar class="bg-primary-200">
+    <NavBrand href="/">
+      <img src="/images/logo.png" class="me-3 h-6 sm:h-12 rounded-lg" alt="Resurgence Logo" />
+      <span class="self-center text-primary-text1 whitespace-nowrap text-2xl font-semibold">Resurgence</span>
+    </NavBrand>
+    <NavHamburger />
+    <NavUl {activeUrl} activeClass="text-primary-text" nonActiveClass="text-primary-text1" >
+      <NavLi href="/" class="">Home</NavLi>
+      <NavLi href="/docs/components/navbar">Navbar</NavLi>
+      <NavLi href="/docs/components/accordion">Accordion</NavLi>
+      <NavLi href="/docs/components/alert">Alert</NavLi>
+      <NavLi href="/docs/components/avatar">Avatar</NavLi>
+    </NavUl>
+  </Navbar>
