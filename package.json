@@ -29,6 +29,7 @@
 		"@discordjs/builders": "^1.8.2",
 		"@sveltejs/adapter-node": "^5.2.1",
 		"discord.js": "^14.15.3",
+		"dotenv": "^16.4.5",
 		"mongoose": "^8.5.1",
 		"short-unique-id": "^5.2.0"
 	}
