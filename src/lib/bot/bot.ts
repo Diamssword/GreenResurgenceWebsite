@@ -2,8 +2,10 @@ import { ALLOWED_DISCORD, DISCORD_ID, DISCORD_TOKEN } from '$env/static/private'
 import { Client, GatewayIntentBits, REST, Routes } from 'discord.js';
 import uploadCmd from "$lib/bot/uploadCmd"
 import type { Command } from '../../app';
+import changeCmd from '$lib/bot/changeCmd';
 const commands=[
     uploadCmd,
+    changeCmd
 ] as Command[]
 console.info("Starting Discord Bot...")
 try{
