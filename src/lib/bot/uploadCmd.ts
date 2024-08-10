@@ -4,6 +4,7 @@ import ShortUniqueId from "short-unique-id";
 import * as path from "path"
 import * as fs from "fs"
 import { VITE_BASE_URL } from "$env/static/private";
+import { EmbedBuilder } from "@discordjs/builders";
 export default {
     command:new SlashCommandBuilder().setName("ajout_image").setDescription("Envoie une image au serveur et créer un lien direct en retour")
     .addAttachmentOption(new SlashCommandAttachmentOption().setName("image").setDescription("l'image à envoyer").setRequired(true))
@@ -22,7 +23,8 @@ export default {
             try{
                 await ctx.deferReply()
                 var id=await saveImage(img.url,img.name.split(".")[1])
-                await ctx.editReply("Titre: "+title+"\nAuteur: "+userMention(ctx.user.id)+"\nLien: "+VITE_BASE_URL+"/files/image/"+id)
+                await ctx.editReply({attachments:[img],content:"Titre: "+title+"\nAuteur: "+userMention(ctx.user.id)+"\nLien: "+VITE_BASE_URL+"/files/image/"+id})
+                
             }catch(err)
             {
                 console.error(err)
