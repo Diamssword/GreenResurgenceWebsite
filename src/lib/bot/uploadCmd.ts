@@ -23,7 +23,9 @@ export default {
             try{
                 await ctx.deferReply()
                 var id=await saveImage(img.url,img.name.split(".")[1])
-                await ctx.editReply({attachments:[img],content:"Titre: "+title+"\nAuteur: "+userMention(ctx.user.id)+"\nLien: "+VITE_BASE_URL+"/files/image/"+id})
+                const link=VITE_BASE_URL+"/files/image/"+id;
+                const embed=new EmbedBuilder().setImage(link).setColor(0x3f5427);
+                await ctx.editReply({content:"Titre: "+title+"\nAuteur: "+userMention(ctx.user.id)+"\nLien: "+link,embeds:[embed]})
                 
             }catch(err)
             {
