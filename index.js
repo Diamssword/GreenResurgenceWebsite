@@ -1,2 +1,3 @@
-import "dotenv/config"
-import('./build/index.js');
+import("dotenv/config").then(()=>{
+    import('./build/index.js');
+})
