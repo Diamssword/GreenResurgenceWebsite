@@ -2,6 +2,8 @@
 import { Carousel } from 'flowbite-svelte';
 import images from '$lib/datas/main_carousel.json';
 import { fade } from 'svelte/transition';
+import { SHARED } from '$lib/sharedDatas';
+$SHARED.title=undefined;
     const fadeAnimation = (x:any) => fade(x, {delay: 250, duration: 3000  });
     //https://sisik.eu/pano
 </script>

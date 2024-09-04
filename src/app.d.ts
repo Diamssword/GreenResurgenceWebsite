@@ -6,7 +6,7 @@ import type { ApplicationCommand, CacheType, ChatInputCommandInteraction, SlashC
 declare global {
 	namespace App {
 		// interface Error {}
-		// interface Locals {}
+		 interface Locals {user_ip?:string}
 		// interface PageData {}
 		// interface PageState {}
 		// interface Platform {}
@@ -15,5 +15,8 @@ declare global {
 export type Command={
 command:ApplicationCommand|SlashCommandBuilder,
 action:(ctx:ChatInputCommandInteraction<CacheType> )=>Promise<void>
+}
+export type Shared={
+title?:string
 }
 export {};

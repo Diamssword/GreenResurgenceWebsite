@@ -53,8 +53,5 @@ function saveImage(url:string,ext:string)
             res(id+"."+ext);
         }).catch(err)
     })
-   
-    
-   
-    console.log()
+
 }

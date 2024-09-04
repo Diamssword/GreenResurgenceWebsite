@@ -8,8 +8,9 @@ const commands=[
     changeCmd
 ] as Command[]
 console.info("Starting Discord Bot...")
-try{
-const rest = new REST({ version: '10' }).setToken(DISCORD_TOKEN);
+async function start()
+{
+    const rest = new REST({ version: '10' }).setToken(DISCORD_TOKEN);
     ALLOWED_DISCORD.split(",").forEach(guild=>{
         rest.put(Routes.applicationGuildCommands(DISCORD_ID,guild), { body: commands.map(c=>c.command) });
     })
@@ -37,6 +38,9 @@ client.on('interactionCreate', async interaction => {
         await interaction.reply("Commande inconnu")
   });
 
-  client.login(DISCORD_TOKEN);
-  
-}catch(err){console.error(err)}
+  client.login(DISCORD_TOKEN).catch(console.error)
+}
+if(DISCORD_ID && DISCORD_TOKEN)
+    start().catch(console.error);
+else
+    console.warn("Les tokens bots sont inexistant, bot désactivé.")
