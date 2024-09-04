@@ -97,7 +97,7 @@
         {
             var saved:any={};
             if(browser)
-               saved= JSON.parse(window.sessionStorage.getItem("skin_builder_datas")||"");
+               saved= JSON.parse(window.sessionStorage.getItem("skin_builder_datas")||"{}");
             for(var k in data)
             {
                 if(saved[k])
