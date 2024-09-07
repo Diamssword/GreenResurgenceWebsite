@@ -4,25 +4,33 @@
     export let data:PageData;
     import type {SkinViewer} from "$lib/skinviewer3d/skinview3d";
     import PanelLeft from "./panel_left.svelte";
-    import { Button } from "flowbite-svelte";
+    import PanelRight from "./panel_right.svelte";
+    import { Alert, Button } from "flowbite-svelte";
     import { SHARED } from "$lib/sharedDatas";
     import type { ColorRepresentation } from "three";
-    import type { eyeType } from "$lib/skinviewer3d/colorHelper";
+    import type { eyeType } from "$lib/skinviewer3d/textureHelper";
+    import { fade } from "svelte/transition";
+    import { browser } from "$app/environment";
     var viewer:SkinViewer
-    var exportFn: ()=>string;
+    var exportFn: (allLayers?:boolean)=>string;
+    var ldSkinFn:(dt:any)=>void;
     var getSkinDatas: ()=>{[key:string]:{texture?:string,color?:ColorRepresentation,type?:eyeType}};
-    $SHARED.title="Skin Maker"
-    function exportSkin()
+    $SHARED.title="Customiseur"
+    function exportSkin(profile:any)
     {
-        var dt=exportFn();
+        return new Promise((res,err)=>{
+            var dt=exportFn();
+                fetch("",{method:"post", body:JSON.stringify({
+                    datas:{...sanitizedDatas(),...profile},
+                    image:dt       
+            })}).then(r=>{
+                if(r.status==200)
+                    r.text().then(res)
+                else
+                err();
+            })
+        });
        
-        fetch("",{method:"post", body:JSON.stringify({
-            datas:sanitizedDatas(),
-            image:dt       
-    })}).then(r=>{
-        if(r.status==200)
-            r.text().then(window.alert)
-    })
     }
     function sanitizedDatas()
     {
@@ -40,20 +48,36 @@
         }
         return res;
     }
+    var infos=["L'affichage de certains élèments (notament les couleurs) peut differer légèrement en jeu. ","Pour garder une sauvgarde de votre skin, utilisez l'option \"Sauvegarder mes paramètres\"","Vous pouvez télécharger votre skin pour l'utilser ailleurs!","Ça va vous sinon?"]
+    var pickedInfo=0;
+    if(browser)
+    {
+           setInterval(()=>{
+        var p=Math.floor(Math.random()*infos.length);
+        if(p==pickedInfo)
+            p=Math.floor(Math.random()*infos.length);
+        pickedInfo=p;
+    },7000)
+    }
 </script>
 
 <div class="w-full h-full">
-    <div class="flex w-full h-5/6">
+    <div class="flex w-full h-5/6 mb-5 rounded-md">
         <div class="w-2/6 mr-5">
-        <PanelLeft data={data.datas} {viewer} bind:getSkinDatas={getSkinDatas}/>
+        <PanelLeft data={data.datas} {viewer} bind:getSkinDatas={getSkinDatas} bind:loadDefault={ldSkinFn}/>
         </div>
         <div class="rounded-md bgimg flex grow justify-center">
             <Viewer bind:viewer={viewer} bind:createSkin={exportFn} />
         </div>
-        <div class="w-1/6 ml-5">
-            <Button on:click={exportSkin}>Export</Button>
-        </div>
+        <div class="w-1/5 ml-5 ">
+            <PanelRight data={data.datas} {viewer} imgFunction={exportFn} dtFn={getSkinDatas} ldSkinFn={ldSkinFn} exptFn={exportSkin}/>
+            </div>
     </div>
+    <Alert color="blue">
+        {#key pickedInfo}
+        <p in:fade={{duration:1000}}>{infos[pickedInfo]}</p>    
+        {/key}
+    </Alert>
 </div>
 <style>
 .bgimg{

@@ -10,11 +10,9 @@
       <span class="self-center text-primary-text1 whitespace-nowrap text-2xl font-semibold">Resurgence</span>
     </NavBrand>
     <NavHamburger />
-    <NavUl {activeUrl} activeClass="text-primary-text" nonActiveClass="text-primary-text1" >
-      <NavLi href="/" class="">Home</NavLi>
-      <NavLi href="/docs/components/navbar">Navbar</NavLi>
-      <NavLi href="/docs/components/accordion">Accordion</NavLi>
-      <NavLi href="/docs/components/alert">Alert</NavLi>
-      <NavLi href="/docs/components/avatar">Avatar</NavLi>
+    <NavUl {activeUrl}  activeClass="text-primary-text" nonActiveClass="text-primary-text1">
+      <NavLi class="text-lg" href="/">Acceuil</NavLi>
+      <NavLi class="text-lg" href="/skin">Customiseur</NavLi>
+      <NavLi class="text-lg" href="https://discord.com/invite/BgcDb6AZCQ" target="_blank"><img src="/images/svg/discord.svg" alt="Discord Logo" class="size-7 inline mr-1"> Discord</NavLi>
     </NavUl>
   </Navbar>

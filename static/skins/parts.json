@@ -21,6 +21,16 @@
             {
                 "id":"5",
                 "name":"5"
+            },
+            
+            {
+                "id":"6",
+                "name":"6"
+            },
+            
+            {
+                "id":"7",
+                "name":"7"
             }
         ],
         "colors":[
@@ -36,22 +46,27 @@
         "cats":{"short":"Courts","medium":"Mi-Long","long":"Long"},
         "colors":"free"
     },
-    "eyes":{
-        "title":"Yeux",
+    "brows":{
+        "title":"Sourcils",
         "images":[
             {
-            "id":"1",
-            "name":"1",
-            "anim":"4*2"
+                "id":"clear"
+            },
+            {
+                "id":"1"
             },
             {
                 "id":"2",
-                "name":"2"
-            },
-            {
-                "id":"3",
-                "name":"3"
-            },
+                "anim":"false"
+            }
+        ],
+        "colors":[
+
+        ]
+    },
+    "eyes":{
+        "title":"Yeux",
+        "images":[
             {
                 "id":"4",
                 "name":"4",
@@ -75,6 +90,10 @@
                 
         ],
         "colors":"free"
+    },
+    "cosmetic":{
+        "title":"Comestic",
+        "images":[{"id":"clear"},{"id":"1"}]
     },
     "mouth":{
         "title":"Bouche",

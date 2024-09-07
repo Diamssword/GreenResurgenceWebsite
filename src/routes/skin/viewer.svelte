@@ -6,16 +6,16 @@
     export var viewer: skinViewer.SkinViewer;
     const layers:skinViewer.LayerInfo[]=[
         {name:"base",size:0},{name:"underwear",size:0.1,external:true},{name:"mouth",size:0.01},{name:"beard",size:0.02,external:true},
-        {name:"eyes",size:0.03},{name:"eyesc",size:0.04},{name:"hair",size:0.05,external:true}
+        {name:"eyes",size:0.03},{name:"eyesc",size:0.04},{name:"cosmetic",size:0.01},{name:"brows",size:0.06},{name:"hair",size:0.07,external:true}
     ]
 
-    export function createSkin()
+    export function createSkin(allLayers?:boolean)
     {
         var canv=document.createElement("canvas")
         canv.width=canv.height=128;
         var ctx=canv.getContext("2d");
         layers.forEach(l=>{
-            if(l.external !=true)
+            if(l.external !=true || allLayers ==true)
             {
                 var c1=viewer.skinCanvas[l.name];
                 ctx?.drawImage(c1,0,0);

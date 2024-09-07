@@ -1,6 +1,36 @@
 import type { Color } from "three";
 
 export type eyeType="4*4"|"4*2"|"5*4"|"3*2"|"none"
+export function moveBrows(canvas:HTMLCanvasElement,fleshCanvas:HTMLCanvasElement|undefined, type:eyeType)
+{
+    var ctx=canvas?.getContext("2d");
+    var ctx1=fleshCanvas?.getContext("2d");
+    if(!ctx)
+        return;
+    if(type=="4*2" || type=="3*2")
+    {
+        var B=ctx.getImageData(16,22,16,2)
+        ctx.putImageData(B,112,6);
+        if(ctx1)
+        {
+            var p=ctx1.getImageData(16,22,16,2);
+            ctx1.putImageData(p,112,4)
+        }
+        
+    }
+    else if(type=="4*4"|| type=="5*4")
+    {
+        var B=ctx.getImageData(16,22,16,2)
+        ctx.clearRect(16,22,16,2);
+        ctx.putImageData(B,112,2);
+        ctx.putImageData(B,16,21);
+        if(ctx1)
+        {
+            var p=ctx1.getImageData(16,21,16,2);
+            ctx1.putImageData(p,112,0)
+        }
+    }
+}
 export function moveEyes(canvas:HTMLCanvasElement,fleshCanvas:HTMLCanvasElement|undefined, type:eyeType)
 {
     var ctx=canvas.getContext("2d");
@@ -13,21 +43,13 @@ export function moveEyes(canvas:HTMLCanvasElement,fleshCanvas:HTMLCanvasElement|
             ctx.putImageData(G,48,8);
         var D=ctx.getImageData(26,24,4,2)
             ctx.putImageData(D,52,8);
-        var B=ctx.getImageData(18,22,4,2)
-            ctx.putImageData(B,120,6);
-            B=ctx.getImageData(26,22,4,2)
-            ctx.putImageData(B,124,6);
             if(ctx1){
                 //chair cover oeil
                 var p=ctx1.getImageData(18,24,4,2);
                 ctx.putImageData(p,48,6)
                 p=ctx1?.getImageData(26,24,4,2);
                 ctx?.putImageData(p,52,6)
-                //chair cover sourcil
-                var p=ctx1.getImageData(18,22,4,2);
-                ctx.putImageData(p,120,4)
-                p=ctx1?.getImageData(26,22,4,2);
-                ctx?.putImageData(p,124,4)
+               
             }
         
     }
@@ -37,41 +59,30 @@ export function moveEyes(canvas:HTMLCanvasElement,fleshCanvas:HTMLCanvasElement|
         ctx.putImageData(G,56,8);
     var D=ctx.getImageData(27,24,4,2)
         ctx.putImageData(D,59,8);
-    var B=ctx.getImageData(18,22,4,2)
-        ctx.putImageData(B,120,6);
-        B=ctx.getImageData(26,22,4,2)
-        ctx.putImageData(B,124,6);
+  
         if(ctx1){
             //chair cover oeil
             var p=ctx1.getImageData(18,24,3,2);
             ctx.putImageData(p,56,6)
             p=ctx1?.getImageData(27,24,3,2);
             ctx?.putImageData(p,59,6)
-            //chair cover sourcil
-            var p=ctx1.getImageData(18,22,4,2);
-            ctx.putImageData(p,120,4)
-            p=ctx1?.getImageData(26,22,4,2);
-            ctx?.putImageData(p,124,4)
         }
     }
     else if(type=="4*4")
     {
-        var G=ctx.getImageData(18,22,4,4)
+        var G=ctx.getImageData(18,23,4,4)
             ctx.putImageData(G,48,12);
-        var D=ctx.getImageData(26,22,4,4)
+        var D=ctx.getImageData(26,23,4,4)
             ctx.putImageData(D,52,12);
-        var B=ctx.getImageData(18,20,4,2)
-            ctx.putImageData(B,120,2);
-            B=ctx.getImageData(26,20,4,2)
-            ctx.putImageData(B,124,2);
+      
             if(ctx1){
                 //chair cover oeil
-                var p=ctx1.getImageData(18,23,4,2);
+                var p=ctx1.getImageData(18,22,4,2);
                 ctx.putImageData(p,48,10)
-                p=ctx1?.getImageData(26,23,4,2);
+                p=ctx1?.getImageData(26,22,4,2);
                 ctx?.putImageData(p,52,10)
                 //chair cover sourcil
-                var p=ctx1.getImageData(18,20,4,2);
+                var p=ctx1.getImageData(18,22,4,2);
                 ctx.putImageData(p,120,0)
                 p=ctx1?.getImageData(26,20,4,2);
                 ctx?.putImageData(p,124,0)
@@ -80,25 +91,16 @@ export function moveEyes(canvas:HTMLCanvasElement,fleshCanvas:HTMLCanvasElement|
     }
     else if(type=="5*4")
         {
-            var G=ctx.getImageData(17,22,5,4)
+            var G=ctx.getImageData(17,23,5,4)
                 ctx.putImageData(G,56,12);
-            var D=ctx.getImageData(26,22,5,4)
+            var D=ctx.getImageData(26,23,5,4)
                 ctx.putImageData(D,61,12);
-            var B=ctx.getImageData(18,20,4,2)
-                ctx.putImageData(B,120,2);
-                B=ctx.getImageData(26,20,4,2)
-                ctx.putImageData(B,124,2);
                 if(ctx1){
                     //chair cover oeil
-                    var p=ctx1.getImageData(17,23,5,2);
+                    var p=ctx1.getImageData(17,22,5,2);
                     ctx.putImageData(p,56,10)
-                    p=ctx1?.getImageData(26,23,5,2);
+                    p=ctx1?.getImageData(26,22,5,2);
                     ctx?.putImageData(p,61,10)
-                    //chair cover sourcil
-                    var p=ctx1.getImageData(18,20,4,2);
-                    ctx.putImageData(p,120,0)
-                    p=ctx1?.getImageData(26,20,4,2);
-                    ctx?.putImageData(p,124,0)
                 }
         }
     

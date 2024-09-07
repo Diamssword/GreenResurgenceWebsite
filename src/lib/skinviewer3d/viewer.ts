@@ -40,7 +40,7 @@ import { FXAAShader } from "three/examples/jsm/shaders/FXAAShader.js";
 import { PlayerAnimation } from "./animation.js";
 import { type BackEquipment, LayerInfo, PlayerObject } from "./model.js";
 import { NameTagObject } from "./nametag.js";
-import { colorCanvas, moveEyes, type eyeType } from "./colorHelper.js";
+import { colorCanvas, moveBrows, moveEyes, type eyeType } from "./textureHelper.js";
 
 export interface LoadOptions {
 	/**
@@ -62,6 +62,7 @@ export interface SkinLoadOptions extends LoadOptions {
 	model?: ModelType | "auto-detect";
 	color?:ColorRepresentation,
 	eyeType?:eyeType,
+	animatedBrows?:boolean
 
 	/**
 	 * Whether to display the ears drawn on the skin texture.
@@ -528,6 +529,10 @@ export class SkinViewer {
 			else if(layer=="eyesc")
 			{
 				moveEyes(this.skinCanvas["eyesc"],undefined,options.eyeType);
+			}
+			if(options.animatedBrows ==true && layer=="brows")
+			{
+				moveBrows(this.skinCanvas["brows"],this.skinCanvas["base"],options.eyeType);
 			}
 				
 			if(options.color && layer !="eyes")

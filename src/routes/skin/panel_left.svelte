@@ -1,15 +1,14 @@
 <script lang="ts">
-    import { AccordionItem, Accordion, Button, Input } from 'flowbite-svelte'; 
+    import { AccordionItem, Accordion, Button, Input, Label, Tooltip } from 'flowbite-svelte'; 
     import type { PageData } from './$types';
     import type {SkinViewer} from "$lib/skinviewer3d/skinview3d";
     import type { ColorRepresentation } from 'three';
-    import { onMount } from 'svelte';
-    import { load } from './+page';
     import { browser } from '$app/environment';
-    import type { eyeType } from '$lib/skinviewer3d/colorHelper';
+    import type { eyeType } from '$lib/skinviewer3d/textureHelper';
     export let data:PageData["datas"];
     export let viewer:SkinViewer;
     var pickedEyeType:eyeType|undefined;
+    var isBrowAnimated:boolean=true;
     var pickedColors:{[key:string]:ColorRepresentation}={"eyesc":"#126A87"};
     var pickedTexture:{[key:string]:string}={};
     export function getSkinDatas()
@@ -34,7 +33,7 @@
     {
         if(browser)
         {
-            window.sessionStorage.setItem("skin_builder_datas",JSON.stringify(toJson()))
+            window.localStorage.setItem("skin_builder_datas",JSON.stringify(toJson()))
         }
     }
     function loadSkin(cat:string,id:string)
@@ -46,12 +45,23 @@
         {
             pickedEyeType=data["eyes"].images.find(d=>d.id==id)?.anim
             loadSkin("eyesc",id+"b");
+            if(pickedTexture["brows"])
+                loadSkin("brows",pickedTexture["brows"]);
         }
+        else if(cat=="brows")
+        {
+            isBrowAnimated=data["brows"].images.find(d=>d.id==id)?.anim !="false"
+        } 
         pickedTexture[cat]=id;
         if(id=="clear")
             viewer.loadSkin(cat,"/skins/clear.png")
         else
-            viewer.loadSkin(cat,"/skins/"+tc+"/"+pickedTexture[cat]+".png",{color:getPickedColor(cat),eyeType:pickedEyeType})
+            viewer.loadSkin(cat,"/skins/"+tc+"/"+pickedTexture[cat]+".png",{color:getPickedColor(cat),eyeType:pickedEyeType,animatedBrows:isBrowAnimated})
+            if(cat=="base")
+        {
+            if(pickedTexture["eyes"])
+            loadSkin("eyes",pickedTexture["eyes"]);
+        }
         saveTemp();
     }
     function pickColor(cat:string,color:ColorRepresentation)
@@ -89,15 +99,15 @@
     $:if(viewer && !loaded)
     {
         loaded=true;
-        loadDefault();
+            if(browser)
+                loadDefault(JSON.parse(window.localStorage.getItem("skin_builder_datas")||"{}"));
+        
     }
-    function loadDefault()
+    export function loadDefault(saved:any)
     {
         if(data && viewer)
         {
-            var saved:any={};
-            if(browser)
-               saved= JSON.parse(window.sessionStorage.getItem("skin_builder_datas")||"{}");
+           
             for(var k in data)
             {
                 if(saved[k])
@@ -107,11 +117,16 @@
                         if(data[k]?.colors!=undefined)
                             pickedColors[k]=saved[k].color;
                     }
-                    loadSkin(k,saved[k].texture)
+                    pickedTexture[k]=saved[k].texture;
                 }
-                else if(data[k].images[0].id!="clear")
-                    loadSkin(k,data[k].images[0].id)
+                else
+                    pickedTexture[k]=data[k].images[0].id;
             }
+            for(var k in pickedTexture)
+            {
+                loadSkin(k,pickedTexture[k]);
+            }
+            
         }
     }
     export function toJson()
@@ -156,7 +171,7 @@
     {#if data}
     {#each Object.keys(data) as k }
     {@const cat = data[k]}
-    <AccordionItem class="p-2 group-last:rounded-b-xl">
+    <AccordionItem class="p-2 group-last:rounded-b-xl" open>
        
         <span slot="header" class="text-xl flex gap-1 text-primary-text">
          {cat.title}
@@ -168,9 +183,13 @@
         <div class="my-3">
             {#each getAllInSub(sub,cat.images) as skin}
             {#if skin.id=="clear"}
-                <Button class="ml-2 text-red-700" on:click={()=>loadSkin(k,"clear")}>X</Button>    
+                <Button class="ml-2 p-2 -translate-y-2" on:click={()=>loadSkin(k,"clear")}><img class="size-10" src="/skins/display/clear.svg" alt="Aucun"/></Button>    
+                <Tooltip type="light">Aucun</Tooltip>
             {:else}
-                <Button class="ml-2" on:click={()=>loadSkin(k,skin.id)}>{skin.name||skin.id}</Button>    
+                <Button class="ml-2 p-0" on:click={()=>loadSkin(k,skin.id)}><img class="size-14" src="/skins/display/{k}/{skin.id}.png" alt={skin.name||skin.id}/> </Button>  
+                {#if skin.name}  
+                <Tooltip type="light">{skin.name}</Tooltip>
+                {/if}
             {/if}
             {/each}     
         </div>
