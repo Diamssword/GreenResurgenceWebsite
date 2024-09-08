@@ -55,16 +55,16 @@ export function moveEyes(canvas:HTMLCanvasElement,fleshCanvas:HTMLCanvasElement|
     }
     else if(type=="3*2")
     {
-        var G=ctx.getImageData(18,24,3,2)
+        var G=ctx.getImageData(19,24,3,2)
         ctx.putImageData(G,56,8);
-    var D=ctx.getImageData(27,24,4,2)
+    var D=ctx.getImageData(26,24,4,2)
         ctx.putImageData(D,59,8);
   
         if(ctx1){
             //chair cover oeil
-            var p=ctx1.getImageData(18,24,3,2);
+            var p=ctx1.getImageData(19,24,3,2);
             ctx.putImageData(p,56,6)
-            p=ctx1?.getImageData(27,24,3,2);
+            p=ctx1?.getImageData(26,24,3,2);
             ctx?.putImageData(p,59,6)
         }
     }

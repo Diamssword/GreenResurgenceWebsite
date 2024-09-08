@@ -46,7 +46,9 @@
             pickedEyeType=data["eyes"].images.find(d=>d.id==id)?.anim
             loadSkin("eyesc",id+"b");
             if(pickedTexture["brows"])
-                loadSkin("brows",pickedTexture["brows"]);
+                setTimeout(() => {
+                    loadSkin("brows",pickedTexture["brows"]);
+                }, 100);
         }
         else if(cat=="brows")
         {
@@ -58,10 +60,13 @@
         else
             viewer.loadSkin(cat,"/skins/"+tc+"/"+pickedTexture[cat]+".png",{color:getPickedColor(cat),eyeType:pickedEyeType,animatedBrows:isBrowAnimated})
             if(cat=="base")
-        {
-            if(pickedTexture["eyes"])
-            loadSkin("eyes",pickedTexture["eyes"]);
-        }
+            {
+                if(pickedTexture["eyes"])
+                setTimeout(() => {
+                    loadSkin("eyes",pickedTexture["eyes"]);
+                }, 100);
+            
+            }
         saveTemp();
     }
     function pickColor(cat:string,color:ColorRepresentation)
