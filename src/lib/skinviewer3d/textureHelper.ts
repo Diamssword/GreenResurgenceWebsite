@@ -13,6 +13,7 @@ export function moveBrows(canvas:HTMLCanvasElement,fleshCanvas:HTMLCanvasElement
         ctx.putImageData(B,112,6);
         if(ctx1)
         {
+            ctx1.clearRect(112,0,16,8)
             var p=ctx1.getImageData(16,22,16,2);
             ctx1.putImageData(p,112,4)
         }
@@ -26,6 +27,7 @@ export function moveBrows(canvas:HTMLCanvasElement,fleshCanvas:HTMLCanvasElement
         ctx.putImageData(B,16,21);
         if(ctx1)
         {
+            ctx1.clearRect(112,0,16,8)
             var p=ctx1.getImageData(16,21,16,2);
             ctx1.putImageData(p,112,0)
         }
