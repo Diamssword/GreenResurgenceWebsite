@@ -1,13 +1,13 @@
 import type { Color } from "three";
 
-export type eyeType="4*4"|"4*2"|"5*4"|"3*2"|"none"
+export type eyeType="2*2"|"2*3"|"2*4"|"3*4"|"none"
 export function moveBrows(canvas:HTMLCanvasElement,fleshCanvas:HTMLCanvasElement|undefined, type:eyeType)
 {
     var ctx=canvas?.getContext("2d");
     var ctx1=fleshCanvas?.getContext("2d");
     if(!ctx)
         return;
-    if(type=="4*2" || type=="3*2")
+    if(type=="2*2")
     {
         var B=ctx.getImageData(16,22,16,2)
         ctx.putImageData(B,112,6);
@@ -19,12 +19,13 @@ export function moveBrows(canvas:HTMLCanvasElement,fleshCanvas:HTMLCanvasElement
         }
         
     }
-    else if(type=="4*4"|| type=="5*4")
+    else if(type=="2*4" || "3*4"|| "2*3")
     {
-        var B=ctx.getImageData(16,22,16,2)
-        ctx.clearRect(16,22,16,2);
+        var A=ctx.getImageData(16,17,16,15)
+        ctx.clearRect(16,17,16,15);
+        ctx.putImageData(A,16,16);
+        var B=ctx.getImageData(16,21,16,2)
         ctx.putImageData(B,112,2);
-        ctx.putImageData(B,16,21);
         if(ctx1)
         {
             ctx1.clearRect(112,0,16,8)
@@ -32,6 +33,8 @@ export function moveBrows(canvas:HTMLCanvasElement,fleshCanvas:HTMLCanvasElement
             ctx1.putImageData(p,112,0)
         }
     }
+    
+    
 }
 export function moveEyes(canvas:HTMLCanvasElement,fleshCanvas:HTMLCanvasElement|undefined, type:eyeType)
 {
@@ -39,71 +42,66 @@ export function moveEyes(canvas:HTMLCanvasElement,fleshCanvas:HTMLCanvasElement|
     var ctx1=fleshCanvas?.getContext("2d");
     if(!ctx)
         return;
-    if(type=="4*2")
-    {
-        var G=ctx.getImageData(18,24,4,2)
-            ctx.putImageData(G,48,8);
-        var D=ctx.getImageData(26,24,4,2)
-            ctx.putImageData(D,52,8);
-            if(ctx1){
-                //chair cover oeil
-                ctx1.clearRect(48,6,17,10)
-                var p=ctx1.getImageData(18,24,4,2);
-                ctx.putImageData(p,48,6)
-                p=ctx1?.getImageData(26,24,4,2);
-                ctx?.putImageData(p,52,6)
-               
-            }
-        
-    }
-    else if(type=="3*2")
+    if(ctx1)
+        ctx1.clearRect(48,0,16,16)
+        ctx.clearRect(48,0,16,16)
+    if(type=="2*2")
     {
         var G=ctx.getImageData(19,24,3,2)
-        ctx.putImageData(G,56,8);
-    var D=ctx.getImageData(26,24,4,2)
-        ctx.putImageData(D,59,8);
-  
-        if(ctx1){
-            //chair cover oeil
-            ctx1.clearRect(48,6,17,10)
-            var p=ctx1.getImageData(19,24,3,2);
-            ctx.putImageData(p,56,6)
-            p=ctx1?.getImageData(26,24,3,2);
-            ctx?.putImageData(p,59,6)
+        ctx.putImageData(G,48,14);
+        var D=ctx.getImageData(26,24,3,2)
+        ctx.putImageData(D,51,14);
+        if(ctx1)
+        {
+            var d=ctx1.getImageData(19,24,3,2)    
+            ctx1.putImageData(d,56,14)
+            var d=ctx1.getImageData(26,24,3,2)    
+            ctx1.putImageData(d,59,14)
         }
-    }
-    else if(type=="4*4")
-    {
-        var G=ctx.getImageData(18,23,4,4)
-            ctx.putImageData(G,48,12);
-        var D=ctx.getImageData(26,23,4,4)
-            ctx.putImageData(D,52,12);
-      
-            if(ctx1){
-                //chair cover oeil
-                ctx1.clearRect(48,6,17,10)
-                var p=ctx1.getImageData(18,22,4,2);
-                ctx.putImageData(p,48,10)
-                p=ctx1?.getImageData(26,22,4,2);
-                ctx?.putImageData(p,52,10)
-            }
         
     }
-    else if(type=="5*4")
+    else if(type=="2*4")
+    {
+        var G=ctx.getImageData(19,23,3,4)
+        ctx.putImageData(G,48,10);
+        var D=ctx.getImageData(26,23,3,4)
+        ctx.putImageData(D,51,10);
+        if(ctx1)
         {
-            var G=ctx.getImageData(17,23,5,4)
-                ctx.putImageData(G,56,12);
-            var D=ctx.getImageData(26,23,5,4)
-                ctx.putImageData(D,61,12);
-                if(ctx1){
-                    //chair cover oeil
-                    ctx1.clearRect(48,6,17,10)
-                    var p=ctx1.getImageData(17,22,5,2);
-                    ctx.putImageData(p,56,10)
-                    p=ctx1?.getImageData(26,22,5,2);
-                    ctx?.putImageData(p,61,10)
-                }
+            var d=ctx1.getImageData(19,23,3,4)    
+            ctx1.putImageData(d,56,10)
+            var d=ctx1.getImageData(26,23,3,4)    
+            ctx1.putImageData(d,59,10)
         }
+    }
+    else if(type=="3*4")
+    {
+        var G=ctx.getImageData(18,23,4,4)
+            ctx.putImageData(G,48,6);
+        var D=ctx.getImageData(26,23,4,4)
+            ctx.putImageData(D,52,6);        
+        if(ctx1)
+        {
+            var d=ctx1.getImageData(18,23,4,4)    
+            ctx1.putImageData(d,56,6)
+            var d=ctx1.getImageData(26,23,4,4)    
+            ctx1.putImageData(d,60,6)
+        }
+    }
+    else if(type=="2*3")
+    {
+            var G=ctx.getImageData(19,23,3,3)
+                ctx.putImageData(G,48,3);
+            var D=ctx.getImageData(26,23,3,3)
+                ctx.putImageData(D,51,3);               
+            if(ctx1)
+            {
+                var d=ctx1.getImageData(19,23,3,3)    
+                ctx1.putImageData(d,56,3)
+                var d=ctx1.getImageData(26,23,3,3)    
+                ctx1.putImageData(d,59,3)
+            }
+    }
     
 }
 
