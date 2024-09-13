@@ -160,19 +160,19 @@ export class SkinObject extends Group {
 		const rightArmBox = new BoxGeometry();
 		const rightArmMesh = new Mesh(rightArmBox, this.layer1MaterialBiased);
 		this.modelListeners.push(() => {
-			rightArmMesh.scale.x = this.slim ? 3 : 4;
+			rightArmMesh.scale.x =3.5+(this.slim?-0.25:0.5) ;
 			rightArmMesh.scale.y = 12;
 			rightArmMesh.scale.z = 4;
-			setSkinUVs(rightArmBox, 40, 16, this.slim ? 3 : 4, 12, 4);
+			setSkinUVs(rightArmBox, 40, 16, 3.5, 12, 4);
 		});
 
 		const rightArm2Box = new BoxGeometry();
 		const rightArm2Mesh = new Mesh(rightArm2Box, this.layer2MaterialBiased);
 		this.modelListeners.push(() => {
-			rightArm2Mesh.scale.x = this.slim ? 3.5 : 4.5;
+			rightArm2Mesh.scale.x =3.5+(this.slim?-0.25:0.5)
 			rightArm2Mesh.scale.y = 12.5;
 			rightArm2Mesh.scale.z = 4.5;
-			setSkinUVs(rightArm2Box, 40, 32, this.slim ? 3 : 4, 12, 4);
+			setSkinUVs(rightArm2Box, 40, 32,3.5, 12, 4);
 		});
 
 		const rightArmPivot = new Group();

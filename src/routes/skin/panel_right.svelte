@@ -1,22 +1,29 @@
 <script lang="ts">
-    import { Button, Input, Label, Tooltip } from 'flowbite-svelte'; 
+    import { Button, Input, Label, Toggle, Tooltip } from 'flowbite-svelte'; 
 
     import { onMount } from 'svelte';
     import { browser } from '$app/environment';
+    import type { SkinViewer } from '$lib/skinviewer3d/viewer';
     export var ldSkinFn:(data:any)=>void
     export var imgFunction:(allLayers?:boolean)=>string;
     export var dtFn:()=>any;
     export var exptFn:(dt:any,)=>Promise<string>;
+    export var viewer:SkinViewer;
     var nom:string;
     var prenom:string;
     var age:number;
     var taille:number;
+    var bras:boolean;
     var code:string|undefined;
     var timer=0;
     var int: NodeJS.Timeout | undefined;
+    $:if(bras !=undefined && viewer)
+    {
+      viewer.playerObject.forLayers(l=>l.modelType=(bras?"slim":"default"));
+    }
     function exporte()
     {
-      exptFn({nom,prenom,age,taille}).then(e=>{
+      exptFn({nom,prenom,age,taille,skinny:bras}).then(e=>{
           code=e
           timer=60;
           clearInterval(int);
@@ -40,14 +47,14 @@
           prenom=saved.prenom||""
           age=saved.age||20
           taille=saved.taille||50
+          bras=saved.bras||false;
       }
     })
-    $: if(nom || prenom|| age || taille)
+    $: if(nom || prenom|| age || taille || bras)
     {
       if(browser)
       {
-
-        window.localStorage.setItem("skin_builder_profile",JSON.stringify({nom,prenom,age,taille}))
+        window.localStorage.setItem("skin_builder_profile",JSON.stringify({nom,prenom,age,taille,bras}))
         
       }
     
@@ -66,7 +73,7 @@
     function saveDatas()
     {
       var skin=dtFn();
-      var profile={nom,prenom,age,taille};
+      var profile={nom,prenom,age,taille,bras};
       var file = new Blob([JSON.stringify({skin,profile})], {type: "text/json"});
       var element = document.createElement('a');
       element.setAttribute('href', URL.createObjectURL(file));
@@ -83,6 +90,7 @@
           prenom=d.prenom||"";
           age=d.age||20;
           taille=d.taille||50;
+          bras=d.bras||false;
       }
       var v:File=ev.target.files[0];
       if(v)
@@ -98,10 +106,9 @@
         reader.readAsText(v,"utf-8")
       }
     }
-    var form:HTMLFormElement;
 </script>
 <div class="h-full overflow-auto w-full">
-    <form bind:this={form}>
+    <form >
         <div class="grid gap-6 mb-6 md:grid-cols-2">
           <div>
             <Label for="first_name" class="mb-2 text-primary-text">Prénom</Label>
@@ -125,6 +132,14 @@
               <p class="ml-2 text-gray-100 content-center">ans</p>
             </div>
             
+          </div>
+          <div>
+            <Label for="bras" class="mb-2 text-primary-text">Bras fins</Label>
+            <Toggle id="bras" checked={bras} on:change={(e)=>{bras=e.target.checked}} class="text-primary-text cursor-pointer"></Toggle>
+            
+          </div>
+          <div>
+
           </div>
           <Button type="button" on:click={saveDatas}>Sauvgarder mes paramètres</Button>
           <Tooltip type="light">Telecharger mes paramètres pour les réutiliser plus tard</Tooltip>
