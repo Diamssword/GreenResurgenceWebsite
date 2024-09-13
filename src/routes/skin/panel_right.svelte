@@ -1,5 +1,5 @@
 <script lang="ts">
-    import { Button, Input, Label, Toggle, Tooltip } from 'flowbite-svelte'; 
+    import { Button, Input, Label, Toggle, Tooltip,Select } from 'flowbite-svelte'; 
 
     import { onMount } from 'svelte';
     import { browser } from '$app/environment';
@@ -14,6 +14,7 @@
     var age:number;
     var taille:number;
     var bras:boolean;
+    var corps:string;
     var code:string|undefined;
     var timer=0;
     var int: NodeJS.Timeout | undefined;
@@ -21,9 +22,13 @@
     {
       viewer.playerObject.forLayers(l=>l.modelType=(bras?"slim":"default"));
     }
+    $:if(corps && viewer)
+    {
+     // viewer.playerObject.forLayers(l=>l.modelType=(bras?"slim":"default"));
+    }
     function exporte()
     {
-      exptFn({nom,prenom,age,taille,skinny:bras}).then(e=>{
+      exptFn({nom,prenom,age,taille,skinny:bras,model:corps}).then(e=>{
           code=e
           timer=60;
           clearInterval(int);
@@ -48,13 +53,15 @@
           age=saved.age||20
           taille=saved.taille||50
           bras=saved.bras||false;
+          corps=saved.corps||"normal"
+        console.log(saved.corps)
       }
     })
-    $: if(nom || prenom|| age || taille || bras)
+    $: if(nom || prenom|| age || taille || bras|| corps)
     {
       if(browser)
       {
-        window.localStorage.setItem("skin_builder_profile",JSON.stringify({nom,prenom,age,taille,bras}))
+        window.localStorage.setItem("skin_builder_profile",JSON.stringify({nom,prenom,age,taille,bras,corps}))
         
       }
     
@@ -73,7 +80,7 @@
     function saveDatas()
     {
       var skin=dtFn();
-      var profile={nom,prenom,age,taille,bras};
+      var profile={nom,prenom,age,taille,bras,corps};
       var file = new Blob([JSON.stringify({skin,profile})], {type: "text/json"});
       var element = document.createElement('a');
       element.setAttribute('href', URL.createObjectURL(file));
@@ -91,6 +98,7 @@
           age=d.age||20;
           taille=d.taille||50;
           bras=d.bras||false;
+          corps=d.corps||"normal"
       }
       var v:File=ev.target.files[0];
       if(v)
@@ -139,7 +147,8 @@
             
           </div>
           <div>
-
+            <Label for="corp" class="mb-2 text-primary-text">Corpulence</Label>
+            <Select id="corp" placeholder="" items={[{value:"normal",name:"Normal"},{value:"maigre",name:"Maigre"},{value:"muscle",name:"Musclé"},{value:"large",name:"Large"}]} bind:value={corps}/>
           </div>
           <Button type="button" on:click={saveDatas}>Sauvgarder mes paramètres</Button>
           <Tooltip type="light">Telecharger mes paramètres pour les réutiliser plus tard</Tooltip>
