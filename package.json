@@ -36,6 +36,7 @@
 		"jsonwebtoken": "^9.0.2",
 		"short-unique-id": "^5.2.0",
 		"skinview-utils": "^0.7.1",
+		"sqlite3": "^5.1.7",
 		"three": "^0.167.1"
 	}
 }

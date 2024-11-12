@@ -3,9 +3,13 @@ import { Client, GatewayIntentBits, REST, Routes } from 'discord.js';
 import uploadCmd from "$lib/bot/uploadCmd"
 import type { Command } from '../../app';
 import changeCmd from '$lib/bot/changeCmd';
+import RoleCmd from './RoleCmd';
+import RoleListCmd from './RoleListCmd';
 const commands=[
     uploadCmd,
-    changeCmd
+    changeCmd,
+    RoleCmd,
+    RoleListCmd
 ] as Command[]
 console.info("Starting Discord Bot...")
 async function start()
