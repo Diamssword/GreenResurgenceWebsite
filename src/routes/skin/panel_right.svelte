@@ -54,7 +54,6 @@
           taille=saved.taille||50
           bras=saved.bras||false;
           corps=saved.corps||"normal"
-        console.log(saved.corps)
       }
     })
     $: if(nom || prenom|| age || taille || bras|| corps)
@@ -146,10 +145,11 @@
             <Toggle id="bras" checked={bras} on:change={(e)=>{bras=e.target.checked}} class="text-primary-text cursor-pointer"></Toggle>
             
           </div>
-         <!-- <div>
-            <Label for="corp" class="mb-2 text-primary-text">Corpulence</Label>
+         <div>
+         <!--    <Label for="corp" class="mb-2 text-primary-text">Corpulence</Label>
             <Select id="corp" placeholder="" items={[{value:"normal",name:"Normal"},{value:"maigre",name:"Maigre"},{value:"muscle",name:"Musclé"},{value:"large",name:"Large"}]} bind:value={corps}/>
-          </div>-->
+            -->
+          </div>
           <Button type="button" on:click={saveDatas}>Sauvgarder mes paramètres</Button>
           <Tooltip type="light">Telecharger mes paramètres pour les réutiliser plus tard</Tooltip>
           <Button type="button" on:click={()=>{document.getElementById("data_uploader").click()}}>Charger mes paramètres</Button>
