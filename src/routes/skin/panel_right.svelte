@@ -28,7 +28,7 @@
     }
     function exporte()
     {
-      exptFn({nom,prenom,age,taille,skinny:bras,model:corps}).then(e=>{
+      exptFn({nom,prenom,age,height:taille,skinny:bras,model:corps}).then(e=>{
           code=e
           timer=60;
           clearInterval(int);
