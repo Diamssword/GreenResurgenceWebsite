@@ -1,22 +1,26 @@
-import sqlite from "sqlite3";
+import sqlite from "better-sqlite3";
 
-const db = new sqlite.Database('./DB.sqlite');
-db.run(`CREATE TABLE IF NOT EXISTS roles (
+const db = sqlite('./DB.sqlite');
+db.pragma('journal_mode = WAL');
+db.exec(`CREATE TABLE IF NOT EXISTS roles (
     uuid TEXT PRIMARY KEY,
     role TEXT,
     username TEXT
-)`, (err) => {
-    if (err) {
-        return console.error(err.message);
-    }
-    console.log('Table roles created successfully.');
-});
+);
+CREATE TABLE IF NOT EXISTS user (
+    id INTEGER NOT NULL PRIMARY KEY,
+    googleId TEXT,
+    minecraftId TEXT,
+    username TEXT
+    
+);
+CREATE TABLE IF NOT EXISTS session (
+    id TEXT NOT NULL PRIMARY KEY,
+    user_id INTEGER NOT NULL REFERENCES user(id),
+    expires_at INTEGER NOT NULL
+);`);
 export default db;
 process.on('exit', () => {
-    db.close((err) => {
-        if (err) {
-            return console.error(err.message);
-        }
-        console.log('Base de données fermée.');
-    });
+    db.close();
+    console.log('Base de données fermée.');
 });

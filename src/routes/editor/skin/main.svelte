@@ -1,6 +1,6 @@
 <script lang="ts">
     import Viewer from "./viewer.svelte";
-    import type { PageData } from './$types';
+    import type { PageData } from '../$types';
     export let data:PageData;
     import type {SkinViewer} from "$lib/skinviewer3d/skinview3d";
     import PanelLeft from "./panel_left.svelte";
@@ -61,8 +61,8 @@
     }
 </script>
 
-<div class="w-full h-full">
-    <div class="flex w-full h-5/6 mb-5 rounded-md">
+<div class="w-full flex-1 p-2">
+    <div class="flex w-full mb-5 rounded-md">
         <div class="w-2/6 mr-5">
         <PanelLeft data={data.datas} {viewer} bind:getSkinDatas={getSkinDatas} bind:loadDefault={ldSkinFn}/>
         </div>

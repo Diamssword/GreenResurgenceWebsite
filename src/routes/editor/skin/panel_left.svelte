@@ -1,6 +1,6 @@
 <script lang="ts">
     import { AccordionItem, Accordion, Button, Input, Label, Tooltip } from 'flowbite-svelte'; 
-    import type { PageData } from './$types';
+    import type { PageData } from '../$types';
     import type {SkinViewer} from "$lib/skinviewer3d/skinview3d";
     import type { ColorRepresentation } from 'three';
     import { browser } from '$app/environment';
@@ -176,7 +176,7 @@
     {#if data}
     {#each Object.keys(data) as k }
     {@const cat = data[k]}
-    <AccordionItem class="p-2 group-last:rounded-b-xl" open>
+    <AccordionItem class="p-2 group-last:rounded-b-xl" >
        
         <span slot="header" class="text-xl flex gap-1 text-primary-text">
          {cat.title}

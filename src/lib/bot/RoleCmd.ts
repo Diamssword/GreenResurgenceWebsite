@@ -16,18 +16,14 @@ export default {
         fetch("https://api.mojang.com/users/profiles/minecraft/" + pseudo).then(async v => {
             var js = await v.json();
             if (js && js.id) {
-                db.run('INSERT OR REPLACE INTO roles (uuid, role, username) VALUES (?, ?, ?)',
-                    [js.id, role, pseudo],
-                    (err) => {
-                        if (err) {
-                            console.error(err.message);
-                            ctx.editReply({ content: "Une erreur c'est produite"})
-                        }
-                        else
-                        {
-                            ctx.editReply({ content: `Role de **${pseudo}** avec l'UUID **${js.id}** mis à **${role}**`});
-                        }
-                    });
+                try{
+                db.prepare('INSERT OR REPLACE INTO roles (uuid, role, username) VALUES (?, ?, ?)').run(js.id, role, pseudo);
+                ctx.editReply({ content: `Role de **${pseudo}** avec l'UUID **${js.id}** mis à **${role}**`});
+                }catch(err)
+                {
+                    console.error(err);
+                    ctx.editReply({ content: "Une erreur c'est produite"})
+                }
             }
             else {
                 ctx.editReply({ content: "Pseudo introuvable: "+pseudo});

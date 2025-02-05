@@ -6,19 +6,16 @@ export default {
     async action(ctx) {
         
         await ctx.deferReply();
-        db.all('SELECT * FROM roles', [], (err, rows) => {
-            if (err) {
-                ctx.editReply({ content: "Une erreur c'est produite"})
-                console.error(err.message);
-            }
-            else
-            {
+        try{
+            var rows=db.prepare('SELECT * FROM roles').all();
             var list="";
-            rows.forEach((row) => {
+            rows.forEach((row:any) => {
                 list=list+"**"+row.username+"** : **"+row.role+"** (uuid: "+row.uuid+")\n";
             });
             ctx.editReply({ content: list});
+        }catch(err){
+            ctx.editReply({ content: "Une erreur c'est produite"})
+            console.error(err.message);
         }
-        });
     }
 } as Command

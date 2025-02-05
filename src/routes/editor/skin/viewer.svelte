@@ -26,7 +26,7 @@
     }
     onMount(() => {
         if (browser) {
-            var h=800;
+            var h=400;
             viewer = new skinViewer.SkinViewer({
                 canvas,
                 width: h,
@@ -36,10 +36,19 @@
             if( canvas?.parentElement)
             {
                 const resizeObserver = new ResizeObserver(() => {
-                    
+                  
                     if(canvas.parentElement)
                     {
-                        h= canvas.parentElement.clientHeight;
+                       var maxH=window.innerHeight;
+                       var top=canvas.getBoundingClientRect().top;
+                       var nh=90;
+                       var nav=document.getElementById("mainnav");
+                       if(nav)
+                       {
+                        nh=nav.getBoundingClientRect().top+nav.getBoundingClientRect().height;
+                       }
+                        h=Math.max(maxH-top-nh-10,0);
+                        console.log(nh)
                         viewer.setSize(h,h)
                     }
                 } );

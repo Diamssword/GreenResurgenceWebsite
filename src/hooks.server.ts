@@ -1,3 +1,4 @@
+import { deleteSessionTokenCookie, setSessionTokenCookie, validateSessionToken } from '$lib/session/session';
 import type { Handle } from '@sveltejs/kit';
 
 import("$lib/bot/bot").catch(console.error)
@@ -13,6 +14,23 @@ export const handle: Handle = async ({ event, resolve }) => {
 	}
 	  if(!event.locals.user_ip)
   		event.locals.user_ip="devIP"
+	  const token = event.cookies.get("session") ?? null;
+	  if (token === null) {
+		  event.locals.user = null;
+		  event.locals.session = null;
+	  }
+	  else
+	  {
+		const { session, user } = await validateSessionToken(token);
+		if (session !== null) {
+			setSessionTokenCookie(event, token, session.expiresAt);
+		} else {
+			deleteSessionTokenCookie(event);
+		}
+	
+		event.locals.session = session;
+		event.locals.user = user;
+	  }
 	const response = await resolve(event);
 	return response;
 };
