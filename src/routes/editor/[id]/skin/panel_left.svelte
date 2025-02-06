@@ -1,17 +1,42 @@
 <script lang="ts">
-    import { AccordionItem, Accordion, Button, Input, Label, Tooltip } from 'flowbite-svelte'; 
+    import { AccordionItem, Accordion, Button, Input, Tooltip } from 'flowbite-svelte'; 
     import type { PageData } from '../$types';
     import type {SkinViewer} from "$lib/skinviewer3d/skinview3d";
     import type { ColorRepresentation } from 'three';
     import { browser } from '$app/environment';
     import type { eyeType } from '$lib/skinviewer3d/textureHelper';
-    export let data:PageData["datas"];
-    export let viewer:SkinViewer;
+    var {data,viewer,getSkinData=$bindable(),loadDefault=$bindable()} :{data:PageData["datas"],viewer:SkinViewer,loadDefault:(saved:any)=>void, getSkinData:()=>{[key:string]:{texture?:string,color?:ColorRepresentation,type?:eyeType}}} = $props();
     var pickedEyeType:eyeType|undefined;
     var isBrowAnimated:boolean=true;
     var pickedColors:{[key:string]:ColorRepresentation}={"eyesc":"#126A87"};
     var pickedTexture:{[key:string]:string}={};
-    export function getSkinDatas()
+    loadDefault=(saved:any)=>
+    {
+        if(data && viewer)
+        {
+           
+            for(let k in data)
+            {
+                if(saved[k])
+                {
+                    if(saved[k].color)
+                    {
+                        if(data[k]?.colors!=undefined)
+                            pickedColors[k]=saved[k].color;
+                    }
+                    pickedTexture[k]=saved[k].texture;
+                }
+                else
+                    pickedTexture[k]=data[k].images[0].id;
+            }
+            for(let k in pickedTexture)
+            {
+                loadSkin(k,pickedTexture[k]);
+            }
+            
+        }
+    }
+    getSkinData=()=>
     {
         var res:{[key:string]:{texture?:string,color?:ColorRepresentation,type?:eyeType}}={};
         for(const k in pickedTexture)
@@ -101,39 +126,16 @@
             
     }
     var loaded=false;
-    $:if(viewer && !loaded)
-    {
-        loaded=true;
+    $effect(()=>{
+        if(viewer && !loaded)
+        {
+            loaded=true;
             if(browser)
                 loadDefault(JSON.parse(window.localStorage.getItem("skin_builder_datas")||"{}"));
-        
-    }
-    export function loadDefault(saved:any)
-    {
-        if(data && viewer)
-        {
-           
-            for(var k in data)
-            {
-                if(saved[k])
-                {
-                    if(saved[k].color)
-                    {
-                        if(data[k]?.colors!=undefined)
-                            pickedColors[k]=saved[k].color;
-                    }
-                    pickedTexture[k]=saved[k].texture;
-                }
-                else
-                    pickedTexture[k]=data[k].images[0].id;
-            }
-            for(var k in pickedTexture)
-            {
-                loadSkin(k,pickedTexture[k]);
-            }
             
         }
-    }
+    });
+   
     export function toJson()
     {
         var res:{[key:string]:{texture:string,color?:string}}={};
@@ -176,9 +178,9 @@
     {#if data}
     {#each Object.keys(data) as k }
     {@const cat = data[k]}
-    <AccordionItem class="p-2 group-last:rounded-b-xl" >
+    <AccordionItem>
        
-        <span slot="header" class="text-xl flex gap-1 text-primary-text">
+        <span slot="header" class="text-xl flex gap-1 text-secondary-text">
          {cat.title}
         </span>
         {#each Object.keys(cat.cats||{"":""}) as sub}
@@ -202,12 +204,12 @@
         {#if cat.colors}
         {#if cat.colors=="free"}
         {@const col=getPickedColor(k=="eyes"?"eyesc":k)}
-        <p class="mb-2 ml=5 mt-5 text-primary-text text-xl">Couleur:</p>
+        <p class="mb-2 ml=5 mt-5 text-secondary-text text-xl">Couleur:</p>
             <Input type="color" class="w-10 cursor-pointer" style="background-color:{col};" on:input={(ev)=>{ev.target.style.backgroundColor=ev.target.value; pickColor(k,ev.target.value)}} value={col}/>
         {:else}
-        <p class="mb-2 mt-5 text-primary-text w-full text-xl">Couleurs:</p>
+        <p class="mb-2 mt-5 text-secondary-text w-full text-xl">Couleurs:</p>
             {#each cat.colors as color}
-            <Button class="ml-2" style=" background-color:{color}"  on:click={()=>pickColor(k,color)} />
+            <Button class="ml-2" outline style=" background-color:{color}"  on:click={()=>pickColor(k,color)} />
             {/each}
         {/if}
         

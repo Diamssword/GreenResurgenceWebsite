@@ -15,7 +15,7 @@ $SHARED.title=undefined;
             <p class="megatext text-gray-50 -translate-x-4 -translate-y-2" >ESURGENCE</p>
         </div>
   </div>
-  <div class="mx-24  -mt-24 text-primary-text1 text-2xl">
+  <div class="mx-24  -mt-24 text-secondary-text1 text-2xl">
         <p >
         Résurgence est un serveur Minecraft Roleplay moddé sur le thème de la Post-Apocalypse verte.
         </p>
@@ -28,7 +28,7 @@ $SHARED.title=undefined;
         <div class="flex justify-center mb-5 mt-5">
         <Button href="https://discord.com/invite/BgcDb6AZCQ" class="text-4xl"> Rejoignez nous <img class="size-20 ml-5" src="/images/svg/discord.svg"/></Button>
         </div>
-        <div class="flex justify-center mb-20 text-3xl text-primary-text">
+        <div class="flex justify-center mb-20 text-3xl text-secondary-text">
             <p>🛠️Le serveur est toujours en projet et nous cherchons des gens motivés pour nous aider🛠️</p>
         </div>
         

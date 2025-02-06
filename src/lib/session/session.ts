@@ -26,7 +26,7 @@ export function createSession(token: string, userId: number): Session {
 
 export function validateSessionToken(token: string): SessionValidationResult {
 	const sessionId = encodeHexLowerCase(sha256(new TextEncoder().encode(token)));
-	const row:any = db.prepare("SELECT session.id, session.user_id, session.expires_at, user.id, user.username FROM session INNER JOIN user ON user.id = session.user_id WHERE session.id = ?").get(sessionId);
+	const row:any = db.prepare("SELECT session.id, session.user_id, session.expires_at, user.id, user.username, user.minecraftId FROM session INNER JOIN user ON user.id = session.user_id WHERE session.id = ?").get(sessionId);
 	if (!row) {
 		return { session: null, user: null };
 	}
@@ -37,7 +37,8 @@ export function validateSessionToken(token: string): SessionValidationResult {
 	};
 	const user: User = {
 		id: row.user_id,
-        username:row.username
+        username:row.username,
+		minecraftId:row.minecraftId
 	};
 	if (Date.now() >= session.expiresAt.getTime()) {
 		db.prepare("DELETE FROM session WHERE id = ?").run(session.id);

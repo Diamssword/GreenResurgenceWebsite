@@ -4,28 +4,29 @@
     import { onMount } from 'svelte';
     import { browser } from '$app/environment';
     import type { SkinViewer } from '$lib/skinviewer3d/viewer';
-    export var ldSkinFn:(data:any)=>void
-    export var imgFunction:(allLayers?:boolean)=>string;
-    export var dtFn:()=>any;
-    export var exptFn:(dt:any,)=>Promise<string>;
-    export var viewer:SkinViewer;
-    var nom:string;
-    var prenom:string;
-    var age:number;
-    var taille:number;
-    var bras:boolean;
-    var corps:string;
-    var code:string|undefined;
-    var timer=0;
+    type Props={
+    ldSkinFn:(data:any)=>void
+    imgFunction:(allLayers?:boolean)=>string;
+    dtFn:()=>any;
+    exptFn:(dt:any,)=>Promise<string>;
+    viewer:SkinViewer;
+    }
+    var {ldSkinFn,imgFunction,dtFn,exptFn,viewer}:Props=$props();
+    var nom:string=$state("");
+    var prenom:string=$state("");
+    var age:number=$state(0);
+    var taille:number=$state(0);
+    var bras:boolean=$state(false);
+    var corps:string=$state("");
+    var code:string|undefined=$state();
+    var timer=$state(0);
     var int: NodeJS.Timeout | undefined;
-    $:if(bras !=undefined && viewer)
-    {
-      viewer.playerObject.forLayers(l=>l.modelType=(bras?"slim":"default"));
-    }
-    $:if(corps && viewer)
-    {
-     // viewer.playerObject.forLayers(l=>l.modelType=(bras?"slim":"default"));
-    }
+    $effect(()=>{
+      if(bras !=undefined && viewer)
+      {
+        viewer.playerObject.forLayers(l=>l.modelType=(bras?"slim":"default"));
+      }
+    });
     function exporte()
     {
       exptFn({nom,prenom,age,height:taille,skinny:bras,model:corps}).then(e=>{
@@ -56,15 +57,16 @@
           corps=saved.corps||"normal"
       }
     })
-    $: if(nom || prenom|| age || taille || bras|| corps)
-    {
-      if(browser)
+    $effect(()=>{
+      if(nom || prenom|| age || taille || bras|| corps)
       {
-        window.localStorage.setItem("skin_builder_profile",JSON.stringify({nom,prenom,age,taille,bras,corps}))
-        
+        if(browser)
+        {
+          window.localStorage.setItem("skin_builder_profile",JSON.stringify({nom,prenom,age,taille,bras,corps}))
+        }
+      
       }
-    
-    }
+    }) 
     function exportImage()
     {
       var dt=imgFunction(true);
@@ -89,8 +91,10 @@
       element.click();
       document.body.removeChild(element);
     }
-    function loadDatas(ev:InputEvent)
+    function loadDatas(ev:Event & { currentTarget: EventTarget & HTMLInputElement; })
     {
+      if(!ev.currentTarget.files)
+        return;
       var fn=(d:any)=>{
           nom=d.nom||"";
           prenom=d.prenom||"";
@@ -99,16 +103,15 @@
           bras=d.bras||false;
           corps=d.corps||"normal"
       }
-      var v:File=ev.target.files[0];
+      var v:File=ev.currentTarget.files[0];
       if(v)
       {
         
         var reader=new FileReader();
         reader.onload=()=>{
-          var js=JSON.parse(reader.result)
+          var js=JSON.parse(reader.result?.toString()||"")
          fn(js.profile);
          ldSkinFn(js.skin||{})
-         ev.target.files=[]
         }
         reader.readAsText(v,"utf-8")
       }
@@ -118,35 +121,35 @@
     <form >
         <div class="grid gap-6 mb-6 md:grid-cols-2">
           <div>
-            <Label for="first_name" class="mb-2 text-primary-text">Prénom</Label>
+            <Label for="first_name" class="mb-2 text-secondary-text">Prénom</Label>
             <Input type="text" id="first_name" placeholder="John" bind:value={prenom} required />
           </div>
           <div>
-            <Label for="last_name" class="mb-2 text-primary-text" >Nom</Label>
+            <Label for="last_name" class="mb-2 text-secondary-text" >Nom</Label>
             <Input type="text" id="last_name" placeholder="Doe" required bind:value={nom}/>
           </div>
           <div>
-            <Label for="taille" class="mb-2 text-primary-text" >Taille</Label>
+            <Label for="taille" class="mb-2 text-secondary-text" >Taille</Label>
             <div class=" flex">
-              <p class="text-gray-100 content-center mr-1">1m</p>
+              <p class=" content-center mr-1">1m</p>
               <Input class="w-22" type="number" min=40 max=99 id="taille" placeholder={Math.floor(40+(Math.random()*45))} required bind:value={taille}/>
             </div>
           </div>
           <div>
-            <Label for="age" class="mb-2 text-primary-text">Age</Label>
+            <Label for="age" class="mb-2 text-secondary-text">Age</Label>
             <div class=" flex">
               <Input class="w-22" type="number" id="age" min=10 max=120 placeholder={Math.floor(16+(Math.random()*20))} required bind:value={age}/>
-              <p class="ml-2 text-gray-100 content-center">ans</p>
+              <p class="ml-2 content-center">ans</p>
             </div>
             
           </div>
           <div>
-            <Label for="bras" class="mb-2 text-primary-text">Bras fins</Label>
-            <Toggle id="bras" checked={bras} on:change={(e)=>{bras=e.target.checked}} class="text-primary-text cursor-pointer"></Toggle>
+            <Label for="bras" class="mb-2 text-secondary-text">Bras fins</Label>
+            <Toggle id="bras" checked={bras} on:change={(e)=>{bras=e.target.checked}} class="text-secondary-text cursor-pointer"></Toggle>
             
           </div>
          <div>
-         <!--    <Label for="corp" class="mb-2 text-primary-text">Corpulence</Label>
+         <!--    <Label for="corp" class="mb-2 text-secondary-text">Corpulence</Label>
             <Select id="corp" placeholder="" items={[{value:"normal",name:"Normal"},{value:"maigre",name:"Maigre"},{value:"muscle",name:"Musclé"},{value:"large",name:"Large"}]} bind:value={corps}/>
             -->
           </div>
@@ -154,17 +157,17 @@
           <Tooltip type="light">Telecharger mes paramètres pour les réutiliser plus tard</Tooltip>
           <Button type="button" on:click={()=>{document.getElementById("data_uploader").click()}}>Charger mes paramètres</Button>
           <Tooltip type="light">Charger mes paramètres depuis un fichier de sauvegarde</Tooltip>
-          <Button class= "grow bg-primary-text" type="button" size="xl" on:click={exporte}>Recuperer mon code</Button>
+          <Button class= "grow bg-secondary-text" type="button" size="xl" on:click={exporte}>Recuperer mon code</Button>
           <Tooltip type="light">Recuperer mon code pour lier mon skin en jeu </Tooltip>
           <Button type="button" on:click={exportImage}>Telecharger mon skin</Button>
           <Tooltip type="light">Telecharger mon skin au format PNG pour l'utilser autre part</Tooltip>
           {#if code}
           <div class="col-span-2">
-            <p class="text-primary-text1">Copier ce code et collez le dans votre jeu avec Ctrl+ V pour lier ce skin à votre compte.</p>
+            <p class="text-secondary-text1">Copier ce code et collez le dans votre jeu avec Ctrl+ V pour lier ce skin à votre compte.</p>
             <Input class="w-22" type="text" readonly value={code}/>
-            <p  class="text-primary-text1"> Vous avez <b class="text-primary-text">{timer}</b> secondes avant de devoir recréer un code</p>
+            <p  class="text-secondary-text1"> Vous avez <b class="text-secondary-text">{timer}</b> secondes avant de devoir recréer un code</p>
           </div>
           {/if}
       </form>
-      <input hidden type="file" id="data_uploader" on:change={loadDatas}>
+      <input hidden type="file" id="data_uploader" onchange={loadDatas}>
 </div>

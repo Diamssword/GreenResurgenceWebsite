@@ -9,11 +9,11 @@ declare global {
 		// interface Error {}
 		 interface Locals {
 			user_ip?:string,
-			user: User | null;
-			session: Session | null;
+			user?: User;
+			session?: Session;
 		 }
 		 interface PageData {
-			user:User|null;
+			user?:User;
 		 }
 		// interface PageState {}
 		// interface Platform {}
