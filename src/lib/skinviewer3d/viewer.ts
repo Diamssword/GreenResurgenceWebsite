@@ -40,7 +40,7 @@ import { FXAAShader } from "three/examples/jsm/shaders/FXAAShader.js";
 import { PlayerAnimation } from "./animation.js";
 import { type BackEquipment, LayerInfo, PlayerObject } from "./model.js";
 import { NameTagObject } from "./nametag.js";
-import { colorCanvas, moveBrows, moveEyes, type eyeType } from "./textureHelper.js";
+import { colorCanvas, moveBrows, moveEyes, resizeTexture, splitFaceTexture, type eyeType } from "./textureHelper.js";
 
 export interface LoadOptions {
 	/**
@@ -61,7 +61,7 @@ export interface SkinLoadOptions extends LoadOptions {
 	 */
 	model?: ModelType | "auto-detect";
 	color?:ColorRepresentation,
-	eyeType?:eyeType,
+	side?:"left"|"right"|"both",
 	animatedBrows?:boolean
 
 	/**
@@ -521,8 +521,11 @@ export class SkinViewer {
 		if (source === null) {
 			this.resetSkin(layer);
 		} else if (isTextureSource(source)) {
+			source=resizeTexture(source as any)
+			if(options.side && options.side !="both")
+				source=splitFaceTexture(source,options.side=="right")
 			loadSkinToCanvas(this.skinCanvas[layer], source);
-			if(layer=="eyes" || layer=="base")
+		/*	if(layer=="eyes" || layer=="base")
 			{
 				moveEyes(this.skinCanvas["eyes"],this.skinCanvas["base"],options.eyeType);
 			}
@@ -534,8 +537,8 @@ export class SkinViewer {
 			{
 				moveBrows(this.skinCanvas["brows"],this.skinCanvas["base"],options.eyeType);
 			}
-				
-			if(options.color && layer !="eyes")
+				*/
+			if(options.color)
 				colorCanvas(this.skinCanvas[layer],new Color(options.color))
 			this.recreateSkinTexture(layer);
 			var l=this.playerObject.skins[layer];

@@ -1,6 +1,69 @@
 import type { Color } from "three";
 
 export type eyeType="2*2"|"2*3"|"2*4"|"3*4"|"none"
+export function resizeTexture(texture:HTMLImageElement)
+{
+    if(texture.width==texture.height)
+        return texture;
+
+    var can:HTMLCanvasElement= document.createElement("canvas");
+    can.width=can.height=128
+    var ctx=can.getContext("2d");
+    if(texture.height==32 && texture.width==128)
+    {
+      ctx?.drawImage(texture,0,0)
+      
+    }
+    else if(texture.height==16 && texture.width==32)
+    {
+        var can1:HTMLCanvasElement= document.createElement("canvas");
+        can1.width=32;
+        can1.height=16;
+        var ctx1=can1.getContext("2d");
+        if(ctx1)
+        {
+        ctx1.drawImage(texture,0,0);
+        var d=ctx1.getImageData(0,0,16,16);
+        ctx?.putImageData(d,16,16)
+        d=ctx1.getImageData(16,0,16,16);
+        ctx?.putImageData(d,80,16)
+        }
+    }
+    return can;
+}
+export function splitFaceTexture(texture:HTMLImageElement,right:boolean)
+{
+    var can:HTMLCanvasElement= document.createElement("canvas");
+    can.width=can.height=128
+    var can1:HTMLCanvasElement= document.createElement("canvas");
+    can1.width=can1.height=128
+    var ctx1=can1.getContext("2d");
+    ctx1?.drawImage(texture,0,0);
+    var ctx=can.getContext("2d");
+    if(ctx1 && ctx)
+    {
+        if(!right){
+            ctx.putImageData(ctx1.getImageData(0,0,24,32),0,0)
+            ctx.putImageData(ctx1.getImageData(56,0,8,32),56,0)
+            ctx.putImageData(ctx1.getImageData(32,0,8,16),32,0)
+            ctx.putImageData(ctx1.getImageData(0,32,128,96),0,32)
+
+            ctx.putImageData(ctx1.getImageData(64,0,24,32),64,0)
+            ctx.putImageData(ctx1.getImageData(56+64,0,8,32),56+64,0)
+            ctx.putImageData(ctx1.getImageData(32+64,0,8,16),32+64,0)
+            ctx.putImageData(ctx1.getImageData(64,32,128,96),64,32)
+        } else {
+            ctx.putImageData(ctx1.getImageData(24,16,32,16),24,16)
+            ctx.putImageData(ctx1.getImageData(24,0,8,16),24,0)
+            ctx.putImageData(ctx1.getImageData(40,0,8,16),40,0)
+
+            ctx.putImageData(ctx1.getImageData(24+64,16,32,16),24+64,16)
+            ctx.putImageData(ctx1.getImageData(24+64,0,8,16),24+64,0)
+            ctx.putImageData(ctx1.getImageData(40+64,0,8,16),40+64,0)
+        }
+    }
+    return can;
+}
 export function moveBrows(canvas:HTMLCanvasElement,fleshCanvas:HTMLCanvasElement|undefined, type:eyeType)
 {
     var ctx=canvas?.getContext("2d");

@@ -67,7 +67,17 @@
     },
     "eyes":{
         "title":"Yeux",
+        "layered":true,
+        "sided":true,
         "images":[
+            {
+                "id":"test",
+                "anim":"4*2"
+            },
+            {
+                "id":"test1",
+                "anim":"4*2"
+            },
             {
                 "id":"t4",
                 "anim":"4*2"

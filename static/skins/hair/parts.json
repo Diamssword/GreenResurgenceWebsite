@@ -1,5 +1,9 @@
 [
     {
+        "id":"clear",
+        "cat":"short"
+    },
+    {
     "id":"1",
     "cat":"short"
     },

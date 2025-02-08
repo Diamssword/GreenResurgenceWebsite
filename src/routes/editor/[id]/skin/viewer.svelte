@@ -2,13 +2,9 @@
     import { browser } from "$app/environment";
     import * as skinViewer from "$lib/skinviewer3d/skinview3d";
     import { onMount } from "svelte";
+    import { layers } from "./panel";
     var canvas: HTMLCanvasElement;
     export var viewer: skinViewer.SkinViewer;
-    const layers:skinViewer.LayerInfo[]=[
-        {name:"base",size:0},{name:"underwear",size:0.1,external:true},{name:"mouth",size:0.01},{name:"beard",size:0.02,external:true},
-        {name:"eyes",size:0.03},{name:"eyesc",size:0.04},{name:"cosmetic",size:0.01},{name:"brows",size:0.06},{name:"hair",size:0.07,external:true}
-    ]
-
     export function createSkin(allLayers?:boolean)
     {
         var canv=document.createElement("canvas")

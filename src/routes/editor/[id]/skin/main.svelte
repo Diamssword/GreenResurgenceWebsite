@@ -60,18 +60,25 @@
     },7000)
     }
 </script>
+/*
+bouche h
+barbre h
+oeil gauche h
+oeil droit h
+deco oeil gauche h
+deco oeil droit h
+deco visage h
 
+*/
 <div class="w-full flex-1 p-2">
     <div class="flex w-full mb-5 rounded-md">
-        <div class="w-2/6 mr-5 max-h-[65vh]">
+        <div class="w-3/6 mr-5 max-h-[65vh]">
         <PanelLeft data={data.datas} {viewer} bind:getSkinData={getSkinDatas} bind:loadDefault={ldSkinFn}/>
         </div>
         <div class="rounded-md bgimg flex grow justify-center">
             <Viewer bind:viewer={viewer} bind:createSkin={exportFn} />
         </div>
-        <div class="w-1/5 ml-5 ">
-            <PanelRight data={data.datas} {viewer} imgFunction={exportFn} dtFn={getSkinDatas} ldSkinFn={ldSkinFn} exptFn={exportSkin}/>
-            </div>
+       
     </div>
     <Alert color="blue">
         {#key pickedInfo}
