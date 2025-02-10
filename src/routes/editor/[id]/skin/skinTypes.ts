@@ -5,13 +5,15 @@ export type SaveFormat={
     stats:{
         firstname:string,
         lastname:string,
-        size:number,
-        slim:boolean,
         age:number,
     },
+    apparence:{
+        size:number,
+        slim:boolean,
+    }
     skin:{[key:string]:{
         id:string,
-        color?:string
+        color?:ColorRepresentation
         height?:number
     }
     }

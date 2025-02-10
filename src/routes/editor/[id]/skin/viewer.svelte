@@ -4,22 +4,7 @@
     import { onMount } from "svelte";
     import { layers } from "./panel";
     var canvas: HTMLCanvasElement;
-    export var viewer: skinViewer.SkinViewer;
-    export function createSkin(allLayers?:boolean)
-    {
-        var canv=document.createElement("canvas")
-        canv.width=canv.height=128;
-        var ctx=canv.getContext("2d");
-        layers.forEach(l=>{
-            if(l.external !=true || allLayers ==true)
-            {
-                var c1=viewer.skinCanvas[l.name];
-                ctx?.drawImage(c1,0,0);
-            }
-        });
-        ctx?.save();
-        return canv.toDataURL("png");
-    }
+    let {viewer=$bindable()}:{viewer:skinViewer.SkinViewer}=$props()
     onMount(() => {
         if (browser) {
             var h=400;
@@ -44,7 +29,6 @@
                         nh=nav.getBoundingClientRect().top+nav.getBoundingClientRect().height;
                        }
                         h=Math.max(maxH-top-nh-10,0);
-                        console.log(nh)
                         viewer.setSize(h,h)
                     }
                 } );
@@ -57,11 +41,11 @@
     });
 </script>
 
-<canvas bind:this={canvas} class="cursor-pointer" on:mouseenter={()=>{
+<canvas bind:this={canvas} class="cursor-pointer" onmouseenter={()=>{
     if(viewer)
         viewer.animation= new skinViewer.IdleAnimation();
     
-}} on:mouseleave={()=>{
+}} onmouseleave={()=>{
     if(viewer)
     {
     viewer.animation= new skinViewer.WalkingAnimation();

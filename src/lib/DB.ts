@@ -24,11 +24,23 @@ CREATE TABLE IF NOT EXISTS skinlayout (
     user_id INTEGER NOT NULL REFERENCES user(id),
     edit_at DATETIME DEFAULT CURRENT_TIMESTAMP,
     role TEXT DEFAULT "user",
+    canAlwaysChangeSkin BOOLEAN DEFAULT false,
     name TEXT NOT NULL,
     data TEXT NOT NULL
 );
 
 `);
+function columnExists(table:string, column:string) {
+    const row = db.prepare(`PRAGMA table_info(${table})`).all();
+    return row.some(col => col.name === column);
+}
+
+if(!columnExists("user","canAlwaysChangeSkin"))
+{
+    db.prepare(`ALTER TABLE user ADD COLUMN canAlwaysChangeSkin BOOLEAN DEFAULT false`).run();
+    console.log("Added missing column!");
+}
+
 export default db;
 process.on('exit', () => {
     db.close();

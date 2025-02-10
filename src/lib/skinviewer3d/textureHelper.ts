@@ -8,7 +8,7 @@ export function resizeTexture(texture:HTMLImageElement)
 
     var can:HTMLCanvasElement= document.createElement("canvas");
     can.width=can.height=128
-    var ctx=can.getContext("2d");
+    var ctx=can.getContext("2d",{willReadFrequently:true});
     if(texture.height==32 && texture.width==128)
     {
       ctx?.drawImage(texture,0,0)
@@ -19,7 +19,7 @@ export function resizeTexture(texture:HTMLImageElement)
         var can1:HTMLCanvasElement= document.createElement("canvas");
         can1.width=32;
         can1.height=16;
-        var ctx1=can1.getContext("2d");
+        var ctx1=can1.getContext("2d",{willReadFrequently:true});
         if(ctx1)
         {
         ctx1.drawImage(texture,0,0);
@@ -37,9 +37,9 @@ export function splitFaceTexture(texture:HTMLImageElement,right:boolean)
     can.width=can.height=128
     var can1:HTMLCanvasElement= document.createElement("canvas");
     can1.width=can1.height=128
-    var ctx1=can1.getContext("2d");
+    var ctx1=can1.getContext("2d",{willReadFrequently:true});
     ctx1?.drawImage(texture,0,0);
-    var ctx=can.getContext("2d");
+    var ctx=can.getContext("2d",{willReadFrequently:true});
     if(ctx1 && ctx)
     {
         if(!right){

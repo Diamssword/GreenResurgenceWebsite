@@ -1,7 +1,8 @@
 import type { ColorRepresentation } from "three";
-import type { SkinPartsFormat } from "./skinTypes";
+import type { SaveFormat, SkinPartsFormat } from "./skinTypes";
 import type {LayerInfo, SkinViewer} from "$lib/skinviewer3d/skinview3d";
 import type { PageData } from "../$types";
+import { browser } from "$app/environment";
 
 const defaultColors:{[key:string]:ColorRepresentation}={
     "left_eye":"#126A87",
@@ -44,11 +45,14 @@ export enum SkinPart{
 export class SkinEditor {
     skinLib: { [key: string]: SkinPartsFormat; };
     pickedLayers:{[key:string]:{color?:ColorRepresentation,texture?:string}};
-    viewer:SkinViewer;
-    constructor(skinLib:PageData["datas"],viewer:SkinViewer) {
+    viewer?:SkinViewer;
+    slim?:boolean
+    saveFn:(data:SaveFormat["skin"])=>void;
+    constructor(skinLib:PageData["datas"]) {
         this.skinLib=skinLib;
         this.pickedLayers={}
-        this.viewer=viewer;
+        this.viewer=undefined;
+        this.saveFn=()=>{}
        for(let layer in SkinPart)
        {
         this.pickedLayers[layer]={};
@@ -81,26 +85,27 @@ export class SkinEditor {
             return lib.colors[0];
         return defaultColors[cat];
     }
-    loadSavedOrDefault(saved:{[key:string]:{color?:string,texture?:string}})
+    loadSavedOrDefault(saved:SaveFormat["skin"])
     {
         if(this.skinLib)
         {
-           
-            for(let k in this.skinLib)
+            for(let layer in SkinPart)
             {
-                if(this.pickedLayers[k])
+                var lib=this.getLib(layer)
+                if(this.pickedLayers[layer])
                 {
-                if(saved[k])
-                {
-                    if(saved[k].color)
+                    if(saved[layer])
                     {
-                        if(this.skinLib[k]?.colors!=undefined)
-                            this.pickedLayers[k].color=saved[k].color;
+                        
+                        if(saved[layer].color)
+                        {
+                            if(lib?.colors!=undefined)
+                                this.pickedLayers[layer].color=saved[layer].color;
+                        }
+                        this.pickedLayers[layer].texture=saved[layer].id;
                     }
-                    this.pickedLayers[k].texture=saved[k].texture;
-                }
-                else
-                   this.pickedLayers[k].texture=this.skinLib[k].images[0].id;
+                    else
+                    this.pickedLayers[layer].texture=lib?.images[0].id;
                 }
             }
             for(let k in SkinPart)
@@ -118,7 +123,7 @@ export class SkinEditor {
     reloadPart(cat:string)
     {
         var lib=this.getLib(cat)
-        if(lib)
+        if(lib && this.viewer)
         {
             var text=this.pickedLayers[cat].texture||"clear";
             var side:undefined|"left"|"right"=undefined;
@@ -138,14 +143,30 @@ export class SkinEditor {
            if(text=="clear")
                 this.viewer.loadSkin(cat,"/skins/clear.png")
             else
-                this.viewer.loadSkin(cat,"/skins/"+this.getTexturePath(cat,text),{color,side})
+                this.viewer.loadSkin(cat,"/skins/"+this.getTexturePath(cat,text),{color,side,model:this.slim?"slim":"default"})
             if(childLayers[cat])
             {
                 if(lib.layered)
                     color=undefined;
-                this.viewer.loadSkin(childLayers[cat],"/skins/"+this.getTexturePath(childLayers[cat],text),{color,side})
+                try{
+                this.viewer.loadSkin(childLayers[cat],"/skins/"+this.getTexturePath(childLayers[cat],text),{color,side,model:this.slim?"slim":"default"})
+                }catch{}
+            }
+            this.saveFn?.(this.toJson())
+        }
+    }
+    toJson()
+    {
+        var res:SaveFormat["skin"]={}
+        for (let k in SkinPart) {
+            
+            var r=this.pickedLayers[k];
+            if(r && r.texture)
+            {
+                res[k]={id:r.texture,color:r.color||this.getDefaultColor(k)};
             }
         }
+        return res;
     }
     getLib(cat:string)
     {
@@ -175,4 +196,78 @@ export class SkinEditor {
             texture=texture+"b";
         return pt+"/"+texture+".png"
     }
+    toPNG(allLayers?:boolean)
+    {
+        var canv=document.createElement("canvas")
+        canv.width=canv.height=128;
+        var ctx=canv.getContext("2d");
+        layers.forEach(l=>{
+            if(l.external !=true || allLayers ==true)
+            {
+                if(this.viewer)
+                {
+                var c1=this.viewer.skinCanvas[l.name];
+                ctx?.drawImage(c1,0,0);
+                }
+            }
+        });
+        ctx?.save();
+        return canv.toDataURL("png");
+    }
+}
+export var localLoader=()=>{
+    if(browser)
+    {
+        var str=window.localStorage.getItem("skin_builder_datas");
+        if(str !=null)
+        {
+        try{
+            
+              return JSON.parse(str)as SaveFormat
+                
+            }catch{
+                return {apparence:{},skin:{},stats:{}} as SaveFormat;
+            }  
+        }
+    }
+    return {apparence:{},skin:{},stats:{}} as SaveFormat;
+}
+export function localSaver(data:SaveFormat)
+{
+    if(browser)
+    {
+        window.localStorage.setItem("skin_builder_datas",JSON.stringify(data))
+    }
+}
+export function exportCharacter(skinEditor:SkinEditor,profile:SaveFormat)
+{
+    return new Promise<string>((res,err)=>{
+        var dt=skinEditor.toPNG();
+            fetch("",{method:"post", body:JSON.stringify({
+                datas:formatSendingDatas(profile),
+                image:dt       
+        })}).then(r=>{
+            if(r.status==200)
+                r.text().then(res)
+            else
+            err();
+        })
+    });
+   
+}
+function formatSendingDatas(profile:SaveFormat)
+{
+    var res= {
+        hair:profile.skin["hair"].id,
+        hairColor:profile.skin["hair"].color?.toString().replace("#",""),
+        underwear:profile.skin["underwear"].id,
+        size:profile.apparence.size,
+        slim:profile.apparence.slim
+    } as any
+    if(profile.skin["beard"] && profile.skin["beard"].id !="clear")
+    {
+        res.beard=profile.skin["beard"].id;
+        res.beardColor=profile.skin["beard"].color?.toString().replace("#","");
+    }
+    return res;
 }
