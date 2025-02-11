@@ -1,12 +1,12 @@
 import { Google } from "arctic";
-import { GOOGLE_CLIENT_ID, GOOGLE_CLIENT_SECRET } from "$env/static/private";
+import { GOOGLE_CLIENT_ID, GOOGLE_CLIENT_SECRET, VITE_BASE_URL } from "$env/static/private";
 import type { User } from "./session";
 import db from "$lib/DB";
 
 export const google = new Google(
 	GOOGLE_CLIENT_ID,
 	GOOGLE_CLIENT_SECRET,
-	"http://localhost:5173/login/google/callback"
+	VITE_BASE_URL+"/login/google/callback"
 );
 export function createUserGoogle(googleID:string,username:string ):User{
 	var id:any=db.prepare("INSERT INTO user (googleId,username) VALUES (?,?)").run(googleID,username);
