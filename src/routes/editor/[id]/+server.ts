@@ -4,13 +4,14 @@ import * as fs from 'fs'
 import dayjs from "dayjs"
 import { error, json } from '@sveltejs/kit';
 import { skin_datas } from '$lib/server_functions';
+import db from '$lib/DB';
 const uid = new ShortUniqueId({ length: 6 });
 
 export const POST: RequestHandler = async (ev) => {
     if(ev.locals.user_ip)
     {
         var dt=await ev.request.json();
-        if(dt.datas && dt.image){
+        if(dt.action=="export" && dt.datas && dt.image){
             var code=uid.rnd();
             if(skin_datas[ev.locals.user_ip])
             {
@@ -22,8 +23,16 @@ export const POST: RequestHandler = async (ev) => {
            fs.writeFileSync("./uploaded/cache/"+code+".json",JSON.stringify(dt.datas));
            return new Response(code);
         }
+        else if(ev.locals.user?.id && dt.action=="save" && dt.sheet && dt.datas)
+        {
+           var d=db.prepare("UPDATE skinlayout SET data = ? WHERE user_id=  (SELECT id FROM user WHERE id = ?) AND id = ?").run(JSON.stringify(dt.datas),ev.locals.user.id,dt.sheet)
+            if(d && d.changes>0)
+                return new Response("saved");
+            return error(500,"failed")
+        }
     }
-    return error(301,{message:"No IP"});
+  
+    return error(403,{message:"No IP"});
 };
 setInterval(()=>{
 for(var k in skin_datas)

@@ -1,5 +1,6 @@
 <script>import Navbar from "$lib/component/navbar.svelte";
 import { SHARED } from "$lib/sharedDatas";
+    import { Toast } from "flowbite-svelte";
 import "../app.css";</script>
 <svelte:head>
     <meta property="og:title" content="Resurgence" />
@@ -15,6 +16,11 @@ import "../app.css";</script>
 <main class="overflow-y-auto flex-1 pt-4 bg-primary-600">
     
 <slot></slot>
+{#if $SHARED.error}
+<Toast class="fixed bottom-4 right-4 rounded-lg bg-red-300 text-primary-50" onclose={()=>{$SHARED.error=undefined}}>
+    {$SHARED.error}
+  </Toast>
+{/if}
 </main>
 </div>
 <style>

@@ -6,11 +6,9 @@
     import PanelRight from "./panel_right.svelte";
     import { Alert } from "flowbite-svelte";
     import { SHARED } from "$lib/sharedDatas";
-    import type { ColorRepresentation } from "three";
-    import type { eyeType } from "$lib/skinviewer3d/textureHelper";
     import { fade } from "svelte/transition";
     import { browser } from "$app/environment";
-    import { localLoader, localSaver, SkinEditor } from "./panel";1
+    import { getProfileSaver, localLoader, localSaver, SkinEditor } from "./panel";1
     import type { SaveFormat } from "./skinTypes";
     import { onMount } from "svelte";
     let {data}:{data:PageData}=$props();
@@ -18,9 +16,14 @@
     var skinEditor= new SkinEditor(data.datas);
     var currentAppearence=$state({skin:{},stats:{},apparence:{}} as SaveFormat);
     var ldExtra: (slim: boolean, taille: number) => void=$state();
-    var getSkinDatas: ()=>{[key:string]:{texture?:string,color?:ColorRepresentation,type?:eyeType}};
     var defaultLoader=localLoader;
     var defaultSaver=localSaver;
+    if(data.sheet && data.sheet.id)
+    {
+     var s=getProfileSaver(data.sheet.id,data.sheet.data);
+     defaultLoader=s.loader;
+     defaultSaver=s.saver;
+    }
     $SHARED.title="Customiseur"
     function onPhysicChange(slim:boolean,size:number)
     {
@@ -77,7 +80,7 @@
             <Viewer bind:viewer={viewer}/>
         </div>
        <div class="w-1/6 ml-5 max-h-[65vh]">
-        <PanelRight editor={skinEditor} currentSave={currentAppearence} changePhysicFn={onPhysicChange}/>
+        <PanelRight editor={skinEditor} currentSave={currentAppearence} changePhysicFn={onPhysicChange} sheetName={data.sheet?.name}/>
        </div>
     </div>
     <Alert color="blue">

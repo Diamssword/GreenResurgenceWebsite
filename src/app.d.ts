@@ -25,5 +25,6 @@ action:(ctx:ChatInputCommandInteraction<CacheType> )=>Promise<void>
 }
 export type Shared={
 title?:string
+error?:string
 }
 export {};

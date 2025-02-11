@@ -10,6 +10,8 @@ db.exec(`CREATE TABLE IF NOT EXISTS roles (
 CREATE TABLE IF NOT EXISTS user (
     id INTEGER NOT NULL PRIMARY KEY,
     googleId TEXT,
+    role TEXT DEFAULT "user",
+    canAlwaysChangeSkin BOOLEAN DEFAULT false,
     minecraftId TEXT,
     username TEXT
     
@@ -23,8 +25,6 @@ CREATE TABLE IF NOT EXISTS skinlayout (
     id INTEGER NOT NULL PRIMARY KEY,
     user_id INTEGER NOT NULL REFERENCES user(id),
     edit_at DATETIME DEFAULT CURRENT_TIMESTAMP,
-    role TEXT DEFAULT "user",
-    canAlwaysChangeSkin BOOLEAN DEFAULT false,
     name TEXT NOT NULL,
     data TEXT NOT NULL
 );

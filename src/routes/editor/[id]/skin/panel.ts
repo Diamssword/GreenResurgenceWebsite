@@ -3,6 +3,7 @@ import type { SaveFormat, SkinPartsFormat } from "./skinTypes";
 import type {LayerInfo, SkinViewer} from "$lib/skinviewer3d/skinview3d";
 import type { PageData } from "../$types";
 import { browser } from "$app/environment";
+import { SHARED } from "$lib/sharedDatas";
 
 const defaultColors:{[key:string]:ColorRepresentation}={
     "left_eye":"#126A87",
@@ -215,6 +216,35 @@ export class SkinEditor {
         return canv.toDataURL("png");
     }
 }
+export function getProfileSaver(sheetId:number,datas:SaveFormat)
+{
+    var timeout: NodeJS.Timeout;
+    if(!datas.apparence)
+        datas.apparence={size:40,slim:false};
+    if(!datas.skin)
+        datas.skin={};
+    if(!datas.stats)
+        datas.stats={};
+    return {
+        loader:()=>datas,
+        saver:(data:SaveFormat)=>{
+            if(timeout)
+                clearTimeout(timeout);
+            timeout=setTimeout(() => {
+                fetch("",{method:"POST",body:JSON.stringify({
+                    action:"save",
+                    sheet:sheetId,
+                    datas:data
+                })}).then(e=>{
+                    if(e.status!=200)
+                        SHARED.update(o=>{
+                            return {...o,error:"Impossible de sauvgarder le skin"}
+                        })
+                })
+            }, 1000);
+        }
+    }
+}
 export var localLoader=()=>{
     if(browser)
     {
@@ -244,6 +274,7 @@ export function exportCharacter(skinEditor:SkinEditor,profile:SaveFormat)
     return new Promise<string>((res,err)=>{
         var dt=skinEditor.toPNG();
             fetch("",{method:"post", body:JSON.stringify({
+                action:"export",
                 datas:formatSendingDatas(profile),
                 image:dt       
         })}).then(r=>{
