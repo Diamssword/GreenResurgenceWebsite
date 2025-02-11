@@ -9,7 +9,10 @@ node_modules
 # OS
 .DS_Store
 Thumbs.db
-
+package-lock.json
+DB.sqlite
+DB.sqlite-shm
+DB.sqlite-wal
 # Env
 .env
 .env.*
