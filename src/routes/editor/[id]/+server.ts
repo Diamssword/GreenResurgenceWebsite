@@ -25,7 +25,7 @@ export const POST: RequestHandler = async (ev) => {
         }
         else if(ev.locals.user?.id && dt.action=="save" && dt.sheet && dt.datas)
         {
-           var d=db.prepare("UPDATE skinlayout SET data = ? WHERE user_id=  (SELECT id FROM user WHERE id = ?) AND id = ?").run(JSON.stringify(dt.datas),ev.locals.user.id,dt.sheet)
+           var d=db.prepare("UPDATE skinlayout SET data = ?, edit_at = ? WHERE user_id=  (SELECT id FROM user WHERE id = ?) AND id = ?").run(JSON.stringify(dt.datas),new Date().toUTCString(),ev.locals.user.id,dt.sheet)
             if(d && d.changes>0)
                 return new Response("saved");
             return error(500,"failed")
