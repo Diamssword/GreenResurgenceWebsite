@@ -289,8 +289,8 @@ export function exportCharacter(skinEditor:SkinEditor,profile:SaveFormat)
 function formatSendingDatas(profile:SaveFormat)
 {
     var res= {
-        hair:profile.skin["hair"].id,
-        hairColor:profile.skin["hair"].color?.toString().replace("#",""),
+        hair:profile.skin["hair"]?.id||"bald",
+        hairColor:profile.skin["hair"]?.color?.toString().replace("#","")||"5D3A1A",
         underwear:profile.skin["underwear"].id,
         size:profile.apparence.size,
         slim:profile.apparence.slim
