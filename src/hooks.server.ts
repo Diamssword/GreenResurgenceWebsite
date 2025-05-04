@@ -44,7 +44,7 @@ function clearCache()
 		})
 	}
 	else
-	fs.mkdirSync("./uploaded/cache")
+	fs.mkdirSync("./uploaded/cache",{recursive:true})
 	if(!fs.existsSync("./uploaded/skins"))
 	{
 		fs.mkdirSync("./uploaded/skins")

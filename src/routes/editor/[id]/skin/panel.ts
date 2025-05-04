@@ -215,6 +215,24 @@ export class SkinEditor {
         ctx?.save();
         return canv.toDataURL("png");
     }
+    toPNGHead(allLayers?:boolean)
+    {
+        var canv=document.createElement("canvas")
+        canv.width=canv.height=16;
+        var ctx=canv.getContext("2d");
+        layers.forEach(l=>{
+            if(l.external !=true || allLayers ==true)
+            {
+                if(this.viewer)
+                {
+                var c1=this.viewer.skinCanvas[l.name];
+                ctx?.drawImage(c1,16,16,16,16,0,0,16,16);
+                }
+            }
+        });
+        ctx?.save();
+        return canv.toDataURL("png");
+    }
 }
 export function getProfileSaver(sheetId:number,datas:SaveFormat)
 {
@@ -273,10 +291,12 @@ export function exportCharacter(skinEditor:SkinEditor,profile:SaveFormat)
 {
     return new Promise<string>((res,err)=>{
         var dt=skinEditor.toPNG();
+        var head=skinEditor.toPNGHead(true);
             fetch("",{method:"post", body:JSON.stringify({
                 action:"export",
                 datas:formatSendingDatas(profile),
-                image:dt       
+                image:dt,
+                head: head       
         })}).then(r=>{
             if(r.status==200)
                 r.text().then(res)

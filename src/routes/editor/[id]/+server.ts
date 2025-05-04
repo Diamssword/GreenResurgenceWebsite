@@ -11,15 +11,17 @@ export const POST: RequestHandler = async (ev) => {
     if(ev.locals.user_ip)
     {
         var dt=await ev.request.json();
-        if(dt.action=="export" && dt.datas && dt.image){
+        if(dt.action=="export" && dt.datas && dt.image && dt.head){
             var code=uid.rnd();
             if(skin_datas[ev.locals.user_ip])
             {
              fs.rmSync("./uploaded/cache/"+skin_datas[ev.locals.user_ip].code+".png")
+             fs.rmSync("./uploaded/cache/"+skin_datas[ev.locals.user_ip].code+"_head.png")
              fs.rmSync("./uploaded/cache/"+skin_datas[ev.locals.user_ip].code+".json")
             }
             skin_datas[ev.locals.user_ip]={code,expire:dayjs().add(1,"m")};
            fs.writeFileSync("./uploaded/cache/"+code+".png",dt.image.replace('data:image/png;base64,', ''),"base64");
+           fs.writeFileSync("./uploaded/cache/"+code+"_head.png",dt.head.replace('data:image/png;base64,', ''),"base64");
            fs.writeFileSync("./uploaded/cache/"+code+".json",JSON.stringify(dt.datas));
            return new Response(code);
         }
@@ -35,16 +37,18 @@ export const POST: RequestHandler = async (ev) => {
     return error(403,{message:"No IP"});
 };
 setInterval(()=>{
-for(var k in skin_datas)
-{
-    if(skin_datas[k].expire.isBefore(dayjs()))
+    for(var k in skin_datas)
     {
-        var code=skin_datas[k].code
-        delete skin_datas[k];
-        if(fs.existsSync("./uploaded/cache/"+code+".png"))
-            fs.rmSync("./uploaded/cache/"+code+".png")
-        if(fs.existsSync("./uploaded/cache/"+code+".json"))
-            fs.rmSync("./uploaded/cache/"+code+".json")
+        if(skin_datas[k].expire.isBefore(dayjs()))
+        {
+            var code=skin_datas[k].code
+            delete skin_datas[k];
+            if(fs.existsSync("./uploaded/cache/"+code+".png"))
+                fs.rmSync("./uploaded/cache/"+code+".png")
+            if(fs.existsSync("./uploaded/cache/"+code+"_head.png"))
+                fs.rmSync("./uploaded/cache/"+code+"_head.png")
+            if(fs.existsSync("./uploaded/cache/"+code+".json"))
+                fs.rmSync("./uploaded/cache/"+code+".json")
+        }
     }
-}
 },5000)
