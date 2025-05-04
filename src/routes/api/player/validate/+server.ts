@@ -20,7 +20,9 @@ export const POST: RequestHandler = async (ev) => {
                     delete skin_datas[k];
                     fs.copyFileSync("./uploaded/cache/"+js.code+".png","./uploaded/skins/"+js.uuid.replaceAll("-","")+".png")
                     fs.copyFileSync("./uploaded/cache/"+js.code+".json","./uploaded/skins/"+js.uuid.replaceAll("-","")+".json")
+                    fs.copyFileSync("./uploaded/cache/"+js.code+"_head.png","./uploaded/skins/"+js.uuid.replaceAll("-","")+"_head.png")
                     fs.rmSync("./uploaded/cache/"+js.code+".png",);
+                    fs.rmSync("./uploaded/cache/"+js.code+"_head.png",);
                     fs.rmSync("./uploaded/cache/"+js.code+".json");
                     return new Response("skin saved",{status:200})
                 }
