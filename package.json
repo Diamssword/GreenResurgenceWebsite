@@ -29,6 +29,7 @@
 	"type": "module",
 	"dependencies": {
 		"@discordjs/builders": "^1.10.0",
+		"@google-cloud/storage": "^7.16.0",
 		"@oslojs/crypto": "^1.0.1",
 		"@oslojs/encoding": "^1.1.0",
 		"@sveltejs/adapter-node": "^5.2.12",
