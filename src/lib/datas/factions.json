@@ -1,0 +1,76 @@
+{
+    "cites_emeraude":{
+        "name":"Cités d’émeraude",
+        "desc":"Perdu dans les hauteurs titanesques des gratte-ciels, les habitant des cités d’émeraudes ont embrassé l’appel du vide.",
+        "bonus":{"avant_garde":10},
+        "origines":{
+            "n_granda":{
+                "name":"N Granda",
+                "desc":"Deux tours gigantesques perdues au milieu d’autres immeubles, capital des cités d’émeraudes. Autrefois orné d’une titanesque enseigne dont il ne reste aujourd’hui que la lettre “N”",
+                "skills":{"fermier":10}
+            }
+        },
+        "jobs":{
+            "electron_libre":{
+                "name":"Electron Libre",
+                "desc":"Une classe qui comble un peu les trous et les manques dans la communauté, c’est un peu formé comme il le souhaite",
+                "skills":{}
+            },
+            "garde_ascension":{
+                "name":"Garde d'ascension",
+                "desc":"Protecteur des cages d’escalier, empêche les créature sporique de remonter jusqu’à la cité",
+                "skills":{"brute":10}
+            },
+            "plongeur":{
+                "name":"Plongeur",
+                "desc":"Gars qui descendent dans les entraille des immeubles pour récupérer du loot et réparer la base des immeubles pour éviter qu’ils s’effondrent",
+                "skills":{"survivant":10,"avant_garde":10}
+            },
+            "balconeur":{
+                "name":"Balconeur",
+                "desc":"Chargé de faire les plantations de nourriture sur les balcons",
+                "skills":{"fermier":10}
+            }
+        }
+    },
+    "forteress_fer":{
+        "name":"Forteresse de Fer",
+        "desc":"Ambiance en mode tenue japonaise/ samurai",
+        "bonus":{"ferrailleur":10},
+        "origines":{
+            "bioyin":{
+                "name":"Bioyin",
+                "desc":"Ce train médical effectue un long trajet. Ces wagons sont médicalisés avec des technologie perdu. Il propose des  soins disponibles nul part ailleurs, souvent en échange de marchandise ou contre le fait de servir dans le train pour une certaine durée.",
+                "skills":{"medecin":10}
+            },
+            "ter":{
+                "name":"TER",
+                "desc":"Vous venez d’un petit train de petite taille et assez peu connu. Il est peut être tombé, peut être circule t il toujours. Libre à vous de l’inventer",
+                "skills":{}
+            }
+        },
+        "jobs":{
+            "electron_libre":{
+                "name":"Electron Libre",
+                "desc":"Une classe qui comble un peu les trous et les manques dans la communauté, c’est un peu formé comme il le souhaite",
+                "skills":{}
+            },
+            "cheminot":{
+              "name":"Cheminot",
+                "desc":"chargé d'entretenir le train et les voies",
+                "skills":{
+                    "ferrailleur":10,"brute":10 }
+            },
+            "harponneur":{
+                "name":"Harponneur",
+                "desc":"Équipé de harpons, leur rôle est de trouver de la nourriture et d’empêcher des créatures de monter dans/sur le train.",
+                "skills":{"chasseur":10}
+            },
+             "aiguilleur":{
+                "name":"Aiguilleur",
+                "desc":"Vie dans les rares enclaves permanente des forteresses de fer, il organise le transit pour éviter les collisions et entretient les voies.",
+                "skills":{"survivant":10}
+            }
+        }
+    }
+}

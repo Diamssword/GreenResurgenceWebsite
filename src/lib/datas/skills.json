@@ -1,63 +1,77 @@
 {
     "brute":{
         "name":"Brute",
-        "stages":[10,15,20]
+        "stages":[10,15,20],
+        "desc":"Une seule ligne"
     },
     "avant_garde":{
         "name":"Avant Garde",
-        "stages":[10,15,20]
+        "stages":[10,15,20],
+        "desc":"Une seule ligne"
     },
     "survivant":{
         "name":"Survivant",
-        "stages":[10,15,20]
+        "stages":[10,15,20],
+        "desc":"Une seule ligne"
     },
     "chasseur":{
-        "name":"Brute",
-        "stages":[10,15,20]
+        "name":"Chasseur",
+        "stages":[10,15,20],
+        "desc":"Une seule ligne"
     },
     "artiste":{
         "name":"Artiste",
         "stages":[10,15,20],
+        "desc":"Une seule ligne",
         "disabled":true
     },
     "nanomancien":{
         "name":"Nanomancien",
         "stages":[10,15,20],
+        "desc":"Une seule ligne",
         "disabled":true
     },
     "orateur":{
         "name":"Orateur",
         "stages":[10,15,20],
+        "desc":"Une seule ligne",
         "disabled":true
     },
     "fermier":{
         "name":"Fermier",
-        "stages":[10,15,20]
+        "stages":[10,15,20],
+        "desc":"Une seule ligne"
     },
     "brikoleur":{
         "name":"Brikoleur",
-        "stages":[10,15,20]
+        "stages":[10,15,20],
+        "desc":"Une seule ligne"
     },
     "scientifik":{
         "name":"Scientifik",
         "stages":[10,15,20],
+        "desc":"Une seule ligne",
         "disabled":true
     },
-    "medcin":{
-        "name":"Medcin",
-        "stages":[10,15,20]
+    "medecin":{
+        "name":"Medecin",
+        "stages":[10,15,20],
+        "desc":"Une seule ligne"
     },
     "paria":{
         "name":"Paria",
         "stages":[10,15,20],
+        "desc":"Une seule ligne",
         "disabled":true
     },
     "kuisto":{
         "name":"Kuisto",
-        "stages":[10,15,20]
+        "stages":[10,15,20],
+        "desc":"Une seule ligne"
     },
     "ferrailleur":{
         "name":"Ferrailleur",
-        "stages":[10,15,20]
+        "stages":[10,15,20],
+        "desc":"Une seule ligne"
     }
 }
