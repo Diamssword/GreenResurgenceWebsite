@@ -1,7 +1,9 @@
-<script>import Navbar from "$lib/component/navbar.svelte";
-import { SHARED } from "$lib/sharedDatas";
-    import { Toast } from "flowbite-svelte";
-import "../app.css";</script>
+<script>
+  import Navbar from "$lib/component/navbar.svelte";
+  import { SHARED } from "$lib/sharedDatas";
+  import { Toast } from "flowbite-svelte";
+  import "../app.css";
+</script>
 <svelte:head>
     <meta property="og:title" content="Resurgence" />
     <meta property="og:type" content="website" />
