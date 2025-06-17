@@ -6,6 +6,10 @@ export type SaveFormat={
         firstname:string,
         lastname:string,
         age:number,
+        faction:string,
+        origine:string,
+        job:string,
+        points:{[jobID:string]:number}
     },
     apparence:{
         size:number,

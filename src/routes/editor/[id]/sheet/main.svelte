@@ -2,27 +2,70 @@
     import { Avatar, Button, Card, Input, Label, Select, Textarea } from "flowbite-svelte";
     import factionsJs from "$lib/datas/factions.json";
     import skillsJs from "$lib/datas/skills.json";
+    import type { SaveFormat } from "../skin/skinTypes";
+    import { onMount } from "svelte";
+    import { browser } from "$app/environment";
+    let {currentAppearence=$bindable(),dataSaver}:{currentAppearence:SaveFormat, dataSaver: {loader:()=>SaveFormat,saver:(data:SaveFormat)=>void} }=$props();
     const skills=skillsJs as {[id:string]:{name:string,desc:string,stages:number[]}};
     const factions=factionsJs as {[id:string]:{name:string,desc:string,bonus:{[key:string]:number},origines:{[key:string]:{name:string,desc:string,skills:{[key:string]:number}}},jobs:{[key:string]:{name:string,desc:string,skills:{[key:string]:number}}}}};
     var pickedFaction=$state(factions[Object.keys(factions)[0]]);
+    var pickedFactionId=$state(Object.keys(factions)[0]);
     var pickedOrigine=$state("");
     var pickedJob=$state("");
     var remainingPoints=$state(50);
     var points=$state(fillPoints());
     var descs=$state({faction:{name:"",desc:""},origine:{name:"",desc:""},job:{name:"",desc:""}});
+    var loaded=false;
+    onMount(()=>{
+        if(browser &&!loaded)
+        {
+                var stats=currentAppearence.stats;
+                if(Object.keys(factions).includes(stats.faction))
+                {
+                    var fac=factions[stats.faction];
+                    if(fac)
+                    {
+                        if(Object.keys(fac.origines).includes(stats.origine))
+                            pickedOrigine=stats.origine;
+                        if(Object.keys(fac.jobs).includes(stats.job))
+                            pickedJob=stats.job;
+                        pickedFaction=fac;
+                        pickedFactionId=stats.faction;
+                    }
+                }
+                loaded=true;
+        }
+    });
     function onFactionChange(fac:string)
     {
         var newF=factions[fac]
         pickedOrigine=Object.keys(newF.origines)[0];
         pickedJob=Object.keys(newF.jobs)[0];
         pickedFaction=newF;
+        pickedFactionId=fac;
         descs.faction={name:newF.name,desc:newF.desc};
         points=fillPoints();
+        if(loaded)
+        {
+            currentAppearence.stats.faction=fac;
+            dataSaver.saver(currentAppearence);
+        }
     }
     $effect(()=>{
         descs.origine={name:pickedFaction.origines[pickedOrigine].name,desc:pickedFaction.origines[pickedOrigine].desc};
         descs.job={name:pickedFaction.jobs[pickedJob].name,desc:pickedFaction.jobs[pickedJob].desc};
+       saveData();
     })
+    function saveData()
+    {
+        if(loaded)
+        {
+           currentAppearence.stats.origine=pickedOrigine;
+           currentAppearence.stats.job=pickedJob;
+           currentAppearence.stats.faction=pickedFactionId
+           dataSaver.saver(currentAppearence);
+        }
+    }
     onFactionChange(Object.keys(factions)[0]);
     function fillPoints()
     {
@@ -122,11 +165,11 @@
                 </Label>
             </div>
         </div>
-        <div>
-            <div class="max-w-8/12">
-                <div class="flex text-1xl gap-2"><p class=" text-secondary-text text-nowrap">{descs.faction.name}:</p><p>{descs.faction.desc}</p></div>
-                <div class="flex text-1xl gap-2"><p class=" text-secondary-text text-nowrap">{descs.origine.name}:</p><p>{descs.origine.desc}</p></div>
-                <div class="flex text-1xl gap-2"><p class=" text-secondary-text text-nowrap">{descs.job.name}:</p><p>{descs.job.desc}</p></div>
+        <div class="w-3/5">
+            <div class="grid gap-2 grid-cols-[auto_1fr]">
+                <p class=" text-secondary-text text-nowrap">{descs.faction.name}:</p><p class="h-[3em] overflow-hidden text-ellipsis break-words line-clamp-2">{descs.faction.desc}</p>
+                <p class=" text-secondary-text text-nowrap">{descs.origine.name}:</p><p class="h-[3em] overflow-hidden text-ellipsis break-words line-clamp-2">{descs.origine.desc}</p>
+                <p class=" text-secondary-text text-nowrap">{descs.job.name}:</p><p class="h-[3em] overflow-hidden text-ellipsis break-words line-clamp-2">{descs.job.desc}</p>
             </div>
         </div>
     </div>
@@ -139,7 +182,7 @@
             <text class="w-full text-primary-50">Le nombre de points qu'il vous reste à assigner dans les différentes compétences disponibles</text>
         </div>
         </Card>
-     {#each Object.keys(skills) as key,i}
+     {#each Object.keys(skills) as key}
         {@const skill = skills[key]}
         <div>
         <Card class="max-w-full p-3 bg-primary-300">
@@ -156,5 +199,4 @@
         </div>
      {/each}
 </div>
-<p class="text-secondary-text text-center text-4xl">Coming soon</p>
 </div>

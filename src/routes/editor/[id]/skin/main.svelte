@@ -8,29 +8,20 @@
     import { SHARED } from "$lib/sharedDatas";
     import { fade } from "svelte/transition";
     import { browser } from "$app/environment";
-    import { getProfileSaver, localLoader, localSaver, SkinEditor } from "./panel";1
+    import {  SkinEditor } from "./panel";1
     import type { SaveFormat } from "./skinTypes";
     import { onMount } from "svelte";
-    let {data}:{data:PageData}=$props();
-    var viewer:SkinViewer=$state();
+    let {data,currentAppearence=$bindable(),dataSaver}:{data:PageData,currentAppearence:SaveFormat, dataSaver: {loader:()=>SaveFormat,saver:(data:SaveFormat)=>void} }=$props();
+    var viewer:SkinViewer=$state(undefined as any);
     var skinEditor= new SkinEditor(data.datas);
-    var currentAppearence=$state({skin:{},stats:{},apparence:{}} as SaveFormat);
-    var ldExtra: (slim: boolean, taille: number) => void=$state();
-    var defaultLoader=localLoader;
-    var defaultSaver=localSaver;
-    if(data.sheet && data.sheet.id)
-    {
-     var s=getProfileSaver(data.sheet.id,data.sheet.data);
-     defaultLoader=s.loader;
-     defaultSaver=s.saver;
-    }
+    var ldExtra: (slim: boolean, taille: number) => void=$state(undefined as any);
     $SHARED.title="Customiseur"
     function onPhysicChange(slim:boolean,size:number)
     {
         if(viewer)
         {
             currentAppearence.apparence={size,slim};
-            defaultSaver(currentAppearence);
+            dataSaver.saver(currentAppearence);
             setTimeout(() => {
                 viewer.playerObject.forLayers(l=>l.modelType=(slim?"slim":"default"));    
             }, 100);
@@ -47,13 +38,12 @@
             loaded=true;
             if(browser)
             {
-                currentAppearence=defaultLoader();
                 skinEditor.viewer=viewer;
                skinEditor.loadSavedOrDefault(currentAppearence.skin)
                ldExtra(currentAppearence.apparence?.slim,currentAppearence.apparence?.size||67);
                 skinEditor.saveFn=(dt)=>{
                     currentAppearence.skin=dt;
-                    defaultSaver(currentAppearence);
+                    dataSaver.saver(currentAppearence);
                 }
                 
             }
