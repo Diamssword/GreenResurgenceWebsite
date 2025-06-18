@@ -1,5 +1,5 @@
 <script lang="ts">
-    import { Avatar, Button, Card, Input, Label, Select, Textarea } from "flowbite-svelte";
+    import { Avatar, Button, Card, Input, Label, Select } from "flowbite-svelte";
     import factionsJs from "$lib/datas/factions.json";
     import skillsJs from "$lib/datas/skills.json";
     import type { SaveFormat } from "../skin/skinTypes";
@@ -8,66 +8,81 @@
     let {currentAppearence=$bindable(),dataSaver}:{currentAppearence:SaveFormat, dataSaver: {loader:()=>SaveFormat,saver:(data:SaveFormat)=>void} }=$props();
     const skills=skillsJs as {[id:string]:{name:string,desc:string,stages:number[]}};
     const factions=factionsJs as {[id:string]:{name:string,desc:string,bonus:{[key:string]:number},origines:{[key:string]:{name:string,desc:string,skills:{[key:string]:number}}},jobs:{[key:string]:{name:string,desc:string,skills:{[key:string]:number}}}}};
-    var pickedFaction=$state(factions[Object.keys(factions)[0]]);
-    var pickedFactionId=$state(Object.keys(factions)[0]);
-    var pickedOrigine=$state("");
-    var pickedJob=$state("");
+    var selectedFaction=$state(Object.keys(factions)[0]);
+    var selectedOrigine=$state() as string;
+    var selectedJob=$state() as string;
     var remainingPoints=$state(50);
+    var originesItems=$state([] as {name:string,value:string}[]);
+    var jobsItems=$state([] as {name:string,value:string}[]);
     var points=$state(fillPoints());
     var descs=$state({faction:{name:"",desc:""},origine:{name:"",desc:""},job:{name:"",desc:""}});
     var loaded=false;
+    var pickedFac: typeof factions[0];
     onMount(()=>{
-        if(browser &&!loaded)
+        if(browser)
         {
                 var stats=currentAppearence.stats;
+                        console.log(stats)
                 if(Object.keys(factions).includes(stats.faction))
                 {
                     var fac=factions[stats.faction];
                     if(fac)
-                    {
+                    { //TODO still need a 'on loaded' callback for datas
+                        onChangeFac({target:{value:stats.faction}});
                         if(Object.keys(fac.origines).includes(stats.origine))
-                            pickedOrigine=stats.origine;
+                            selectedOrigine=stats.origine;
                         if(Object.keys(fac.jobs).includes(stats.job))
-                            pickedJob=stats.job;
-                        pickedFaction=fac;
-                        pickedFactionId=stats.faction;
+                            selectedJob=stats.job;
+                        selectedFaction=stats.faction;
                     }
-                }
+                    
+                } 
                 loaded=true;
         }
     });
-    function onFactionChange(fac:string)
-    {
-        var newF=factions[fac]
-        pickedOrigine=Object.keys(newF.origines)[0];
-        pickedJob=Object.keys(newF.jobs)[0];
-        pickedFaction=newF;
-        pickedFactionId=fac;
-        descs.faction={name:newF.name,desc:newF.desc};
-        points=fillPoints();
-        if(loaded)
+   
+    function onChangeFac(e?:any){
+        if(e?.target.value)
+            selectedFaction=e.target.value;
+        if(selectedFaction)
         {
-            currentAppearence.stats.faction=fac;
-            dataSaver.saver(currentAppearence);
+            var f=factions[selectedFaction];
+            fillSelects(f);
+            pickedFac=f;
+            updateDescs();
         }
     }
-    $effect(()=>{
-        descs.origine={name:pickedFaction.origines[pickedOrigine].name,desc:pickedFaction.origines[pickedOrigine].desc};
-        descs.job={name:pickedFaction.jobs[pickedJob].name,desc:pickedFaction.jobs[pickedJob].desc};
-       saveData();
-    })
-    function saveData()
+    function onChangeJobOrOri(e:any,isJob:boolean){
+        if(isJob)
+            selectedJob=e.target.value;
+        else
+            selectedOrigine=e.target.value;
+        updateDescs();
+    }
+    function fillSelects(pickedFaction:typeof factions[0])
     {
+        originesItems=Object.keys(pickedFaction.origines).map(v=>{return {name:pickedFaction.origines[v].name,value:v}});
+        selectedOrigine=Object.keys(pickedFaction.origines)[0];
+        jobsItems=Object.keys(pickedFaction.jobs).map(v=>{return {name:pickedFaction.jobs[v].name,value:v}});
+        selectedJob=Object.keys(pickedFaction.jobs)[0];
+    }
+    function updateDescs()
+    {
+            descs.faction={name:pickedFac.name,desc:pickedFac.desc};
+            if(selectedOrigine)
+                descs.origine={name:pickedFac.origines[selectedOrigine].name,desc:pickedFac.origines[selectedOrigine].desc};
+        if(selectedJob)
+            descs.job={name:pickedFac.jobs[selectedJob].name,desc:pickedFac.jobs[selectedJob].desc};
+        points=fillPoints(pickedFac)
         if(loaded)
         {
-           currentAppearence.stats.origine=pickedOrigine;
-           currentAppearence.stats.job=pickedJob;
-           currentAppearence.stats.faction=pickedFactionId
+           currentAppearence.stats.origine=selectedOrigine;
+           currentAppearence.stats.job=selectedJob;
+           currentAppearence.stats.faction=selectedFaction
            dataSaver.saver(currentAppearence);
         }
     }
-    onFactionChange(Object.keys(factions)[0]);
-    function fillPoints()
+    function fillPoints(pickedFaction?:typeof factions[0])
     {
         remainingPoints=50;
         var fnCap=(skill:string,num:number)=>{
@@ -88,20 +103,21 @@
                 var b=pickedFaction.bonus[v];
                 fnCap(v,b);
             });
-        }
-       if(pickedOrigine)
-        {
-            Object.keys(pickedFaction.origines[pickedOrigine].skills).forEach(v=>{
-                if(pickedOrigine)
-                    fnCap(v,pickedFaction.origines[pickedOrigine].skills[v]);
-            });
-        }
-        if(pickedJob)
-        {
-            Object.keys(pickedFaction.jobs[pickedJob].skills).forEach(v=>{
-                if(pickedJob)
-                    fnCap(v,pickedFaction.jobs[pickedJob].skills[v]);
-            });
+        
+            if(selectedOrigine)
+            {
+                Object.keys(pickedFaction.origines[selectedOrigine].skills).forEach(v=>{
+                    if(selectedOrigine)
+                        fnCap(v,pickedFaction.origines[selectedOrigine].skills[v]);
+                });
+            }
+            if(selectedJob)
+            {
+                Object.keys(pickedFaction.jobs[selectedJob].skills).forEach(v=>{
+                    if(selectedJob)
+                        fnCap(v,pickedFaction.jobs[selectedJob].skills[v]);
+                });
+            }
         }
         return res;
     }
@@ -133,7 +149,7 @@
         <div>
             <div class="w-50">
                 <Label for="faction" class="">Faction
-                     <Select id=faction  placeholder="" onchange={v=>onFactionChange(v.target.value)}>
+                     <Select id=faction  placeholder="" value={selectedFaction} oninput={onChangeFac}>
                         {#each Object.keys(factions) as key,i  }
                             <option selected={i==0} value={key}>{factions[key].name}</option>
                         {/each}
@@ -141,13 +157,7 @@
                 </Label>
                 <div class="">
                 <Label for="origine" class="">Origine
-                    {#key pickedFaction}                   
-                        <Select id=origine  placeholder="" onchange={v=>{pickedOrigine=v.target.value;points=fillPoints();}}>
-                            {#each Object.keys(pickedFaction.origines) as key,i  }
-                                <option selected={i==0} value={key}>{pickedFaction.origines[key].name}</option>
-                            {/each}
-                        </Select>
-                    {/key}
+                        <Select id=origine items={originesItems} placeholder="" bind:value={selectedOrigine} oninput={(e)=>onChangeJobOrOri(e,false)}/>
                 </Label>
             </div>
             </div>
@@ -155,13 +165,8 @@
         <div class="w-50">
             <div class="">
                 <Label for="metier" class="">Métier
-                    {#key pickedFaction}                    
-                        <Select id=metier  placeholder="" onchange={v=>{pickedJob=v.target.value;points=fillPoints();}}>
-                            {#each Object.keys(pickedFaction.jobs) as key,i  }
-                                <option selected={i==0} value={key}>{pickedFaction.jobs[key].name}</option>
-                            {/each}
-                        </Select>
-                    {/key}
+                      
+                        <Select id=metier  items={jobsItems} placeholder="" bind:value={selectedJob} oninput={(e)=>onChangeJobOrOri(e,true)}/>
                 </Label>
             </div>
         </div>

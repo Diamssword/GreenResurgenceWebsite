@@ -27,12 +27,12 @@
     });
 </script>
 <Tabs tabStyle="pill"  class=" pb-4" contentClass=" p-3 h-fit rounded-lg bg-primary-300">
-    <TabItem  title="Apparence" activeClasses={active} inactiveClasses={inactive}>
+    <TabItem  title="Apparence" activeClass={active} inactiveClass={inactive}>
         <div  class="bg-primary-200 rounded-md">
         <Main {data} bind:currentAppearence={currentAppearence} dataSaver={saver}/>
         </div>
     </TabItem>
-    <TabItem open title="Caracteristiques" activeClasses={active}  inactiveClasses={inactive}>
+    <TabItem open title="Caracteristiques" activeClass={active}  inactiveClass={inactive}>
         <div  class="bg-primary-200 rounded-md">
             <MainSh bind:currentAppearence={currentAppearence} dataSaver={saver}/>
         </div>
