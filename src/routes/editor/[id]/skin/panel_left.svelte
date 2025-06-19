@@ -5,7 +5,7 @@
     import SimpleCat from './simpleCat.svelte';
     import DuoCat from './duoCat.svelte';
     var {data,skinEditor,onExtra,setExtra=$bindable()} :{data:PageData["datas"],skinEditor:SkinEditor,onExtra:(slime:boolean,size:number)=>void,setExtra:(slim:boolean,taille:number)=>void} = $props();
-    var taille:number=$state(40);1
+    var taille:number=$state(40);
     var slim=$state(false);   
     setExtra=(silm:boolean,taill:number)=>
     {
@@ -28,7 +28,7 @@
                 </div>
                 <div>
                     <Label for="bras"  class="mb-2 ml=5 mt-5 text-secondary-text text-xl">Bras fins:</Label>
-                    <Toggle id="bras" checked={slim} on:change={(e)=>{slim=e.target.checked; onExtra(slim,taille)}} class="text-secondary-text cursor-pointer"></Toggle>
+                    <Toggle id="bras" checked={slim} onchange={(e)=>{slim=e.target.checked; onExtra(slim,taille)}} class="text-secondary-text cursor-pointer"></Toggle>
                     
                 </div>    
            </div>

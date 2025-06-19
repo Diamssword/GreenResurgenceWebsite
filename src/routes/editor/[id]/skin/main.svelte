@@ -11,7 +11,7 @@
     import {  SkinEditor } from "./panel";1
     import type { SaveFormat } from "./skinTypes";
     import { onMount } from "svelte";
-    let {data,currentAppearence=$bindable(),dataSaver}:{data:PageData,currentAppearence:SaveFormat, dataSaver: {loader:()=>SaveFormat,saver:(data:SaveFormat)=>void} }=$props();
+    let {data,currentAppearence=$bindable(),dataSaver,onloaded=$bindable()}:{data:PageData,currentAppearence:SaveFormat,onloaded:()=>void, dataSaver: {loader:()=>SaveFormat,saver:(data:SaveFormat)=>void} }=$props();
     var viewer:SkinViewer=$state(undefined as any);
     var skinEditor= new SkinEditor(data.datas);
     var ldExtra: (slim: boolean, taille: number) => void=$state(undefined as any);
@@ -30,25 +30,21 @@
             viewer.playerObject.scale.set(size/200,size/200,size/200)
         }
     }
-  
-    var loaded=false;
-    onMount(()=>{
-        if(viewer && !loaded)
+    const monfn=()=>{
+        if(viewer && browser)
         {
-            loaded=true;
-            if(browser)
-            {
-                skinEditor.viewer=viewer;
-               skinEditor.loadSavedOrDefault(currentAppearence.skin)
-               ldExtra(currentAppearence.apparence?.slim,currentAppearence.apparence?.size||67);
-                skinEditor.saveFn=(dt)=>{
-                    currentAppearence.skin=dt;
-                    dataSaver.saver(currentAppearence);
-                }
-                
+            skinEditor.viewer=viewer;
+            skinEditor.loadSavedOrDefault(currentAppearence.skin)
+            console.log(currentAppearence.apparence?.size)
+            ldExtra(currentAppearence.apparence?.slim,currentAppearence.apparence?.size||67);
+            skinEditor.saveFn=(dt)=>{
+                currentAppearence.skin=dt;
+                dataSaver.saver(currentAppearence);
             }
         }
-    });
+    }
+   // onMount(monfn)
+    onloaded=monfn
     var infos=["L'affichage de certains élèments (notament les couleurs) peut differer légèrement en jeu. ","Pour garder une sauvgarde de votre skin, utilisez l'option \"Sauvegarder mes paramètres\"","Vous pouvez télécharger votre skin pour l'utilser ailleurs!","Ça va vous sinon?"]
     var pickedInfo=$state(0);
     if(browser)

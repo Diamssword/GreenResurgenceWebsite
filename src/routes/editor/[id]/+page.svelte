@@ -12,6 +12,7 @@
     const inactive="inline-block text-lg font-medium text-center disabled:cursor-not-allowed p-4 rounded-lg active hover:bg-primary-500 bg-primary-700 text-white"
     var currentAppearence=$state({skin:{},stats:{},apparence:{}} as SaveFormat);
     var saver=$state({loader:localLoader,saver:localSaver});
+    var loadedClb=$state(()=>{});
     if(data.sheet && data.sheet.id)
     {
      saver=getProfileSaver(data.sheet.id,data.sheet.data);
@@ -22,19 +23,20 @@
         if(browser && !loaded)
         {
             loaded=true;
-            currentAppearence=saver.loader();               
+            currentAppearence=saver.loader();           
+            loadedClb();
         }
     });
 </script>
 <Tabs tabStyle="pill"  class=" pb-4" contentClass=" p-3 h-fit rounded-lg bg-primary-300">
-    <TabItem  title="Apparence" activeClass={active} inactiveClass={inactive}>
+    <TabItem open  title="Apparence" activeClass={active} inactiveClass={inactive}>
         <div  class="bg-primary-200 rounded-md">
-        <Main {data} bind:currentAppearence={currentAppearence} dataSaver={saver}/>
+        <Main {data} bind:currentAppearence={currentAppearence} dataSaver={saver} bind:onloaded={loadedClb}/>
         </div>
     </TabItem>
-    <TabItem open title="Caracteristiques" activeClass={active}  inactiveClass={inactive}>
+    <TabItem title="Caracteristiques" activeClass={active}  inactiveClass={inactive}>
         <div  class="bg-primary-200 rounded-md">
-            <MainSh bind:currentAppearence={currentAppearence} dataSaver={saver}/>
+            <MainSh bind:currentAppearence={currentAppearence} dataSaver={saver} bind:onloaded={loadedClb}/>
         </div>
     </TabItem>
 </Tabs>

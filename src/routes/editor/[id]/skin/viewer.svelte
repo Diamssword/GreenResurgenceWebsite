@@ -18,7 +18,7 @@
             {
                 const resizeObserver = new ResizeObserver(() => {
                   
-                    if(canvas.parentElement)
+                    if(canvas?.parentElement)
                     {
                        var maxH=window.innerHeight;
                        var top=canvas.getBoundingClientRect().top;
