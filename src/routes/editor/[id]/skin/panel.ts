@@ -282,6 +282,7 @@ export var localLoader=()=>{
 }
 export function localSaver(data:SaveFormat)
 {
+    console.log(data)
     if(browser)
     {
         window.localStorage.setItem("skin_builder_datas",JSON.stringify(data))
@@ -313,7 +314,8 @@ function formatSendingDatas(profile:SaveFormat)
         hairColor:profile.skin["hair"]?.color?.toString().replace("#","")||"5D3A1A",
         underwear:profile.skin["underwear"].id,
         size:profile.apparence.size,
-        slim:profile.apparence.slim
+        slim:profile.apparence.slim,
+        stats:profile.stats
     } as any
     if(profile.skin["beard"] && profile.skin["beard"].id !="clear")
     {

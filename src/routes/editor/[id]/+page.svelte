@@ -23,20 +23,21 @@
         if(browser && !loaded)
         {
             loaded=true;
-            currentAppearence=saver.loader();           
+            currentAppearence=saver.loader();
             loadedClb();
         }
     });
 </script>
 <Tabs tabStyle="pill"  class=" pb-4" contentClass=" p-3 h-fit rounded-lg bg-primary-300">
-    <TabItem open  title="Apparence" activeClass={active} inactiveClass={inactive}>
+    <TabItem open  title="Caracteristiques" activeClass={active} inactiveClass={inactive}>
         <div  class="bg-primary-200 rounded-md">
-        <Main {data} bind:currentAppearence={currentAppearence} dataSaver={saver} bind:onloaded={loadedClb}/>
+        <MainSh bind:currentAppearence={currentAppearence} dataSaver={saver} bind:onloaded={loadedClb}/>
         </div>
     </TabItem>
-    <TabItem title="Caracteristiques" activeClass={active}  inactiveClass={inactive}>
+    <TabItem title="Apparence" activeClass={active}  inactiveClass={inactive}>
         <div  class="bg-primary-200 rounded-md">
-            <MainSh bind:currentAppearence={currentAppearence} dataSaver={saver} bind:onloaded={loadedClb}/>
+            <Main {data} bind:currentAppearence={currentAppearence} dataSaver={saver} bind:onloaded={loadedClb}/>
+            
         </div>
     </TabItem>
 </Tabs>

@@ -1,75 +1,109 @@
 {
     "cites_emeraude":{
         "name":"Cités d’émeraude",
-        "desc":"Perdu dans les hauteurs titanesques des gratte-ciels, les habitant des cités d’émeraudes ont embrassé l’appel du vide.",
+        "desc":"Un regroupement de colonies éparpillé dans une mégalopole rongée par la végétation.Les habitants des cités d’émeraudes vivent au sommet des plus hauts immeubles, bien au-dessus de la cime des arbres et des spores.Ils ne descendent dans les profondeurs que pour réparer les vestiges branlants de l’ancien monde.Leurs cités suspendues sont faites de ponts de singes, d’échelles et de passages précaires. \nCette proximité constante avec le vide a forgé chez eux une agilité hors du commun et tous maitrise l’art du parkour",
         "bonus":{"avant_garde":10},
         "origines":{
             "n_granda":{
-                "name":"N Granda",
-                "desc":"Deux tours gigantesques perdues au milieu d’autres immeubles, capital des cités d’émeraudes. Autrefois orné d’une titanesque enseigne dont il ne reste aujourd’hui que la lettre “N”",
+                "name":"N-Granda",
+                "desc":"Bâtie autour d’un building titanesque, se dresse la capitale des cités d’émeraudes. Sur son flanc subsiste l’immense vestige d’une enseigne, dont il ne reste qu’une unique lettre: un “N” solitaire. Curieusement, les animaux semblent irrésistiblement attirés par ce lieu. L’abondance de proies et l’ampleur de l’espace en font une des plus grandes villes du nouveau monde.",
+                "skills":{"chasseur":10}
+            },
+            "canopee":{
+                "name":"Canopée",
+                "desc":"Adossée au tronc du plus grand arbre-égide connu, une cité prospère à l’ombre de sa canopée. Ainsi abritée des spores, elle cultive une agriculture saine et florissante, faisant d’elle le grenier des cités d’émeraude. Protégé par d’épaisses murailles de béton et de métal, elle compte parmi les colonies les plus sécurisées du territoire.",
                 "skills":{"fermier":10}
+            },
+             "limaille":{
+                "name":"Limaille",
+                "desc":"Battis sur les flancs d’une tour de fer aux proportions titanesque se dresse Limaille, la cité de fer. En perpétuel combat contre la rouille, elle exige un entretien constant pour ne pas sombrer. Composée de passerelles branlantes, de structures d’acier et de grues en équilibre instable, sa survie ne tient qu’à un fil.",
+                "skills":{"ferrailleur":10}
+            },
+             "gratte_ciel":{
+                "name":"Gratte-ciel",
+                "desc":"Ce gratte-ciel de l’ancien temps, modeste et sans doute isolée, demeure enveloppé de mystère. Peut-être subsiste-t-elle encore, accrochée aux hauteurs. Peut-être a-t-elle déjà été engloutie par les spores… ou par la rouille qui ronge ces racines… Son histoire vous appartient.",
+                "skills":{}
             }
         },
         "jobs":{
             "electron_libre":{
                 "name":"Electron Libre",
-                "desc":"Une classe qui comble un peu les trous et les manques dans la communauté, c’est un peu formé comme il le souhaite",
+                "desc":"Parfois, il faut combler les manques et les vides au sein des communautés. Façonné selon les besoins et les circonstances, vous vous êtes construit sans cadre rigide, librement. Vous incarnez cette vérité implacable : dans un monde en ruine, l’adaptabilité et l’indépendance ne sont pas des choix, mais des nécessités.",
                 "skills":{}
             },
             "garde_ascension":{
                 "name":"Garde d'ascension",
-                "desc":"Protecteur des cages d’escalier, empêche les créature sporique de remonter jusqu’à la cité",
-                "skills":{"brute":10}
+                "desc":"Retranché derrière de lourdes barricades et protégé par de lourdes armures, votre mission était claire : empêcher les indésirables de remonter. Tenir les cages d’escaliers, défendre les flancs de l’immeuble, tel était votre quotidien. Vous êtes un combattant aguerri, forgé dans les affrontements contre les créatures sporiques.",
+                "skills":{"brute":20}
             },
             "plongeur":{
                 "name":"Plongeur",
-                "desc":"Gars qui descendent dans les entraille des immeubles pour récupérer du loot et réparer la base des immeubles pour éviter qu’ils s’effondrent",
-                "skills":{"survivant":10,"avant_garde":10}
+                "desc":"Votre rôle était parmi le plus périlleux des cités d’émeraudes et pourtant, il était vital. Vous étiez chargé de descendre dans les profondeurs infestées des immeubles. Parfois pour consolider les fragiles fondations des géants de béton. Le plus souvent pour arracher aux entrailles du passé des maigres ressources.",
+                "skills":{"survivant":10,"brikoleur":10}
+            },
+            "disciple_oundu":{
+                "name":"Disciple d’Oundu",
+                "desc":"Disciples d’une déesse-machine vénérée dans les terres stériles, leur foi est nouvelle dans les cités d’émeraudes. Ils considèrent la technologie comme une divinité et la science comme une forme de prière. Chaque expérimentation devient une litanie sacrée, chaque composant une relique digne de culte.",
+                "skills":{"brikoleur":10,"ferrailleur":10}
             },
             "balconeur":{
                 "name":"Balconeur",
-                "desc":"Chargé de faire les plantations de nourriture sur les balcons",
+                "desc":"Votre rôle était de nourrir la population, une tâche peu glorieuse, mais cruciale. Le manque d’espace vous a forcé à faire preuve d’ingéniosité : vous avez transformé les balcons en jardins suspendus. Capables de faire pousser des plantes saines dans les pires conditions, vous êtes l’un de ceux qui rendent la vie possible.",
                 "skills":{"fermier":10}
             }
         }
     },
     "forteress_fer":{
         "name":"Forteresse de Fer",
-        "desc":"Ambiance en mode tenue japonaise/ samurai",
+        "desc":"Chaque forteresse est un train blindé.Un colosse de fer sillonnant encore les vestiges des anciens réseaux ferroviaires.Toujours en mouvement, ils relient les communautés éparpillés.Dans leur entrailles d’acier circulent marchandises, voyageurs et messages vitaux.Chaque train est un microcosme parfaitement organisé, une société inspirée des hiérarchies et des codes d’honneurs des samouraïs.Elle est organisée en caste : marchands rusés, protecteurs stoïques, mécanos infatigables… et au sommet : les conducteurs.Le prix de leur aide se fait en marchandise ou en années de service…",
         "bonus":{"ferrailleur":10},
         "origines":{
-            "bioyin":{
-                "name":"Bioyin",
-                "desc":"Ce train médical effectue un long trajet. Ces wagons sont médicalisés avec des technologie perdu. Il propose des  soins disponibles nul part ailleurs, souvent en échange de marchandise ou contre le fait de servir dans le train pour une certaine durée.",
+            "kea":{
+                "name":"Kea",
+                "desc":"Maintenir un hôpital en état est une tâche bien trop lourde pour une seule communauté, aussi vaste et organisée soit-elle.C’est pour répondre à ce besoin vital qu’est né Kea, le train-clinique. Il parcourt les territoires, ses wagons transformés en blocs opératoires, salles de soins et technologies médicales perdus.",
                 "skills":{"medecin":10}
+            },
+             "sokoshita":{
+                "name":"Sokoshita",
+                "desc":"La lutte contre les spores est la mission de ce train ultra-blindé. Véritable rempart roulant, il sillonne une des voies les plus dangereuses qui soit. Il est engagé dans un combat éternel contre l'avancée de la forêt profonde. Sa mission représente un enjeu crucial pour de nombreuses communautés. Il reçoit d’elle équipement, ravitaillement, soldats.",
+                "skills":{"brute":10}
+            },
+             "densha_sora":{
+                "name":"Densha Sora",
+                "desc":"Ce jeune train suspendu s’est imposé comme l’épine dorsale des échanges entre les cités d’émeraude. Né du désir de rapprocher et de soutenir les communautés les plus isolées, il est rapidement devenu le symbole de renouveau. Transportant marchandises et passagers, c’est un train calme circulant le plus souvent au-dessus de la végétation.",
+                "skills":{"brikoleur":10}
             },
             "ter":{
                 "name":"TER",
-                "desc":"Vous venez d’un petit train de petite taille et assez peu connu. Il est peut être tombé, peut être circule t il toujours. Libre à vous de l’inventer",
+                "desc":"Cette machine de l’ancien temps, modeste et discrète, demeure peu connue. Peut-être circule-t-elle encore, parcourant les chemins de fer. Peut-être a-t-elle déjà été engloutie par les spores… ou par la rouille qui ronge ces entrailles… Son histoire vous appartient.",
                 "skills":{}
             }
         },
         "jobs":{
-            "electron_libre":{
-                "name":"Electron Libre",
-                "desc":"Une classe qui comble un peu les trous et les manques dans la communauté, c’est un peu formé comme il le souhaite",
+            "obligeant":{
+                "name":"Obligeant",
+                "desc":"Parfois, le prix exigé par les Forteresses de Fer est trop lourd pour une communauté. Vous avez servi des années à bord d’un train en paiement d’une de ces dettes collectives. Vous y avez offert votre savoir-faire, votre force, votre temps. Aujourd’hui, votre obligation est levée et vous êtes enfin libre d’aller où bon vous semble.",
                 "skills":{}
             },
             "cheminot":{
               "name":"Cheminot",
-                "desc":"chargé d'entretenir le train et les voies",
-                "skills":{
-                    "ferrailleur":10,"brute":10 }
+                "desc":"Les Forteresses de Fer exigent un entretien permanent, qu’il s’agisse de leur machinerie complexe ou des rails qu’elles arpentent. Votre rôle était au cœur de cette vigilance. Expert du travail de l’acier et de la mécanique, vous êtes habitué aux charges lourdes et aux efforts incessants qui forgent la survie de colosses d’acier.",
+                "skills":{"ferrailleur":10,"brute":10 }
             },
             "harponneur":{
                 "name":"Harponneur",
-                "desc":"Équipé de harpons, leur rôle est de trouver de la nourriture et d’empêcher des créatures de monter dans/sur le train.",
-                "skills":{"chasseur":10}
+                "desc":"Véritable fantassin des Forteresses de Fer, vous étiez la première et la dernière ligne de défense. Armé de harpons, de lances et de javelots, vous avez veillé sans relâche à ce qu’aucun indésirable, sporique ou humain, ne pose un pied sur le convoi. Quand le train s'arrêtait, votre rôle devenait celui d’un chasseur. Dur, endurant, et formé au combat rapproché comme à la traque, vous incarnez la résilience des Forteresses de Fer.",
+                "skills":{"chasseur":10, "brute":10}
             },
-             "aiguilleur":{
+            "aiguilleur":{
                 "name":"Aiguilleur",
-                "desc":"Vie dans les rares enclaves permanente des forteresses de fer, il organise le transit pour éviter les collisions et entretient les voies.",
+                "desc":"Loin du vacarme des trains, vous avez vécus dans une rare enclave permanente des Forteresses de Fer. Dans ces nœuds ferroviaires, vous décidiez de la circulation des convois, évitant collisions et maintenant l’ordre sur les rails. Lorsque la situation l’exigeait, vous mettiez la main à la pâte, assurant vous-même l’entretien des voies. Bien que crucial, votre rôle vous a toujours permis une certaine autonomie.",
                 "skills":{"survivant":10}
+            },
+            "controleur":{
+                "name":"Contrôleur ",
+                "desc":"Vous étiez le lien entre les membres d’équipage. Celui qui veille à ce que tout le monde tienne debout, physiquement comme mentalement. Votre rôle était de s’assurer que tout chacun ait de quoi manger, que les blessés soient soignés, et que les tensions ne dégénèrent pas. Sans vous, l'intérieur du train s'effondrerait bien avant ses murs d’aciers.",
+                "skills":{"kuisto":10,"medecin":10}
             }
         }
     }

@@ -1,10 +1,11 @@
 <script lang="ts">
-    import {Avatar,Button,Card,Input, Label,Select, } from "flowbite-svelte";
+    import {Alert, Avatar,Button,Card,Input, Label,Modal,Select, } from "flowbite-svelte";
     import factionsJs from "$lib/datas/factions.json";
     import skillsJs from "$lib/datas/skills.json";
     import type { SaveFormat } from "../skin/skinTypes";
     import { onMount } from "svelte";
     import { browser } from "$app/environment";
+    import { SHARED } from "$lib/sharedDatas";
     let {
         currentAppearence = $bindable(),
         dataSaver,
@@ -17,28 +18,38 @@
             saver: (data: SaveFormat) => void;
         };
     } = $props();
-    const skills = skillsJs as {[id: string]: { name: string; desc: string; stages: number[] };};
+    $SHARED.title="Caracteristiques"
+    const skills = skillsJs as {[id: string]: { name: string; desc: string; stages: number[],disabled?:boolean };};
     const factions = factionsJs as {  [id: string]: { name: string; desc: string; bonus: { [key: string]: number };origines: {[key: string]: {name: string;desc: string; skills: { [key: string]: number }; }; };jobs: {[key: string]: {name: string;desc: string;skills: { [key: string]: number };};};};};
-    var selectedFaction = $state(Object.keys(factions)[0]);
-    var selectedOrigine = $state() as string;
-    var selectedJob = $state() as string;
-    var selectedNom = $state() as string;
-    var selectedPrenom = $state() as string;
-    var remainingPoints = $state(50);
-    var originesItems = $state([] as { name: string; value: string }[]);
-    var jobsItems = $state([] as { name: string; value: string }[]);
-    var points = $state(fillPoints());
-    var descs = $state({
+    let selectedFaction = $state(Object.keys(factions)[0]);
+    let selectedOrigine = $state() as string;
+    let selectedJob = $state() as string;
+    let selectedNom = $state() as string;
+    let selectedPrenom = $state() as string;
+    let remainingPoints = $state(50);
+    let originesItems = $state([] as { name: string; value: string }[]);
+    let jobsItems = $state([] as { name: string; value: string }[]);
+    let points = $state(fillPoints());
+    let descs = $state({
         faction: { name: "", desc: "" },
         origine: { name: "", desc: "" },
         job: { name: "", desc: "" },
     });
-    var pickedFac: (typeof factions)[0];
+    let pickedFac: (typeof factions)[0];
+    let loreModal = $state(false);
+    let loreContent= $state("");
+    let loreContentTitle= $state("");
+    function openLoreModal(title:string,text:string)
+    {
+        loreContentTitle=title;
+        loreContent=text;
+        loreModal=true;
+    }
     onloaded = () => {
         if (browser) {
-            var stats = currentAppearence.stats;
+            let stats = currentAppearence.stats;
             if (Object.keys(factions).includes(stats.faction)) {
-                var fac = factions[stats.faction];
+                let fac = factions[stats.faction];
                 if (fac) {
                     if (Object.keys(fac.origines).includes(stats.origine))
                         selectedOrigine = stats.origine;
@@ -49,9 +60,20 @@
                     selectedPrenom=stats.firstname;
                     fillSelects(fac,true);
                     pickedFac = fac;
-                    updateDescs();
+                    updateDescs(true);
+                    remainingPoints=50;
+                    Object.keys(stats.points).forEach(v=>{
+                        
+                        points[v].value=stats.points[v]
+                        remainingPoints-=points[v].value;
+                    });
+                    return;
                 }
+                 
             }
+            pickedFac = factions[Object.keys(factions)[0]];
+            fillSelects(pickedFac);
+            updateDescs(true);
         }
     };
     onMount(onloaded);
@@ -86,7 +108,7 @@
         if(!init)
             selectedJob = Object.keys(pickedFaction.jobs)[0];
     }
-    function updateDescs() {
+    function updateDescs(init?:boolean) {
         descs.faction = { name: pickedFac.name, desc: pickedFac.desc };
         if (selectedOrigine)
             descs.origine = {
@@ -99,10 +121,16 @@
                 desc: pickedFac.jobs[selectedJob].desc,
             };
         points = fillPoints(pickedFac);
+        if(!init)
+        {
+          currentAppearence.stats.points={};
+          Object.keys(points).filter(v=>points[v].value>0).forEach(v=>{currentAppearence.stats.points[v]=points[v].value;})
+        }
         currentAppearence.stats.origine = selectedOrigine;
         currentAppearence.stats.job = selectedJob;
         currentAppearence.stats.faction = selectedFaction;
-        dataSaver.saver(currentAppearence);
+        if(!init)
+            dataSaver.saver(currentAppearence);
     }
     function fillPoints(pickedFaction?: (typeof factions)[0]) {
         remainingPoints = 50;
@@ -116,7 +144,7 @@
             remainingPoints -= num;
         };
         var res = {} as { [key: string]: { value: number; min: number } };
-        Object.keys(skills).forEach((v) => (res[v] = { min: 0, value: 0 }));
+        Object.keys(skills).filter(v=>!skills[v].disabled).forEach((v) => (res[v] = { min: 0, value: 0 }));
         if (pickedFaction) {
             Object.keys(pickedFaction.bonus).forEach((v) => {
                 var b = pickedFaction.bonus[v];
@@ -148,16 +176,15 @@
     function change(key: string, added: number) {
         if (added > 0 && remainingPoints <= 0) return;
         var old = points[key].value;
-        points[key].value = Math.max(
-            Math.min(points[key].value + added, 20),
-            points[key].min,
-        );
+        points[key].value = Math.max(Math.min(points[key].value + added, 20),points[key].min);
+        currentAppearence.stats.points[key]=points[key].value;
+        dataSaver.saver(currentAppearence)
         remainingPoints += old - points[key].value;
     }
 </script>
 
 <div class="w-full flex-1 p-2">
-    <div class="mb-5 grid gap-4 grid-cols-3">
+    <div class="mb-5 grid gap-4 grid-cols-3 items-stretch">
         <div class="sm:col-span-3 flex gap-4">
             <div class="w-32">
                 <Avatar
@@ -222,59 +249,50 @@
                     </Label>
                 </div>
             </div>
-            <div class="w-3/5">
+            <div class="">
                 <div class="grid gap-2 grid-cols-[auto_1fr]">
                     <p class=" text-secondary-text text-nowrap">
                         {descs.faction.name}:
                     </p>
-                    <p
-                        class="h-[3em] overflow-hidden text-ellipsis break-words line-clamp-2"
-                    >
-                        {descs.faction.desc}
-                    </p>
+                    <Button class="bg-secondary-text flex-shrink-0 p-0 w-15 h-8" onclick={()=>openLoreModal(descs.job.name,descs.job.desc)}>Infos</Button>
                     <p class=" text-secondary-text text-nowrap">
                         {descs.origine.name}:
                     </p>
-                    <p
-                        class="h-[3em] overflow-hidden text-ellipsis break-words line-clamp-2"
-                    >
-                        {descs.origine.desc}
-                    </p>
+                    <Button class="bg-secondary-text flex-shrink-0 p-0 w-15 h-8" onclick={()=>openLoreModal(descs.job.name,descs.job.desc)}>Infos</Button>
                     <p class=" text-secondary-text text-nowrap">
                         {descs.job.name}:
                     </p>
-                    <p
-                        class="h-[3em] overflow-hidden text-ellipsis break-words line-clamp-2"
-                    >
-                        {descs.job.desc}
-                    </p>
+                        <Button class="bg-secondary-text flex-shrink-0 p-0 w-15 h-8" onclick={()=>openLoreModal(descs.job.name,descs.job.desc)}>Infos</Button>
                 </div>
+            </div>
+            <div class="ml-10 flex items-center ">
+                <div class="max-w-full p-3 bg-primary-200">
+                    <div>
+                        <div class="flex gap-1">
+                            <Label
+                                for="points"
+                                class="w-6/7 mr-4 text-secondary-text text-xl mb-2"
+                                >Points Réstants</Label
+                            >
+                            <p class="flex items-center justify-center h-8 w-10 rounded-md bg-primary-50">
+                                {remainingPoints}
+                            </p>
+                        </div>
+                        <text class="w-full  text-gray-500">Le nombre de points qu'il vous reste à assigner dans les différentes compétences disponibles.</text>
+                          {#if remainingPoints>0}
+                            <p class="mt-2 text-secondary-text">Vous devez utiliser tout les points pour valider votre personnage </p>
+                        {/if}
+                    </div>
+                </div>
+               
             </div>
         </div>
-        <Card class="max-w-full p-3 bg-primary-300">
-            <div>
-                <div class="flex gap-1">
-                    <Label
-                        for="points"
-                        class="w-6/7 mr-4 text-secondary-text text-xl mb-2"
-                        >Points Réstants</Label
-                    >
-                    <p
-                        class="flex items-center justify-center h-8 w-10 rounded-md bg-primary-50"
-                    >
-                        {remainingPoints}
-                    </p>
-                </div>
-                <text class="w-full text-primary-50"
-                    >Le nombre de points qu'il vous reste à assigner dans les
-                    différentes compétences disponibles</text
-                >
-            </div>
-        </Card>
+       
         {#each Object.keys(skills) as key}
             {@const skill = skills[key]}
+            {#if !skill.disabled}
             <div>
-                <Card class="max-w-full p-3 bg-primary-300">
+                <Card class="max-w-full p-3 bg-primary-300 stretch" >
                     <div>
                         <div class="flex gap-1">
                             <Label
@@ -286,26 +304,19 @@
                                 class="h-8 w-8 p-0 "
                                 onclick={() => change(key, -1)}>-</Button
                             >
-                            <p
-                                class="flex items-center justify-center h-8 w-10 rounded-md bg-primary-50 {points[
-                                    key
-                                ].value > 0
-                                    ? 'text-secondary-text'
-                                    : ''}"
-                            >
+                            <p class="flex items-center justify-center h-8 w-10 rounded-md bg-primary-50 {points[key].value > 0? 'text-secondary-text': ''}">
                                 {points[key].value}
                             </p>
-                            <Button
-                                class="h-8 w-8 p-0"
-                                onclick={() => change(key, 1)}>+</Button
-                            >
+                            <Button class="h-8 w-8 p-0" onclick={() => change(key, 1)}>+</Button>
                         </div>
-                        <text class="w-full text-primary-50"
-                            >{skill.desc || "..."}</text
-                        >
+                        <text class="w-full indent-6 text-primary-50 text-justify">{skill.desc || "..."}</text>
                     </div>
                 </Card>
             </div>
+            {/if}
         {/each}
     </div>
 </div>
+<Modal title={loreContentTitle} bind:open={loreModal} autoclose headerClass="text-secondary-text" class="bg-primary-100">
+  <p class=" whitespace-pre-line text-justify text-base leading-relaxed text-gray-500 indent-6">{loreContent}</p>
+</Modal>

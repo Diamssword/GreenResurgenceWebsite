@@ -14,9 +14,10 @@
                 height:h,
                 layers
             });
+            var resizeObserver:ResizeObserver;
             if( canvas?.parentElement)
             {
-                const resizeObserver = new ResizeObserver(() => {
+                resizeObserver = new ResizeObserver(() => {
                   
                     if(canvas?.parentElement)
                     {
@@ -36,6 +37,10 @@
             }            
             viewer.animation = new skinViewer.WalkingAnimation();
             viewer.animation.speed=0.2;
+            return ()=>{
+                resizeObserver?.disconnect();
+                viewer?.dispose();
+            }
             
         }
     });

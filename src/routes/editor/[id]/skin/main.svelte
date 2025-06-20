@@ -30,12 +30,11 @@
             viewer.playerObject.scale.set(size/200,size/200,size/200)
         }
     }
-    const monfn=()=>{
+    onloaded=()=>{
         if(viewer && browser)
         {
             skinEditor.viewer=viewer;
             skinEditor.loadSavedOrDefault(currentAppearence.skin)
-            console.log(currentAppearence.apparence?.size)
             ldExtra(currentAppearence.apparence?.slim,currentAppearence.apparence?.size||67);
             skinEditor.saveFn=(dt)=>{
                 currentAppearence.skin=dt;
@@ -43,18 +42,17 @@
             }
         }
     }
-   // onMount(monfn)
-    onloaded=monfn
+    onMount(onloaded)
     var infos=["L'affichage de certains élèments (notament les couleurs) peut differer légèrement en jeu. ","Pour garder une sauvgarde de votre skin, utilisez l'option \"Sauvegarder mes paramètres\"","Vous pouvez télécharger votre skin pour l'utilser ailleurs!","Ça va vous sinon?"]
     var pickedInfo=$state(0);
     if(browser)
     {
-           setInterval(()=>{
-        var p=Math.floor(Math.random()*infos.length);
-        if(p==pickedInfo)
-            p=Math.floor(Math.random()*infos.length);
-        pickedInfo=p;
-    },7000)
+        setInterval(()=>{
+            var p=Math.floor(Math.random()*infos.length);
+            if(p==pickedInfo)
+                p=Math.floor(Math.random()*infos.length);
+            pickedInfo=p;
+        },7000)
     }
 </script>
 <div class="w-full flex-1 p-2">

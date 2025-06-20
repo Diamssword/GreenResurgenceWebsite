@@ -61,7 +61,6 @@
         var reader=new FileReader();
         reader.onload=()=>{
           var js=JSON.parse(reader.result?.toString()||"") as SaveFormat
-          console.log(js)
           if(js.skin)
             editor.loadSavedOrDefault(js.skin)
           if(js.apparence)
@@ -96,9 +95,9 @@
             </DropdownItem>
             <Tooltip  placement="left"  type="dark">Telecharger mon skin au format PNG pour l'utilser autre part</Tooltip>
           </Dropdown>
-          <Button type="button" class="col-span-2" on:click={()=>{document.getElementById("data_uploader").click()}}>Charger mes paramètres</Button>
+          <Button type="button" class="col-span-2" onclick={()=>{document.getElementById("data_uploader").click()}}>Charger mes paramètres</Button>
           <Tooltip  placement="left"  type="dark">Charger mes paramètres depuis un fichier de sauvegarde</Tooltip>
-          <Button class= "grow bg-secondary-text col-span-2" type="button" size="xl" on:click={exporte}>Recuperer mon code</Button>
+          <Button class= "grow bg-secondary-text col-span-2" type="button" size="xl" onclick={exporte}>Recuperer mon code</Button>
           <Tooltip  placement="left"  type="dark">Recuperer mon code pour lier mon skin en jeu </Tooltip>
           {#if code}
             <div class="col-span-2">
