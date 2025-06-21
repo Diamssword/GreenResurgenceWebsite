@@ -11,11 +11,12 @@
     import {  SkinEditor } from "./panel";1
     import type { SaveFormat } from "./skinTypes";
     import { onMount } from "svelte";
-    let {data,currentAppearence=$bindable(),dataSaver,onloaded=$bindable()}:{data:PageData,currentAppearence:SaveFormat,onloaded:()=>void, dataSaver: {loader:()=>SaveFormat,saver:(data:SaveFormat)=>void} }=$props();
-    var viewer:SkinViewer=$state(undefined as any);
-    var skinEditor= new SkinEditor(data.datas);
-    var ldExtra: (slim: boolean, taille: number) => void=$state(undefined as any);
+    let {data,currentAppearence=$bindable(),dataSaver,onloaded=$bindable(),canExport}:{data:PageData,currentAppearence:SaveFormat,onloaded:()=>void, dataSaver: {loader:()=>SaveFormat,saver:(data:SaveFormat)=>void},canExport:boolean }=$props();
+    let viewer:SkinViewer=$state(undefined as any);
+    let skinEditor= new SkinEditor(data.datas);
+    let ldExtra: (slim: boolean, taille: number) => void=$state(undefined as any);
     $SHARED.title="Customiseur"
+
     function onPhysicChange(slim:boolean,size:number)
     {
         if(viewer)
@@ -64,7 +65,7 @@
             <Viewer bind:viewer={viewer}/>
         </div>
        <div class="w-1/6 ml-5 max-h-[65vh]">
-        <PanelRight editor={skinEditor} currentSave={currentAppearence} changePhysicFn={onPhysicChange} sheetName={data.sheet?.name}/>
+        <PanelRight {canExport} editor={skinEditor} currentSave={currentAppearence} changePhysicFn={onPhysicChange} sheetName={data.sheet?.name}/>
        </div>
     </div>
     <Alert color="blue">

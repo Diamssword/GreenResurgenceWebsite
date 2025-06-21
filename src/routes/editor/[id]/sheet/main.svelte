@@ -10,13 +10,15 @@
         currentAppearence = $bindable(),
         dataSaver,
         onloaded = $bindable(),
+        onPointsUpdate
     }: {
         currentAppearence: SaveFormat;
         onloaded: () => void;
         dataSaver: {
             loader: () => SaveFormat;
             saver: (data: SaveFormat) => void;
-        };
+        },
+        onPointsUpdate:(left:number)=>void;
     } = $props();
     $SHARED.title="Caracteristiques"
     const skills = skillsJs as {[id: string]: { name: string; desc: string; stages: number[],disabled?:boolean };};
@@ -171,6 +173,7 @@
                 );
             }
         }
+        onPointsUpdate(remainingPoints);
         return res;
     }
     function change(key: string, added: number) {
@@ -180,6 +183,7 @@
         currentAppearence.stats.points[key]=points[key].value;
         dataSaver.saver(currentAppearence)
         remainingPoints += old - points[key].value;
+        onPointsUpdate(remainingPoints);
     }
 </script>
 
@@ -188,40 +192,32 @@
         <div class="sm:col-span-3 flex gap-4">
             <div class="w-32">
                 <Avatar
-                    class="w-32 h-32"
-                    src="/images/profile-picture-2.webp"
+                    class="w-32 h-32 bg-transparent"
+                    src="/images/unknown_profil.png"
                     cornerStyle="rounded"
                 />
             </div>
             <div class="w-60">
                 <div class="">
-                    <Label for="lastname" class="">Nom</Label>
+                    <Label for="lastname" class="text-secondary-text">Nom</Label>
                     <Input type="text" id="lastname" required bind:value={selectedNom} onchange={(e)=>onChangeText(e.target?.value,"lastname")}/>
                 </div>
                 <div class="">
-                    <Label for="name" class="">Prénom</Label>
+                    <Label for="name" class="text-secondary-text">Prénom</Label>
                     <Input type="text" id="name" required bind:value={selectedPrenom} onchange={(e)=>onChangeText(e.target?.value,"firstname")}/>
                 </div>
             </div>
             <div>
                 <div class="w-50">
-                    <Label for="faction" class=""
-                        >Faction
-                        <Select
-                            id="faction"
-                            placeholder=""
-                            value={selectedFaction}
-                            oninput={onChangeFac}
-                        >
+                    <Label for="faction" class="text-secondary-text">Faction
+                        <Select id="faction" placeholder="" value={selectedFaction} oninput={onChangeFac}>
                             {#each Object.keys(factions) as key, i}
-                                <option selected={i == 0} value={key}
-                                    >{factions[key].name}</option
-                                >
+                                <option selected={i == 0} value={key}>{factions[key].name}</option>
                             {/each}
                         </Select>
                     </Label>
                     <div class="">
-                        <Label for="origine" class=""
+                        <Label for="origine" class="text-secondary-text"
                             >Origine
                             <Select
                                 id="origine"
@@ -236,7 +232,7 @@
             </div>
             <div class="w-50">
                 <div class="">
-                    <Label for="metier" class=""
+                    <Label for="metier" class="text-secondary-text"
                         >Métier
 
                         <Select
@@ -254,15 +250,15 @@
                     <p class=" text-secondary-text text-nowrap">
                         {descs.faction.name}:
                     </p>
-                    <Button class="bg-secondary-text flex-shrink-0 p-0 w-15 h-8" onclick={()=>openLoreModal(descs.job.name,descs.job.desc)}>Infos</Button>
+                    <Button class="cursor-pointer bg-secondary-text flex-shrink-0 p-0 w-15 h-8" onclick={()=>openLoreModal(descs.job.name,descs.job.desc)}>Infos</Button>
                     <p class=" text-secondary-text text-nowrap">
                         {descs.origine.name}:
                     </p>
-                    <Button class="bg-secondary-text flex-shrink-0 p-0 w-15 h-8" onclick={()=>openLoreModal(descs.job.name,descs.job.desc)}>Infos</Button>
+                    <Button class="cursor-pointer bg-secondary-text flex-shrink-0 p-0 w-15 h-8" onclick={()=>openLoreModal(descs.job.name,descs.job.desc)}>Infos</Button>
                     <p class=" text-secondary-text text-nowrap">
                         {descs.job.name}:
                     </p>
-                        <Button class="bg-secondary-text flex-shrink-0 p-0 w-15 h-8" onclick={()=>openLoreModal(descs.job.name,descs.job.desc)}>Infos</Button>
+                        <Button class="cursor-pointer bg-secondary-text flex-shrink-0 p-0 w-15 h-8" onclick={()=>openLoreModal(descs.job.name,descs.job.desc)}>Infos</Button>
                 </div>
             </div>
             <div class="ml-10 flex items-center ">
@@ -300,16 +296,13 @@
                                 class="w-4/5 mr-4 text-secondary-text text-xl mb-2"
                                 >{skill.name}</Label
                             >
-                            <Button
-                                class="h-8 w-8 p-0 "
-                                onclick={() => change(key, -1)}>-</Button
-                            >
+                            <Button class="h-8 w-8 p-0 cursor-pointer" onclick={() => change(key, -1)}>-</Button>
                             <p class="flex items-center justify-center h-8 w-10 rounded-md bg-primary-50 {points[key].value > 0? 'text-secondary-text': ''}">
                                 {points[key].value}
                             </p>
-                            <Button class="h-8 w-8 p-0" onclick={() => change(key, 1)}>+</Button>
+                            <Button class="h-8 w-8 p-0 cursor-pointer" onclick={() => change(key, 1)}>+</Button>
                         </div>
-                        <text class="w-full indent-6 text-primary-50 text-justify">{skill.desc || "..."}</text>
+                        <text class="w-full indent-6 text-gray-500 text-justify">{skill.desc || "..."}</text>
                     </div>
                 </Card>
             </div>

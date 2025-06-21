@@ -6,12 +6,21 @@
       changePhysicFn:(slim:boolean,taille:number)=>void
     currentSave:SaveFormat
     editor:SkinEditor
-    sheetName?:string
+    sheetName?:string,
+    canExport:boolean
     }
-    var {changePhysicFn,editor,currentSave,sheetName}:Props=$props();
+    var {changePhysicFn,editor,currentSave,sheetName,canExport}:Props=$props();
     var code:string|undefined=$state();
     var timer=$state(0);
     var int: NodeJS.Timeout | undefined;
+    function allGood(){
+      if(currentSave.stats.firstname.trim().length<1)
+        return "Vous devez remplir le Prénom."
+      if(currentSave.stats.lastname.trim().length<1)
+        return "Vous devez remplir le Nom."
+      if(!canExport)
+        return "Vous devez utiliser tout vos points."
+    }
     function exporte()
     {
       exportCharacter(editor,currentSave).then(e=>{
@@ -97,8 +106,19 @@
           </Dropdown>
           <Button type="button" class="col-span-2" onclick={()=>{document.getElementById("data_uploader").click()}}>Charger mes paramètres</Button>
           <Tooltip  placement="left"  type="dark">Charger mes paramètres depuis un fichier de sauvegarde</Tooltip>
-          <Button class= "grow bg-secondary-text col-span-2" type="button" size="xl" onclick={exporte}>Recuperer mon code</Button>
-          <Tooltip  placement="left"  type="dark">Recuperer mon code pour lier mon skin en jeu </Tooltip>
+          {#await allGood() then errorText}
+            {#if errorText ==undefined}
+              <Button class="grow bg-secondary-text col-span-2" type="button" size="xl" onclick={exporte} >Recuperer mon code</Button>
+              <Tooltip  placement="left"  type="dark">Recuperer mon code pour lier mon skin en jeu </Tooltip>
+            {:else}
+              <Button class="grow bg-gray-600 text-gray-950 col-span-2" type="button" size="xl">Recuperer mon code</Button>
+              <div class="col-span-2">
+                <p class="text-red-500">{errorText}</p>
+              </div>
+            {/if}
+          {/await}
+          
+         
           {#if code}
             <div class="col-span-2">
               <p class="text-primary-800">Copier ce code et collez le dans votre jeu avec Ctrl+ V pour lier ce skin à votre compte.</p>

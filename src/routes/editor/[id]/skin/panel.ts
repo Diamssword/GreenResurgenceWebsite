@@ -242,7 +242,7 @@ export function getProfileSaver(sheetId:number,datas:SaveFormat)
     if(!datas.skin)
         datas.skin={};
     if(!datas.stats)
-        datas.stats={};
+        datas.stats={points:{}};
     return {
         loader:()=>datas,
         saver:(data:SaveFormat)=>{
@@ -274,15 +274,14 @@ export var localLoader=()=>{
               return JSON.parse(str)as SaveFormat
                 
             }catch{
-                return {apparence:{},skin:{},stats:{}} as SaveFormat;
+                return {apparence:{},skin:{},stats:{points:{}}} as SaveFormat;
             }  
         }
     }
-    return {apparence:{},skin:{},stats:{}} as SaveFormat;
+    return {apparence:{},skin:{},stats:{points:{}}} as SaveFormat;
 }
 export function localSaver(data:SaveFormat)
 {
-    console.log(data)
     if(browser)
     {
         window.localStorage.setItem("skin_builder_datas",JSON.stringify(data))
@@ -310,17 +309,22 @@ export function exportCharacter(skinEditor:SkinEditor,profile:SaveFormat)
 function formatSendingDatas(profile:SaveFormat)
 {
     var res= {
-        hair:profile.skin["hair"]?.id||"bald",
-        hairColor:profile.skin["hair"]?.color?.toString().replace("#","")||"5D3A1A",
-        underwear:profile.skin["underwear"].id,
-        size:profile.apparence.size,
-        slim:profile.apparence.slim,
+        appearence:{
+            underwear:profile.skin["underwear"].id,
+            size:profile.apparence.size,
+            slim:profile.apparence.slim,
+        },
         stats:profile.stats
     } as any
     if(profile.skin["beard"] && profile.skin["beard"].id !="clear")
     {
-        res.beard=profile.skin["beard"].id;
-        res.beardColor=profile.skin["beard"].color?.toString().replace("#","");
+        res.appearence.beard=profile.skin["beard"].id;
+        res.appearence.beardColor=profile.skin["beard"].color?.toString().replace("#","")||"5D3A1A";
+    }
+    if(profile.skin["hair"] && profile.skin["hair"].id !="clear")
+    {
+        res.appearence.hair=profile.skin["hair"].id;
+        res.appearence.hairColor=profile.skin["hair"].color?.toString().replace("#","")||"5D3A1A";
     }
     return res;
 }

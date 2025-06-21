@@ -10,15 +10,17 @@
     import { browser } from '$app/environment';
     const active="inline-block text-lg font-medium text-center disabled:cursor-not-allowed p-4 rounded-lg active bg-primary-200 text-secondary-text" 
     const inactive="inline-block text-lg font-medium text-center disabled:cursor-not-allowed p-4 rounded-lg active hover:bg-primary-500 bg-primary-700 text-white"
-    var currentAppearence=$state({skin:{},stats:{},apparence:{}} as SaveFormat);
-    var saver=$state({loader:localLoader,saver:localSaver});
-    var loadedClb=$state(()=>{});
+    let currentAppearence=$state({skin:{},stats:{points:{}},apparence:{}} as SaveFormat);
+    let saver=$state({loader:localLoader,saver:localSaver});
+    let loadedClb=$state(()=>{});
+    let canExport=$state(false)
+    const pointsExports=(d:number)=>canExport=d<=0;
     if(data.sheet && data.sheet.id)
     {
      saver=getProfileSaver(data.sheet.id,data.sheet.data);
     }
     
-    var loaded=false;
+    let loaded=false;
     onMount(()=>{
         if(browser && !loaded)
         {
@@ -31,13 +33,12 @@
 <Tabs tabStyle="pill"  class=" pb-4" contentClass=" p-3 h-fit rounded-lg bg-primary-300">
     <TabItem open  title="Caracteristiques" activeClass={active} inactiveClass={inactive}>
         <div  class="bg-primary-200 rounded-md">
-        <MainSh bind:currentAppearence={currentAppearence} dataSaver={saver} bind:onloaded={loadedClb}/>
+        <MainSh bind:currentAppearence={currentAppearence} dataSaver={saver} bind:onloaded={loadedClb} onPointsUpdate={pointsExports}/>
         </div>
     </TabItem>
     <TabItem title="Apparence" activeClass={active}  inactiveClass={inactive}>
         <div  class="bg-primary-200 rounded-md">
-            <Main {data} bind:currentAppearence={currentAppearence} dataSaver={saver} bind:onloaded={loadedClb}/>
-            
+            <Main {data} bind:currentAppearence={currentAppearence} dataSaver={saver} bind:onloaded={loadedClb} {canExport}/>  
         </div>
     </TabItem>
 </Tabs>
