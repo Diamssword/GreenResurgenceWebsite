@@ -15,13 +15,9 @@ export const POST: RequestHandler = async (ev) => {
             var code=uid.rnd();
             if(skin_datas[ev.locals.user_ip])
             {
-             fs.rmSync("./uploaded/cache/"+skin_datas[ev.locals.user_ip].code+".png")
-             fs.rmSync("./uploaded/cache/"+skin_datas[ev.locals.user_ip].code+"_head.png")
              fs.rmSync("./uploaded/cache/"+skin_datas[ev.locals.user_ip].code+".json")
             }
             skin_datas[ev.locals.user_ip]={code,expire:dayjs().add(1,"m")};
-           fs.writeFileSync("./uploaded/cache/"+code+".png",dt.image.replace('data:image/png;base64,', ''),"base64");
-           fs.writeFileSync("./uploaded/cache/"+code+"_head.png",dt.head.replace('data:image/png;base64,', ''),"base64");
            fs.writeFileSync("./uploaded/cache/"+code+".json",JSON.stringify({...sanitizeData(dt.datas),base64Skin:dt.image.replace('data:image/png;base64,', ''),base64SkinHead:dt.head.replace('data:image/png;base64,', '')}));
            return new Response(code);
         }

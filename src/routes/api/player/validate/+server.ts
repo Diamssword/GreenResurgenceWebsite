@@ -18,13 +18,13 @@ export const POST: RequestHandler = async (ev) => {
                 if(skin_datas[k].code==js.code)
                 {
                     delete skin_datas[k];
-                    fs.copyFileSync("./uploaded/cache/"+js.code+".png","./uploaded/skins/"+js.uuid.replaceAll("-","")+".png")
-                    fs.copyFileSync("./uploaded/cache/"+js.code+".json","./uploaded/skins/"+js.uuid.replaceAll("-","")+".json")
-                    fs.copyFileSync("./uploaded/cache/"+js.code+"_head.png","./uploaded/skins/"+js.uuid.replaceAll("-","")+"_head.png")
-                    fs.rmSync("./uploaded/cache/"+js.code+".png",);
-                    fs.rmSync("./uploaded/cache/"+js.code+"_head.png",);
-                    fs.rmSync("./uploaded/cache/"+js.code+".json");
-                    return new Response("skin saved",{status:200})
+                    var val=JSON.parse(fs.readFileSync("./uploaded/cache/"+js.code+".json",{encoding:"utf-8"}))
+                    if(val)
+                    {
+                        fs.rmSync("./uploaded/cache/"+js.code+".json");
+                        return new Response(JSON.stringify(val),{status:200,headers:{"Content-Type":"text/json;"}});
+                    }
+                    return new Response("skin not found",{status:404})
                 }
             }
         }               
