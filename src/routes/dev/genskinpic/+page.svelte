@@ -66,8 +66,8 @@
 <div class="flex">
 <canvas class="bg-gray-700"  bind:this={canvas}/>
 <input type="text" bind:value={layer}>
-<Button on:click={()=>load(layer)}>Load</Button>
-<Button on:click={()=>startGen(layer)}>Start</Button>
-<Button on:click={()=> viewer.loadSkin("base","/skins/head.png")}>Load Head</Button>
+<Button onclick={()=>load(layer)}>Load</Button>
+<Button onclick={()=>startGen(layer)}>Start</Button>
+<Button onclick={()=> viewer.loadSkin("base","/skins/head.png")}>Load Head</Button>
 <Range bind:value={height} min="-50" max=50 />
 </div>

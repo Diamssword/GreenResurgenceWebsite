@@ -26,9 +26,9 @@ export const layers:LayerInfo[]=[
     {name:"left_eye_c",size:0.03},
     {name:"right_eye",size:0.03},
     {name:"right_eye_c",size:0.03},
-    {name:"left_cosmetic",size:0.06},
-    {name:"right_cosmetic",size:0.06},
-    {name:"cosmetic",size:0.08},
+    {name:"left_cosmetic",size:0.04},
+    {name:"right_cosmetic",size:0.04},
+    {name:"cosmetic",size:0.031},
     {name:"hair",size:0.07,external:true}
 ]
 export enum SkinPart{

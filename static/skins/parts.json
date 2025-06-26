@@ -31,6 +31,16 @@
             {
                 "id":"7",
                 "name":"7"
+            },
+             
+            {
+                "id":"8",
+                "name":"8"
+            },
+            
+            {
+                "id":"9",
+                "name":"9"
             }
         ],
         "colors":[
@@ -101,6 +111,9 @@
             {
                 "id":"2",
                 "anim":"2*3"
+            },
+            {
+                "id":"3"
             }
                 
         ],
@@ -108,7 +121,13 @@
     },
     "cosmetic":{
         "title":"Comestic",
-        "images":[{"id":"clear"},{"id":"1"}]
+        "colors":"free",
+        "images":[
+            {"id":"clear"},
+            {"id":"1"},
+            {"id":"2"},
+            {"id":"3"}
+        ]
     },
     "mouth":{
         "title":"Bouche",
@@ -118,6 +137,9 @@
             },
             {
                 "id":"2"
+            },
+            {
+                "id":"3"
             }
         ],
         "colors":[
