@@ -14,9 +14,9 @@
     var timer=$state(0);
     var int: NodeJS.Timeout | undefined;
     function allGood(){
-      if(currentSave.stats.firstname.trim().length<1)
+      if(!currentSave.stats.firstname  ||currentSave.stats.firstname?.trim().length<1)
         return "Vous devez remplir le Prénom."
-      if(currentSave.stats.lastname.trim().length<1)
+      if(!currentSave.stats.lastname|| currentSave.stats.lastname?.trim().length<1)
         return "Vous devez remplir le Nom."
       if(!canExport)
         return "Vous devez utiliser tout vos points."

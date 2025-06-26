@@ -15,9 +15,10 @@
     var creating=$state(false);
     var deleting=$state(false);
     var renaming=$state(-1);
-    var pickedForDelete:{id:number,index:number}=$state()
+    var pickedForDelete:{id:number,index:number}|undefined=$state()
     var datas=$state(sheets.sort((a,b)=>new Date(b.edit_at)-new Date(a.edit_at)))
     var creatingName=$state("");
+    var creatingLast=$state("");
     var modifName=$state("");
     function onCreate()
     {
@@ -25,7 +26,7 @@
         {
             if(creatingName.length>1)
             {
-                fetch("?/create",{method:"POST",body:creatingName}).then(async e=>{
+                fetch("?/create",{method:"POST",body:JSON.stringify({name:creatingName,lastname:creatingLast})}).then(async e=>{
                     if(e.status==200)
                     {
                         var res=JSON.parse((await e.json()).data);
@@ -74,7 +75,8 @@
 <div>
     <div class=" mb-3 flex">
     {#if creating}
-        <Input class="w-60 mr-4" placeholder="Nouveau Nom" bind:value={creatingName}/>
+        <Input class="w-60 mr-4" placeholder="Nouveau Prénom" bind:value={creatingName}/>
+        <Input class="w-60 mr-4" placeholder="Nouveau Nom" bind:value={creatingLast}/>
     {/if}
         <Button class="bg-secondary-text" onclick={onCreate}>+ {creating?"Créer":"Nouveau"}</Button>
  

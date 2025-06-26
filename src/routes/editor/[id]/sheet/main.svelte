@@ -69,6 +69,7 @@
                         points[v].value=stats.points[v]
                         remainingPoints-=points[v].value;
                     });
+                    onPointsUpdate(remainingPoints);
                     return;
                 }
                  
@@ -198,13 +199,14 @@
                 />
             </div>
             <div class="w-60">
-                <div class="">
-                    <Label for="lastname" class="text-secondary-text">Nom</Label>
-                    <Input type="text" id="lastname" required bind:value={selectedNom} onchange={(e)=>onChangeText(e.target?.value,"lastname")}/>
-                </div>
+                
                 <div class="">
                     <Label for="name" class="text-secondary-text">Prénom</Label>
                     <Input type="text" id="name" required bind:value={selectedPrenom} onchange={(e)=>onChangeText(e.target?.value,"firstname")}/>
+                </div>
+                <div class="">
+                    <Label for="lastname" class="text-secondary-text">Nom</Label>
+                    <Input type="text" id="lastname" required bind:value={selectedNom} onchange={(e)=>onChangeText(e.target?.value,"lastname")}/>
                 </div>
             </div>
             <div>

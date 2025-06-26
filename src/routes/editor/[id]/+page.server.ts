@@ -8,11 +8,19 @@ export const load = (async (event) => {
         var sheet=db.prepare("SELECT skinlayout.* FROM skinlayout INNER JOIN user ON user.id = skinlayout.user_id WHERE user.id = ? AND skinlayout.id = ?").get(event.locals.user.id,event.params.id) as any;
         if(sheet && sheet.id)
         {
+          var sh:any={}
+          try{
+          sh=JSON.parse(sheet.data)
+          }catch{
+            sh={}
+          }
+          if(!sh.stats)
+            sh.stats={};
           return {
             sheet:{
               id:sheet.id as number,
               name:sheet.name as string,
-              data:JSON.parse(sheet.data) as SaveFormat
+              data:sh as SaveFormat
             }
           }
         }

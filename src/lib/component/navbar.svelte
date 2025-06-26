@@ -2,7 +2,11 @@
     import { page } from '$app/state';
     import { Navbar, NavBrand, NavLi, NavUl, NavHamburger, Tooltip, Modal, Button } from 'flowbite-svelte';
     let user=$state(page.data.user)
-    let activeUrl =$state(page.url.pathname);
+    let activeUrl =$derived.by(()=>{
+      if(page.url.pathname.startsWith("/editor"))
+      return "/editor"
+      return page.url.pathname});
+    
     let connectForm=$state(false);
   </script>
   

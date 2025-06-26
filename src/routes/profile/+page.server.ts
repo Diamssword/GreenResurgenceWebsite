@@ -26,22 +26,15 @@ export const actions = {
         else
             return fail(401);
     },
-    link: async (event) => {
-        if (event.locals.user) {
-            var code = uid.rnd();
-            account_linking[event.locals.user.id] = { code, expire: dayjs().add(1, "m") };
-            return code;
-        }
-        return fail(401)
-    },
     create:async(event)=>{
         if(event.locals.user)
         {
-            var txt= await event.request.text()
-            if(txt.length>1)
+            var ob= await event.request.json()
+            if(ob.name && ob.name.length>1 && ob.lastname && ob.lastname.length>1)
             {
-                var res=db.prepare("INSERT INTO skinlayout ( user_id, name,data) VALUES (?, ?, ?)").run(event.locals.user.id,txt,"{}");
-                return {id:res.lastInsertRowid,name:txt}
+                var dt={stats:{firstname:ob.name,lastname:ob.lastname,points:{}},appearence:{}}
+                var res=db.prepare("INSERT INTO skinlayout ( user_id, name,data) VALUES (?, ?, ?)").run(event.locals.user.id,ob.name+" "+ob.lastname,JSON.stringify(dt));
+                return {id:res.lastInsertRowid,name:ob.name+" "+ob.lastname}
             }
         }
         else
@@ -51,11 +44,9 @@ export const actions = {
         if(event.locals.user)
         {
             var txt= await event.request.json()
-            console.log(txt)
             if(txt.name.length>1 && txt.id)
             {
                 var res=db.prepare("UPDATE skinlayout SET name = ? WHERE id= ? and user_id = ?").run(txt.name,txt.id,event.locals.user.id);
-                console.log(res)
                 return {}
             }
         }

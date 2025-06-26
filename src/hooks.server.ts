@@ -17,8 +17,8 @@ export const handle: Handle = async ({ event, resolve }) => {
   		event.locals.user_ip="devIP"
 	  const token = event.cookies.get("session") ?? null;
 	  if (token === null) {
-		  event.locals.user = null;
-		  event.locals.session = null;
+		  event.locals.user = undefined;
+		  event.locals.session = undefined;
 	  }
 	  else
 	  {
@@ -29,8 +29,8 @@ export const handle: Handle = async ({ event, resolve }) => {
 			deleteSessionTokenCookie(event);
 		}
 	
-		event.locals.session = session;
-		event.locals.user = user;
+		event.locals.session = session||undefined;
+		event.locals.user = user||undefined;
 	  }
 	const response = await resolve(event);
 	return response;
