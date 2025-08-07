@@ -1,10 +1,11 @@
 <script lang="ts">
     import { Input, Tabs, Label, Toggle } from 'flowbite-svelte'; 
     import type { PageData } from '../$types';
-    import { SkinEditor, SkinPart } from './panel';
-    import SimpleCat from './simpleCat.svelte';
-    import DuoCat from './duoCat.svelte';
-    var {data,skinEditor,onExtra,setExtra=$bindable()} :{data:PageData["datas"],skinEditor:SkinEditor,onExtra:(slime:boolean,size:number)=>void,setExtra:(slim:boolean,taille:number)=>void} = $props();
+    import { SkinEditor,BASE } from './panel';
+    import SimpleCat from './SimpleCat.svelte';
+    import MutliCat from './MutliCat.svelte';
+    import SplittedMutliCat from './SplittedMutliCat.svelte';
+    var {data,skinEditor,onExtra,setExtra=$bindable()} :{data:PageData,skinEditor:SkinEditor,onExtra:(slime:boolean,size:number)=>void,setExtra:(slim:boolean,taille:number)=>void} = $props();
     var taille:number=$state(40);
     var slim=$state(false);   
     setExtra=(silm:boolean,taill:number)=>
@@ -16,7 +17,7 @@
   </script>
   <div class="h-full overflow-auto">
     <Tabs contentClass="p-4 rounded-lg dark:bg-gray-800 mt-4 bg-primary-300">
-        <SimpleCat cat={data[SkinPart.base]} layer={SkinPart.base} {skinEditor}>
+        <SimpleCat cat={data.datas[BASE]} layer={BASE} {skinEditor}>
             <div class="grid gap-6 mb-6 md:grid-cols-2">
                 <div>
                     <Label for="taille"  class="mb-2 ml=5 mt-5 text-secondary-text text-xl" >Taille:</Label>
@@ -33,12 +34,16 @@
                 </div>    
            </div>
         </SimpleCat>
-        <SimpleCat cat={data[SkinPart.underwear]} layer={SkinPart.underwear} {skinEditor}/>
-        <SimpleCat cat={data[SkinPart.hair]} layer={SkinPart.hair} {skinEditor}/>
-        <DuoCat cat={data["eyes"]} simpleLayer={"eyes"} layerLeft={SkinPart.left_eye} layerRight={SkinPart.right_eye} titleLeft="Oeil Gauche" titleRight="Oeil Droit" {skinEditor}/>
-        <SimpleCat cat={data[SkinPart.cosmetic]} layer={SkinPart.cosmetic} {skinEditor}/>
-        <SimpleCat cat={data[SkinPart.mouth]} layer={SkinPart.mouth} {skinEditor}/>
-        <SimpleCat cat={data[SkinPart.beard]} layer={SkinPart.beard} {skinEditor}/>
+        {#each data.layers as layer  }
+            {#if layer.splited}
+            <!--TODO redo the duocat-->
+                <SplittedMutliCat cat={data.datas[layer.name]} layer={layer.name} {skinEditor}/>
+            {:else if layer.multi}
+                <MutliCat cat={data.datas[layer.name]} layer={layer.name} {skinEditor}/>
+            {:else if layer.name!=BASE}
+                <SimpleCat cat={data.datas[layer.name]} layer={layer.name} {skinEditor}/>
+            {/if}
+        {/each}
     </Tabs>
   
 </div>

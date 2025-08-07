@@ -1,0 +1,56 @@
+[
+   {
+        "name":"base",
+        "_note":"The 'base' layer mus always exist, and can contain a 'skinRes' attribute to define the final resolution of the skin, assets can be smaller but not higher res than this!",
+        "_note1":"The layer definitions order is important! It might create clipping issues if a layer with bigger size is defined before a smaller one",
+        "skinRes":256,
+        "displayGen":"body",
+        "size":0
+    },
+    {
+        "name":"hair",
+        "clearable":true,
+        "cats":{"short":{"name":"Courts"},"medium":{"name":"Mi-Long","displayGen":"headlong"},"long":{"name":"Long","displayGen":"headlong"}},
+        "size":0.021,
+        "displayGen":"headfull",
+        "external":true
+    },
+    {
+        "name":"brows",
+        "clearable":true,
+        "multi":true,
+        "size":0.017,
+        "displayGen":"face"
+    },
+    {
+        "name":"eyes",
+        "splited":true,
+        "size":0.005,
+        "displayGen":"face"
+    },
+    {
+        "name":"mouth",
+        "size":0.005,
+        "displayGen":"face"
+    },
+    {
+        "name":"beard",
+        "clearable":true,
+        "size":0.02,
+        "external":true,
+        "displayGen":"headfull"
+    },
+    {
+        "name":"cosmetic",
+        "clearable":true,
+        "multi":true,
+        "size":0.03,
+        "displayGen":"face"
+    },
+   {
+        "name":"underwear",
+        "size":0.1,
+        "external":true,
+        "displayGen":"bodyfull"
+    }
+]

@@ -6,68 +6,123 @@
     import type { PageData } from './$types';
     import { browser } from '$app/environment';
     import { Button, Range } from "flowbite-svelte";
-    import Slide from "flowbite-svelte/Slide.svelte";
-    export let data:PageData;
+    import type { SkinLayersFormat, TextureInfos } from "../../editor/[id]/skin/skinTypes";
+    import { setSkinSize } from "$lib/skinviewer3d/textureHelper";
+    import { BASE } from "../../editor/[id]/skin/panel";
+    let {data}:{data:PageData}=$props();
     const size=128;
-    const layers:skinViewer.LayerInfo[]=[
-        {name:"base",size:0},{name:"underwear",size:0.1,external:true},{name:"mouth",size:0.01},{name:"beard",size:0.02,external:true},
-        {name:"eyes",size:0.03},{name:"eyesc",size:0.04},{name:"cosmetic",size:0.01},{name:"brows",size:0.06},{name:"hair",size:0.07,external:true}
-    ]
+    const layers:skinViewer.LayerInfo[]=[{name:"head",size:0},{name:"base",size:0},{name:"main",size:0.05,external:false}]
+    const settings={
+        "bodyfull":{x:-30.75,y:-4.08,z:27.87,o:0},
+        "body":{x:-30.75,y:-4.08,z:27.87,o:0},
+        "head":{x:-10.04,y:3.88,z:16.76,o:-11},
+        "headfull":{x:-10.04,y:3.88,z:16.76,o:-11},
+        "headlong":{x: -14.88, y: 5.75, z: 24.85,o:-6},
+        "face":{x:0,y:0,z:14.83,o:-12},
+        
+    }
     onMount(() => {
         if (browser) {
+            setSkinSize((data.layers.find(v=>v.name==BASE) as any).skinRes)
             viewer = new skinViewer.SkinViewer({
                 canvas,
                 width: size,
                 height:size,
                 layers,
                 preserveDrawingBuffer:true
-            });          
+            });     
+                viewer.controls.addEventListener("change",()=>{
+                    console.log("cam:",viewer.camera.position);
+                    console.log("offset:",height);
+                })
+            window.setViewer=(set:any)=>{
+                viewer.camera.position.set(set.x,set.y,set.z);
+                viewer.playerObject.position.set(viewer.playerObject.position.x,set.o,viewer.playerObject.position.z)
+            }
         }
 
     });
-    function load(layer:string)
+    async function start()
     {
-        viewer.loadSkin(layer,"/skins/"+layer+"/"+data.datas[layer].images[1].id+".png")
-    }
-    function startGen(layer:string)
-    {
-        var prog=0;
-        var int=setInterval(()=>{
-            var cur=data.datas[layer]?.images;
-            if(prog>=cur.length)
+        for(let l of data.layers)
+        {
+            var dts=data.datas[l.name];
+            if(dts.cats)
             {
-                prog=0;
-                clearInterval(int);
-            }
-            else if(cur)
-            {
-                const p1=cur[prog].id;
-                if(p1 !="clear")
+                for(let k of Object.keys(dts.cats))
                 {
-                    viewer.loadSkin(layer,"/skins/"+layer+"/"+p1+".png");
-                    if(layer=="eyes")
-                        viewer.loadSkin("eyesc","/skins/"+layer+"/"+p1+"b.png");
-                    setTimeout(()=>{
-                        fetch("",{method:"post", body:JSON.stringify({id:p1,sub:layer,image:canvas.toDataURL("png")})});
-                    },200)
+                    await genForGroup(l.name,dts.cats[k].images,l.cats[k].displayGen||l.displayGen||"body",k)
                 }
-                prog++;
-
             }
-        },500)
+            else if(dts.images)
+            {
+                await genForGroup(l.name,dts.images,l.displayGen||"body")
+            }
+        }
     }
-    var height=0;
-    $:if(height)
+    async function genForGroup(layer:string,images:TextureInfos[],type:SkinLayersFormat["displayGen"],cat?:string)
     {
-        viewer.playerObject.position.set(viewer.playerObject.position.x,height,viewer.playerObject.position.z)
+        const base=cat?cat:"";
+
+        for(let img of images)
+        {
+            if(img.subs)   
+            {
+                await genForType(layer,img.subs,type,base+"/"+img.id);  
+            }
+            else
+                await genForType(layer,[img],type,base);  
+        }
     }
-    var layer:string;
+    function loadBase()
+    {
+        viewer.loadSkin("base","/skins/body.png");
+    }
+      function loadHead()
+    {
+        viewer.loadSkin("head","/skins/head.png");
+    }
+    async function genForType(layer:string,images:TextureInfos[],type:SkinLayersFormat["displayGen"],parent?:string)
+    {
+        var needHead=type=="headfull"|| type=="face" || type=="headlong";
+        viewer.loadSkin("head",needHead?"/skins/head.png":"/skins/clear.png");
+        viewer.loadSkin("base",type=="bodyfull"?"/skins/body.png":"/skins/clear.png");
+        var set=settings[type||"body"];
+        viewer.camera.position.set(set.x,set.y,set.z);
+          viewer.playerObject.position.set(viewer.playerObject.position.x,set.o,viewer.playerObject.position.z)
+        //viewer.controls.target
+        for(let img of images)
+        {
+            const p1=img.id;
+            if(p1 !="clear")
+            {
+                let l=layer+"/";
+                if(parent)
+                l=l+parent+"/"
+                await loadOne("/skins/"+l+p1+".png",l+p1);
+            }
+        }
+    }
+    function loadOne(url:string,id:string)
+    {
+        viewer.loadSkin("main",url);
+        setTimeout(()=>{
+            fetch("",{method:"post", body:JSON.stringify({id,image:canvas.toDataURL("png")})});
+        },200)
+        return new Promise<void>(res=>{
+            setTimeout(res,300);
+        })
+    }
+    var height=$state(0);
+    $effect(()=>{
+        console.log("heigt:",height)
+        viewer.playerObject.position.set(viewer.playerObject.position.x,height,viewer.playerObject.position.z)
+    });
 </script>
 <div class="flex">
-<canvas class="bg-gray-700"  bind:this={canvas}/>
-<input type="text" bind:value={layer}>
-<Button onclick={()=>load(layer)}>Load</Button>
-<Button onclick={()=>startGen(layer)}>Start</Button>
-<Button onclick={()=> viewer.loadSkin("base","/skins/head.png")}>Load Head</Button>
+<canvas class="bg-gray-700"  bind:this={canvas}></canvas>
+<Button onclick={()=>loadBase()}>Load Body</Button>
+<Button onclick={()=>loadHead()}>Load Head</Button>
+<Button onclick={()=>start()}>Start</Button>
 <Range bind:value={height} min="-50" max=50 />
 </div>

@@ -1,4 +1,3 @@
-import { ALLOWED_DISCORD, DISCORD_ID, DISCORD_TOKEN } from '$env/static/private';
 import { Client, GatewayIntentBits, REST, Routes } from 'discord.js';
 import uploadCmd from "$lib/bot/uploadCmd"
 import type { Command } from '../../app';
@@ -14,9 +13,9 @@ const commands=[
 console.info("Starting Discord Bot...")
 async function start()
 {
-    const rest = new REST({ version: '10' }).setToken(DISCORD_TOKEN);
-    ALLOWED_DISCORD.split(",").forEach(guild=>{
-        rest.put(Routes.applicationGuildCommands(DISCORD_ID,guild), { body: commands.map(c=>c.command) });
+    const rest = new REST({ version: '10' }).setToken(import.meta.env.DISCORD_TOKEN);
+    import.meta.env.ALLOWED_DISCORD.split(",").forEach(guild=>{
+        rest.put(Routes.applicationGuildCommands(import.meta.env.DISCORD_ID,guild), { body: commands.map(c=>c.command) });
     })
     
 
@@ -42,9 +41,9 @@ client.on('interactionCreate', async interaction => {
         await interaction.reply("Commande inconnu")
   });
 
-  client.login(DISCORD_TOKEN).catch(console.error)
+  client.login(import.meta.env.DISCORD_TOKEN).catch(console.error)
 }
-if(DISCORD_ID && DISCORD_TOKEN)
+if(import.meta.env.DISCORD_ID && import.meta.env.DISCORD_TOKEN)
     start().catch(console.error);
 else
     console.warn("Les tokens bots sont inexistant, bot désactivé.")

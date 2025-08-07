@@ -2,7 +2,6 @@
     import { browser } from "$app/environment";
     import * as skinViewer from "$lib/skinviewer3d/skinview3d";
     import { onMount } from "svelte";
-    import { layers } from "./panel";
     var canvas: HTMLCanvasElement;
     let {viewer=$bindable()}:{viewer:skinViewer.SkinViewer}=$props()
     onMount(() => {
@@ -12,7 +11,7 @@
                 canvas,
                 width: h,
                 height:h,
-                layers
+                layers:[]//TODO un préload possible ?
             });
             var resizeObserver:ResizeObserver;
             if( canvas?.parentElement)

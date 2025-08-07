@@ -493,7 +493,6 @@ export class PlayerObject extends Group {
 	readonly cape: CapeObject;
 	readonly elytra: ElytraObject;
 	readonly ears: EarsObject;
-
 	constructor(layers:LayerInfo[]) {
 		super();
 

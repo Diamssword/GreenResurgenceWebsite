@@ -1,15 +1,9 @@
-import type { eyeType } from '$lib/skinviewer3d/textureHelper';
 import type { PageLoad } from './$types';
-import type { SkinPart, SkinPartsFormat } from './skin/skinTypes';
+import layersOb from "$lib/datas/layers.json"
+import type { SkinPartsFormat,SkinLayersFormat } from './skin/skinTypes';
+const layers= layersOb as SkinLayersFormat[]
 export const load = (async (ev) => {
-    var datas=await(await ev.fetch("/skins/parts.json")).json();
-    for(var d1 in datas)
-    {
-        if(!datas[d1].images)
-        {
-            datas[d1].images=await(await ev.fetch("/skins/"+d1+"/parts.json")).json();
-        }
-    }
+    var datas=await(await ev.fetch("/skins/datas.json")).json();
     var d= datas as {[key:string]:SkinPartsFormat}
-    return {datas:d,sheet:ev.data.sheet};
+    return {datas:d,sheet:ev.data.sheet,layers};
 }) satisfies PageLoad;

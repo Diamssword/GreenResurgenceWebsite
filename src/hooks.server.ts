@@ -1,9 +1,13 @@
+import { ENABLE_BOT } from '$env/static/private';
 import { deleteSessionTokenCookie, setSessionTokenCookie, validateSessionToken } from '$lib/session/session';
 import type { Handle } from '@sveltejs/kit';
 
-import("$lib/bot/bot").catch(console.error)
+if(ENABLE_BOT?.toLowerCase()=="true")
+	import("$lib/bot/bot").catch(console.error)
+else
+	console.log("ENABLE_BOT not set to 'true', skipping...")
 import("$lib/DB").catch(console.error)
-import("$lib/backup").catch(console.error)
+import("$lib/layers_visitor").catch(console.error)
 import * as fs from 'fs'
 clearCache();
 export const handle: Handle = async ({ event, resolve }) => {

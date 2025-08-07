@@ -1,5 +1,4 @@
-import type { ColorRepresentation } from "three"
-import type { SkinPart } from "./panel"
+import type { LayerInfo } from "$lib/skinviewer3d/skinview3d"
 
 export type SaveFormat={
     stats:{
@@ -15,21 +14,37 @@ export type SaveFormat={
         size:number,
         slim:boolean,
     }
-    skin:{[key:string]:{
+    skin:{
         id:string,
-        color?:ColorRepresentation
-        height?:number
-    }
-    }
+        index:number,
+        texture?:PickedTextureInfos,
+        side?:"right"|"left"
+    }[]
+}
+export type SkinLayerInstance={index:number,texture?:PickedTextureInfos, parent:SkinLayersFormat,side?:"right"|"left"};
+export type SkinLayersFormat=LayerInfo &{
+        splited?:boolean,
+        multi?:boolean,
+        clearable?:boolean,
+        cats?:{[key:string]:{name:string,displayGen?:"body"|"bodyfull"|"head"|"headfull"|"headlong"|"face"}},
+        displayGen?:"body"|"bodyfull"|"head"|"headfull"|"headlong"|"face"
+    
 }
 export type SkinPartsFormat={
     
         title:string,
-        images:[{id:string,name?:string,cat?:string}],
-        type:"face"|"head"|"body",
-        layered?:boolean,
-        sided?:boolean,
-        cats?:{[key:string]:string},
-        colors?:ColorRepresentation[]|"free"
+        splited?:boolean,
+        images?:TextureInfos[],
+        cats?:{[key:string]:{name:string,images:TextureInfos[]}},
     
+}
+export type PickedTextureInfos={
+    id:string,
+    category?:string,
+    subs?:string,
+}
+export type TextureInfos={
+    id:string,
+    subs?:TextureInfos[]
+    name?:string,
 }

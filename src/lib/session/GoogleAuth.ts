@@ -1,11 +1,11 @@
 import { Google } from "arctic";
-import { GOOGLE_CLIENT_ID, GOOGLE_CLIENT_SECRET, VITE_BASE_URL } from "$env/static/private";
+import {VITE_BASE_URL } from "$env/static/private";
 import type { User } from "./session";
 import db from "$lib/DB";
 
 export const google = new Google(
-	GOOGLE_CLIENT_ID,
-	GOOGLE_CLIENT_SECRET,
+	import.meta.env.GOOGLE_CLIENT_ID,
+	import.meta.env.GOOGLE_CLIENT_SECRET,
 	VITE_BASE_URL+"/login/google/callback"
 );
 export function createUserGoogle(googleID:string,username:string ):User{

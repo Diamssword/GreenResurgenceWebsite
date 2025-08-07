@@ -1,65 +1,66 @@
 import type { Color } from "three";
 
 export type eyeType="2*2"|"2*3"|"2*4"|"3*4"|"none"
-export function resizeTexture(texture:HTMLImageElement)
-{
-    if(texture.width==texture.height)
-        return texture;
 
-    var can:HTMLCanvasElement= document.createElement("canvas");
-    can.width=can.height=128
-    var ctx=can.getContext("2d",{willReadFrequently:true});
-    if(texture.height==32 && texture.width==128)
-    {
-      ctx?.drawImage(texture,0,0)
-      
-    }
-    else if(texture.height==16 && texture.width==32)
-    {
-        var can1:HTMLCanvasElement= document.createElement("canvas");
-        can1.width=32;
-        can1.height=16;
-        var ctx1=can1.getContext("2d",{willReadFrequently:true});
-        if(ctx1)
-        {
-        ctx1.drawImage(texture,0,0);
-        var d=ctx1.getImageData(0,0,16,16);
-        ctx?.putImageData(d,16,16)
-        d=ctx1.getImageData(16,0,16,16);
-        ctx?.putImageData(d,80,16)
-        }
-    }
-    return can;
-}
-export function splitFaceTexture(texture:HTMLImageElement,right:boolean)
+var SKIN_SIZE=128;
+export function setSkinSize(size:number)
 {
+    if(size)
+        SKIN_SIZE=size;
+}
+export function getSkinSize()
+{
+    return SKIN_SIZE
+}
+function scaleToGoal(texture:HTMLCanvasElement|HTMLImageElement)
+{
+    if(texture.width !=SKIN_SIZE)
+    {
+        var can:HTMLCanvasElement= document.createElement("canvas");
+        can.width=can.height=SKIN_SIZE
+        var ctx=can.getContext("2d",{willReadFrequently:true});
+        if(ctx)
+            ctx.imageSmoothingEnabled = false;
+        ctx?.drawImage(texture,0,0,SKIN_SIZE,SKIN_SIZE);
+        return can;
+    }
+    return texture;
+}
+export function resizeTexture(texture:HTMLImageElement|HTMLCanvasElement)
+{
+    texture=scaleToGoal(texture);
+        return texture;
+}
+export function splitFaceTexture(texture:HTMLImageElement|HTMLCanvasElement,right:boolean)
+{
+    const fac=SKIN_SIZE/128; //method for a 128px skin, so we scale our numbers for the final resolution;
     var can:HTMLCanvasElement= document.createElement("canvas");
-    can.width=can.height=128
+    can.width=can.height=SKIN_SIZE
     var can1:HTMLCanvasElement= document.createElement("canvas");
-    can1.width=can1.height=128
+    can1.width=can1.height=SKIN_SIZE
     var ctx1=can1.getContext("2d",{willReadFrequently:true});
     ctx1?.drawImage(texture,0,0);
     var ctx=can.getContext("2d",{willReadFrequently:true});
     if(ctx1 && ctx)
     {
         if(!right){
-            ctx.putImageData(ctx1.getImageData(0,0,24,32),0,0)
-            ctx.putImageData(ctx1.getImageData(56,0,8,32),56,0)
-            ctx.putImageData(ctx1.getImageData(32,0,8,16),32,0)
-            ctx.putImageData(ctx1.getImageData(0,32,128,96),0,32)
+            ctx.putImageData(ctx1.getImageData(0,0,24*fac,32*fac),0,0)
+            ctx.putImageData(ctx1.getImageData(56*fac,0,8*fac,32*fac),56*fac,0)
+            ctx.putImageData(ctx1.getImageData(32*fac,0,8*fac,16*fac),32*fac,0)
+            ctx.putImageData(ctx1.getImageData(0,32*fac,128*fac,96*fac),0,32*fac)
 
-            ctx.putImageData(ctx1.getImageData(64,0,24,32),64,0)
-            ctx.putImageData(ctx1.getImageData(56+64,0,8,32),56+64,0)
-            ctx.putImageData(ctx1.getImageData(32+64,0,8,16),32+64,0)
-            ctx.putImageData(ctx1.getImageData(64,32,128,96),64,32)
+            ctx.putImageData(ctx1.getImageData(64*fac,0,24*fac,32*fac),64*fac,0)
+            ctx.putImageData(ctx1.getImageData((56+64)*fac,0,8*fac,32*fac),(56+64)*fac,0)
+            ctx.putImageData(ctx1.getImageData((32+64)*fac,0,8*fac,16*fac),(32+64)*fac,0)
+            ctx.putImageData(ctx1.getImageData(64*fac,32*fac,128*fac,96*fac),64*fac,32*fac)
         } else {
-            ctx.putImageData(ctx1.getImageData(24,16,32,16),24,16)
-            ctx.putImageData(ctx1.getImageData(24,0,8,16),24,0)
-            ctx.putImageData(ctx1.getImageData(40,0,8,16),40,0)
+            ctx.putImageData(ctx1.getImageData(24*fac,16*fac,32*fac,16*fac),24*fac,16*fac)
+            ctx.putImageData(ctx1.getImageData(24*fac,0,8*fac,16*fac),24*fac,0)
+            ctx.putImageData(ctx1.getImageData(40*fac,0,8*fac,16*fac),40*fac,0)
 
-            ctx.putImageData(ctx1.getImageData(24+64,16,32,16),24+64,16)
-            ctx.putImageData(ctx1.getImageData(24+64,0,8,16),24+64,0)
-            ctx.putImageData(ctx1.getImageData(40+64,0,8,16),40+64,0)
+            ctx.putImageData(ctx1.getImageData((24+64)*fac,16*fac,32*fac,16*fac),(24+64)*fac,16*fac)
+            ctx.putImageData(ctx1.getImageData((24+64)*fac,0,8*fac,16*fac),(24+64)*fac,0)
+            ctx.putImageData(ctx1.getImageData((40+64)*fac,0,8*fac,16*fac),(40+64)*fac,0)
         }
     }
     return can;

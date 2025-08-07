@@ -10,7 +10,7 @@
     import { browser } from '$app/environment';
     const active="inline-block text-lg font-medium text-center disabled:cursor-not-allowed p-4 rounded-lg active bg-primary-200 text-secondary-text" 
     const inactive="inline-block text-lg font-medium text-center disabled:cursor-not-allowed p-4 rounded-lg active hover:bg-primary-500 bg-primary-700 text-white"
-    let currentAppearence=$state({skin:{},stats:{points:{}},apparence:{}} as SaveFormat);
+    let currentAppearence=$state({skin:[] as any[],stats:{points:{}},apparence:{}} as SaveFormat);
     let saver=$state({loader:localLoader,saver:localSaver});
     let loadedClb=$state(()=>{});
     let canExport=$state(false)

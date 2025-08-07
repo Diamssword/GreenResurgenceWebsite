@@ -26,7 +26,7 @@ $SHARED.title=undefined;
             Rejoignez un clan, fortifiez votre campement, partez en expédition, améliorez vos compétences et forgez des alliances pour dominer une nature bien décidée à vous anéantir.
         </p>
         <div class="flex justify-center mb-5 mt-5">
-        <Button href="https://discord.com/invite/BgcDb6AZCQ" class="text-4xl"> Rejoignez nous <img class="size-20 ml-5" src="/images/svg/discord.svg"/></Button>
+        <Button href="https://discord.com/invite/BgcDb6AZCQ" class="text-4xl"> Rejoignez nous <img class="size-20 ml-5" alt="Discord" src="/images/svg/discord.svg"/></Button>
         </div>
         <div class="flex justify-center mb-20 text-3xl text-secondary-text">
             <p>🛠️Le serveur est toujours en projet et nous cherchons des gens motivés pour nous aider🛠️</p>
@@ -36,9 +36,6 @@ $SHARED.title=undefined;
 </div>
 
 <style>
-    .carrousel{
-        height: 600px;
-    }
     .megatext{
         font-size: 10rem;
     }

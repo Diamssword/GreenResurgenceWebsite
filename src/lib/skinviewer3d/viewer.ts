@@ -30,6 +30,8 @@ import {
 	DepthTexture,
 	Clock,
 	Object3D,
+	Vector3,
+	Camera,
 } from "three";
 import { OrbitControls } from "three/examples/jsm/controls/OrbitControls.js";
 import { EffectComposer } from "three/examples/jsm/postprocessing/EffectComposer.js";
@@ -38,9 +40,9 @@ import { RenderPass } from "three/examples/jsm/postprocessing/RenderPass.js";
 import { ShaderPass } from "three/examples/jsm/postprocessing/ShaderPass.js";
 import { FXAAShader } from "three/examples/jsm/shaders/FXAAShader.js";
 import { PlayerAnimation } from "./animation.js";
-import { type BackEquipment, LayerInfo, PlayerObject } from "./model.js";
+import { type BackEquipment, LayerInfo, PlayerObject, SkinObject } from "./model.js";
 import { NameTagObject } from "./nametag.js";
-import { colorCanvas, moveBrows, moveEyes, resizeTexture, splitFaceTexture, type eyeType } from "./textureHelper.js";
+import { colorCanvas, resizeTexture, splitFaceTexture } from "./textureHelper.js";
 
 export interface LoadOptions {
 	/**
@@ -61,7 +63,7 @@ export interface SkinLoadOptions extends LoadOptions {
 	 */
 	model?: ModelType | "auto-detect";
 	color?:ColorRepresentation,
-	side?:"left"|"right"|"both",
+	side?:"left"|"right",
 	animatedBrows?:boolean
 
 	/**
@@ -380,6 +382,7 @@ export class SkinViewer {
 		this.fxaaPass = new ShaderPass(FXAAShader);
 		this.composer.addPass(this.renderPass);
 		this.composer.addPass(this.fxaaPass);
+		this.renderer.sortObjects=false
 
 		this.playerObject = new PlayerObject(options.layers);
 		this.playerObject.name = "player";
@@ -461,7 +464,31 @@ export class SkinViewer {
 		this.canvas.addEventListener("webglcontextlost", this.onContextLost, false);
 		this.canvas.addEventListener("webglcontextrestored", this.onContextRestored, false);
 	}
-
+	public addLayer(layer:LayerInfo)
+	{
+		this.skinCanvas[layer.name]=document.createElement("canvas");
+		let l1= new SkinObject();
+		l1.name=layer.name;
+		l1.position.y=8+layer.size;
+		l1.position.x=layer.size
+		l1.position.z=layer.size
+		if(layer.color)
+			l1.color=new Color(layer.color)
+		l1.scale.add(new Vector3(layer.size,layer.size,layer.size))
+		this.playerObject.skins[layer.name]=l1;
+		this.playerObject.add(l1)
+	}
+	public removeLayer(layername:string)
+	{
+		if(this.skinCanvas[layername])
+		{
+			this.skinCanvas[layername].remove()
+			this.playerObject.remove(this.playerObject.skins[layername]);
+			this.playerObject.skins[layername].remove();
+			delete this.skinCanvas[layername];
+			delete this.playerObject.skins[layername];
+		}
+	}
 	private updateComposerSize(): void {
 		this.composer.setSize(this.width, this.height);
 		const pixelRatio = this.renderer.getPixelRatio();
@@ -521,25 +548,10 @@ export class SkinViewer {
 		if (source === null) {
 			this.resetSkin(layer);
 		} else if (isTextureSource(source)) {
-			source=resizeTexture(source as any)
-			if(options.side && options.side !="both")
-				source=splitFaceTexture(source,options.side=="right")
-			loadSkinToCanvas(this.skinCanvas[layer], source);
-		/*	if(layer=="eyes" || layer=="base")
-			{
-				moveEyes(this.skinCanvas["eyes"],this.skinCanvas["base"],options.eyeType);
-			}
-			else if(layer=="eyesc")
-			{
-				moveEyes(this.skinCanvas["eyesc"],undefined,options.eyeType);
-			}
-			if(options.animatedBrows ==true && layer=="brows")
-			{
-				moveBrows(this.skinCanvas["brows"],this.skinCanvas["base"],options.eyeType);
-			}
-				*/
-			if(options.color)
-				colorCanvas(this.skinCanvas[layer],new Color(options.color))
+			let s=resizeTexture(source as any)
+			if(options.side )
+				s=splitFaceTexture(s,options.side=="right")
+			loadSkinToCanvas(this.skinCanvas[layer], s);
 			this.recreateSkinTexture(layer);
 			var l=this.playerObject.skins[layer];
 			if (options.model === undefined || options.model === "auto-detect") {
@@ -551,9 +563,8 @@ export class SkinViewer {
 			if (options.makeVisible !== false) {
 				l.visible = true;
 			}
-
 			if (options.ears === true || options.ears == "load-only") {
-				loadEarsToCanvasFromSkin(this.earsCanvas, source);
+				loadEarsToCanvasFromSkin(this.earsCanvas, s);
 				this.recreateEarsTexture();
 				if (options.ears === true) {
 					this.playerObject.ears.visible = true;
@@ -677,7 +688,6 @@ export class SkinViewer {
 		this.render();
 		this.animationID = window.requestAnimationFrame(() => this.draw());
 	}
-
 	/**
 	 * Renders the scene to the canvas.
 	 * This method does not change the animation progress.
