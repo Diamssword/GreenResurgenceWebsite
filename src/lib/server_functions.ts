@@ -1,3 +1,4 @@
+import { API_KEY } from "$env/static/private";
 import type { RequestEvent } from "@sveltejs/kit";
 import type dayjs from "dayjs";
 import jwt from "jsonwebtoken"
@@ -10,7 +11,7 @@ export function checkAPIAuth(event :RequestEvent)
     if(auto)
     {
         try{
-            if(jwt.verify(auto,import.meta.env.API_KEY))
+            if(jwt.verify(auto,API_KEY))
                 return true;
         }catch(err)
         {
