@@ -5,6 +5,7 @@ import type { SkinLayersFormat, SkinPartsFormat, TextureInfos } from "../routes/
 const layers= layersOb as SkinLayersFormat[]
 
 const route=join(process.cwd(), 'static/skins/');
+console.log("trying to read files from ",route)
 var generated:{[key:string]:SkinPartsFormat}={};
 for(let layer of layers)
 {
