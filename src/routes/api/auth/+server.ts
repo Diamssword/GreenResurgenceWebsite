@@ -9,5 +9,5 @@ export const POST: RequestHandler = async (ev) => {
             var signed=jwt.sign({valid:1},import.meta.env.API_KEY,{expiresIn:"2h"})
             return json({token:signed},{status:200})
     }
-    return error(301);
+    return new Response("bad auth",{status:301});
 };
