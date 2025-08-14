@@ -5,6 +5,8 @@ import { API_KEY, API_TOKEN } from '$env/static/private';
 export const POST: RequestHandler = async (ev) => {
     
     var js=await ev.request.json();
+    console.log(js)
+    console.log(API_TOKEN)
     if(js.key==API_TOKEN)
     {
             var signed=jwt.sign({valid:1},API_KEY,{expiresIn:"2h"})
