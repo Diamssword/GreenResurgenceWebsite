@@ -1,9 +1,10 @@
 import layersOb from "$lib/datas/layers.json"
 import fs from "fs";
+import {join} from "path";
 import type { SkinLayersFormat, SkinPartsFormat, TextureInfos } from "../routes/editor/[id]/skin/skinTypes"
 const layers= layersOb as SkinLayersFormat[]
 
-const route='./static/skins/';
+const route=join(process.cwd(), 'static/skins/');
 var generated:{[key:string]:SkinPartsFormat}={};
 for(let layer of layers)
 {
