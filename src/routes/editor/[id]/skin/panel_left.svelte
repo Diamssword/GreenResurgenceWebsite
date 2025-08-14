@@ -14,6 +14,7 @@
         taille=taill||67;
         onExtra(slim,taille)
     }
+    console.log(data)
   </script>
   <div class="h-full overflow-auto">
     <Tabs contentClass="p-4 rounded-lg dark:bg-gray-800 mt-4 bg-primary-300">
