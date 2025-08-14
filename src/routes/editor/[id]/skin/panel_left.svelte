@@ -35,13 +35,13 @@
            </div>
         </SimpleCat>
         {#each data.layers as layer  }
+        {@const layerInf=data.datas[layer.name]||{title:"Unknown"}}
             {#if layer.splited}
-            <!--TODO redo the duocat-->
-                <SplittedMutliCat cat={data.datas[layer.name]} layer={layer.name} {skinEditor}/>
+                <SplittedMutliCat cat={layerInf} layer={layer.name} {skinEditor}/>
             {:else if layer.multi}
-                <MutliCat cat={data.datas[layer.name]} layer={layer.name} {skinEditor}/>
+                <MutliCat cat={layerInf} layer={layer.name} {skinEditor}/>
             {:else if layer.name!=BASE}
-                <SimpleCat cat={data.datas[layer.name]} layer={layer.name} {skinEditor}/>
+                <SimpleCat cat={layerInf} layer={layer.name} {skinEditor}/>
             {/if}
         {/each}
     </Tabs>
