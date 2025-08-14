@@ -23,9 +23,7 @@
         {
             currentAppearence.apparence={size,slim};
             dataSaver.saver(currentAppearence);
-            setTimeout(() => {
-                viewer.playerObject.forLayers(l=>l.modelType=(slim?"slim":"default"));    
-            }, 100);
+            viewer.playerObject.forLayers(l=>l.modelType=(slim?"slim":"default"));    
             size=100+size
             skinEditor.slim=slim;
             viewer.playerObject.scale.set(size/200,size/200,size/200)
@@ -34,6 +32,7 @@
     onloaded=()=>{
         if(viewer && browser)
         {
+            skinEditor.slim=currentAppearence.apparence?.slim||false;
             skinEditor.setViewer(viewer);
             skinEditor.loadSavedOrDefault(currentAppearence.skin)
             ldExtra(currentAppearence.apparence?.slim,currentAppearence.apparence?.size||67);

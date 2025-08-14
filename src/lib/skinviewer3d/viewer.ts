@@ -464,10 +464,11 @@ export class SkinViewer {
 		this.canvas.addEventListener("webglcontextlost", this.onContextLost, false);
 		this.canvas.addEventListener("webglcontextrestored", this.onContextRestored, false);
 	}
-	public addLayer(layer:LayerInfo)
+	public addLayer(layer:LayerInfo,slim?:boolean)
 	{
 		this.skinCanvas[layer.name]=document.createElement("canvas");
 		let l1= new SkinObject();
+		l1.modelType=slim?"slim":"default";
 		l1.name=layer.name;
 		l1.position.y=8+layer.size;
 		l1.position.x=layer.size

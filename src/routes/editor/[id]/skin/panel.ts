@@ -13,6 +13,7 @@ export class SkinEditor {
     slim?:boolean
     inited:boolean=false;
     listeners:(()=>void)[]=[];
+    private textureChangeListeners:{[layer:string]:{index:number,fn:(picked?:PickedTextureInfos)=>void}[]}={}
     saveFn:(data:SaveFormat["skin"])=>void;
     constructor(skinLib:PageData) {
         this.skinLib=skinLib;
@@ -26,6 +27,13 @@ export class SkinEditor {
         if(this.inited==true)
             callback();
         this.listeners.push(callback);
+    }
+    onTextureChange(layer:string,index:number,callback:(picked?:PickedTextureInfos)=>void)
+    {
+        if(!this.textureChangeListeners[layer])
+            this.textureChangeListeners[layer]=[];
+        this.textureChangeListeners[layer].push({index,fn:callback})
+        return this.getPickedTexture(layer,index);
     }
     setViewer(viewer:SkinViewer)
     {
@@ -56,7 +64,7 @@ export class SkinEditor {
             lay.texture=texture;
             this.reloadPart(lay);
         }
-        
+        return texture;
     }
     private findLayer(cat:string,index:number)
     {
@@ -94,7 +102,7 @@ export class SkinEditor {
     {
         const nL={name:type.name,index:this.getLayerTypeCount(type.name),parent:type,side};
         this.layers.push(nL);
-        this.viewer?.addLayer({name:nL.name+nL.index,size:type.size+0.01,external:type.external});        
+        this.viewer?.addLayer({name:nL.name+nL.index,size:type.size+0.01,external:type.external},this.slim);        
         return nL.index
     }
     removeLayer(layer:string,index:number)
@@ -131,6 +139,10 @@ export class SkinEditor {
     }
     reloadPart(layer:SkinLayerInstance)
     {
+        if(this.textureChangeListeners[layer.parent.name])
+        {
+            this.textureChangeListeners[layer.parent.name].forEach(v=>{if(v.index==layer.index){v.fn(this.getPickedTexture(layer.parent.name,v.index))}})
+        }
         if(this.skinLib && this.viewer)
         {
             var text=layer.texture||"clear";

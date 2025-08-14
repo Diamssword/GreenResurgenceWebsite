@@ -26,6 +26,8 @@
   --color-secondary-900: #3f5427;
   --color-secondary-text1: #bdd5a9;
   --color-secondary-text: #bb7d25;
+  --color-secondary-text2: #d48e2a;
+  
 }
 @source "../node_modules/flowbite-svelte/dist";
 @source "../node_modules/flowbite-svelte-icons/dist";

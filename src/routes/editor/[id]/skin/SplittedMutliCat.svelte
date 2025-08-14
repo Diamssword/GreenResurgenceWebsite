@@ -140,9 +140,9 @@
                     {#if sub.images}
                         {#each sub.images as skin}
                             {#if skin.subs }
-                                <DrawerButton category={subk} {layer} {skinEditor} texture={skin} onclick={(sub)=>pickTexture(layer,l,{subs:skin.id,category:subk,id:sub.id})} />
+                                <DrawerButton index={l} category={subk} {layer} {skinEditor} texture={skin} onclick={(sub)=>pickTexture(layer,l,{subs:skin.id,category:subk,id:sub.id})} />
                             {:else}
-                                <PartButton {layer} category={subk} {skinEditor} texture={skin} onclear={()=>pickTexture(layer,l)} onclick={()=>pickTexture(layer,l,{id:skin.id,subs:subk})}/>
+                                <PartButton {layer} index={l} category={subk} {skinEditor} texture={skin} onclear={()=>pickTexture(layer,l)} onclick={()=>pickTexture(layer,l,{id:skin.id,subs:subk})}/>
                             {/if}
                         {/each}     
                     {/if}
