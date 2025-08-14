@@ -57,7 +57,8 @@ function sanitizeData(data:any)
         }
     } as any;
     Object.keys(data.appearance?.additional).forEach(k=>{
-        b.appearance.additional[k]=maxStrLength(data.appearance?.additional[k]);
+        if(typeof data.appearance?.additional[k]=='string')
+            b.appearance.additional[k]=maxStrLength(data.appearance?.additional[k]);
     })
     return b;
 }
