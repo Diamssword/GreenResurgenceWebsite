@@ -328,16 +328,17 @@ function formatSendingDatas(profile:SaveFormat,layers:LayerInfo[])
 {
     const externals=layers.filter(v=>v.external==true);
     var res= {
-        appearence:{
+        appearance:{
             size:profile.apparence.size,
             slim:profile.apparence.slim,
+            additional:{}
         },
         stats:profile.stats
     } as any
     externals.forEach(v=>{
         let skin=profile.skin.find(v1=>v1.id==v.name);
         if(skin?.texture)
-            res.appearence[v.name]=skin.texture;
+            res.appearance.additional[v.name]=skin.texture;
     })
     return res;
 }

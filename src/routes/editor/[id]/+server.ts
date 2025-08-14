@@ -41,10 +41,11 @@ function maxStrLength(text:string,max:number=300)
 function sanitizeData(data:any)
 {
     var b={
-         appearence:{
-            underwear:maxStrLength(data.appearence?.underwear||"default"),
-            size:maxStrLength(data.appearence?.size||67),
-            slim:data.appearence?.slim==true?true:false,
+         appearance:{
+            additional:{},
+            underwear:maxStrLength(data.appearance?.underwear||"default"),
+            size:maxStrLength(data.appearance?.size||67,2),
+            slim:data.appearance?.slim==true?true:false,
         },
         stats:{
             firstname:maxStrLength(data.stats?.firstname||"Jean",128),
@@ -55,16 +56,9 @@ function sanitizeData(data:any)
             points:data.stats?.points
         }
     } as any;
-    if(data.appearence.hair)
-    {
-        b.appearence.hair=maxStrLength(data.appearence.hair);
-        b.appearence.hairColor=maxStrLength(data.appearence.hairColor||"5D3A1A",10);
-    }
-     if(data.appearence.beard)
-    {
-        b.appearence.beard=maxStrLength(data.appearence.beard);
-        b.appearence.beardColor=maxStrLength(data.appearence.beardColor||"5D3A1A",10);
-    }
+    Object.keys(data.appearance?.additional).forEach(k=>{
+        b.appearance.additional[k]=maxStrLength(data.appearance?.additional[k]);
+    })
     return b;
 }
 setInterval(()=>{
