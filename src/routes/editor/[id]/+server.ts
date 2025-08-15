@@ -5,6 +5,7 @@ import dayjs from "dayjs"
 import { error, json } from '@sveltejs/kit';
 import { skin_datas } from '$lib/server_functions';
 import db from '$lib/DB';
+import type { PickedTextureInfos } from './skin/skinTypes';
 const uid = new ShortUniqueId({ length: 6 });
 
 export const POST: RequestHandler = async (ev) => {
@@ -57,8 +58,19 @@ function sanitizeData(data:any)
         }
     } as any;
     Object.keys(data.appearance?.additional).forEach(k=>{
-        if(typeof data.appearance?.additional[k]=='string')
-            b.appearance.additional[k]=maxStrLength(data.appearance?.additional[k]);
+        if(data.appearance?.additional[k]?.id )
+        {
+            let rest="";
+            let t=data.appearance?.additional[k] as PickedTextureInfos;
+            if(t.category)
+                rest=t.category+"/";
+            if(t.subs)
+                rest=rest+t.subs+"/"
+            rest=rest+t.id
+            console.log(rest)
+            b.appearance.additional[k]=maxStrLength(rest);
+        }
+            
     })
     return b;
 }

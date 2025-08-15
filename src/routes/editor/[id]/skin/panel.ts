@@ -338,7 +338,7 @@ function formatSendingDatas(profile:SaveFormat,layers:LayerInfo[])
     externals.forEach(v=>{
         let skin=profile.skin.find(v1=>v1.id==v.name);
         if(skin?.texture)
-            res.appearance.additional[v.name]=skin.texture.id;
+            res.appearance.additional[v.name]=skin.texture;
     })
     return res;
 }
