@@ -67,7 +67,6 @@ function sanitizeData(data:any)
             if(t.subs)
                 rest=rest+t.subs+"/"
             rest=rest+t.id
-            console.log(rest)
             b.appearance.additional[k]=maxStrLength(rest);
         }
             
