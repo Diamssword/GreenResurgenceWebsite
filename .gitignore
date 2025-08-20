@@ -24,7 +24,6 @@ vite.config.js.timestamp-*
 vite.config.ts.timestamp-*
 
 /uploaded
-/static/skins/*
 /datas/skins
 /datas/skins_display
 DB.sqlite
