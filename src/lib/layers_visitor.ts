@@ -1,11 +1,14 @@
-import layersOb from "$lib/datas/layers.json"
 import fs from "fs";
 import {join} from "path";
 import type { SkinLayersFormat, SkinPartsFormat, TextureInfos } from "../routes/editor/[id]/skin/skinTypes"
-const layers= layersOb as SkinLayersFormat[]
 
-const route=join(process.cwd(), 'static/skins/');
+const route=join(process.cwd(), 'datas/skins/');
+if(!fs.existsSync(route))
+{
+  fs.mkdirSync(route,{recursive:true});
+}
 console.log("trying to read files from ",route)
+const layers=await(await fetch(import.meta.env.VITE_BASE_URL+"/datas/layers.json")).json() as SkinLayersFormat[];
 var generated:{[key:string]:SkinPartsFormat}={};
 for(let layer of layers)
 {
@@ -14,7 +17,7 @@ for(let layer of layers)
     {
         if(layer.cats)
         {
-            const g=generated[layer.name]={title:layer.name,cats:{} as any,splited:layer.splited};            
+            const g=generated[layer.name]={title:layer.display||layer.name,cats:{} as any,splited:layer.splited};            
             for(let k1 of Object.keys(layer.cats))
             {
                 if(fs.existsSync(route+layer.name+"/"+k1))
@@ -22,7 +25,7 @@ for(let layer of layers)
             }
         }
         else
-            generated[layer.name]={title:layer.name,images:readFiles(route+layer.name,layer.clearable),splited:layer.splited};
+            generated[layer.name]={title:layer.display||layer.name,images:readFiles(route+layer.name,layer.clearable),splited:layer.splited};
     }
 }
 function readFiles(path:string,withClear?:boolean)
@@ -50,4 +53,4 @@ function readFiles(path:string,withClear?:boolean)
     })
     return res;
 }
-fs.writeFileSync(route+"datas.json",JSON.stringify(generated));
+fs.writeFileSync(join(process.cwd(), 'datas/skin_datas.json'),JSON.stringify(generated));

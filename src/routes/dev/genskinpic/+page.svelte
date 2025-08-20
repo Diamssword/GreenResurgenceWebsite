@@ -99,7 +99,7 @@
                 let l=layer+"/";
                 if(parent)
                 l=l+parent+"/"
-                await loadOne("/skins/"+l+p1+".png",l+p1);
+                await loadOne("/datas/skins/"+l+p1+".png",l+p1);
             }
         }
     }

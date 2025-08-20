@@ -33,7 +33,7 @@
 <Tabs tabStyle="pill"  class=" pb-4" contentClass=" p-3 h-fit rounded-lg bg-primary-300">
     <TabItem open  title="Caracteristiques" activeClass={active} inactiveClass={inactive}>
         <div  class="bg-primary-200 rounded-md">
-        <MainSh bind:currentAppearence={currentAppearence} dataSaver={saver} bind:onloaded={loadedClb} onPointsUpdate={pointsExports}/>
+        <MainSh {data} bind:currentAppearence={currentAppearence} dataSaver={saver} bind:onloaded={loadedClb} onPointsUpdate={pointsExports}/>
         </div>
     </TabItem>
     <TabItem title="Apparence" activeClass={active}  inactiveClass={inactive}>

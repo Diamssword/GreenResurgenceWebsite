@@ -150,7 +150,7 @@ export class SkinEditor {
             if(text=="clear")
                 this.viewer.loadSkin(layer.parent.name+layer.index,"/skins/clear.png")
             else
-                this.viewer.loadSkin(layer.parent.name+layer.index,"/skins/"+this.getTexturePath(layer),{side,model:this.slim?"slim":"default"})
+                this.viewer.loadSkin(layer.parent.name+layer.index,"/datas/skins/"+this.getTexturePath(layer),{side,model:this.slim?"slim":"default"})
             this.saveFn?.(this.toJson())
         }
     }

@@ -23,6 +23,7 @@ export type SaveFormat={
 }
 export type SkinLayerInstance={index:number,texture?:PickedTextureInfos, parent:SkinLayersFormat,side?:"right"|"left"};
 export type SkinLayersFormat=LayerInfo &{
+        display?:string,
         splited?:boolean,
         multi?:boolean,
         clearable?:boolean,

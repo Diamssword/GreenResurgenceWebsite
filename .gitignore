@@ -25,6 +25,8 @@ vite.config.ts.timestamp-*
 
 /uploaded
 /static/skins/*
+/datas/skins
+/datas/skins_display
 DB.sqlite
 DB.sqlite-shm
 DB.sqlite-wal
