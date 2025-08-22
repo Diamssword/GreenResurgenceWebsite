@@ -8,18 +8,20 @@
     import { getProfileSaver, localLoader, localSaver } from './skin/panel';
     import { onMount } from 'svelte';
     import { browser } from '$app/environment';
+    import WithoutStats from './sheet/without_stats.svelte';
     const active="inline-block text-lg font-medium text-center disabled:cursor-not-allowed p-4 rounded-lg active bg-primary-200 text-secondary-text" 
     const inactive="inline-block text-lg font-medium text-center disabled:cursor-not-allowed p-4 rounded-lg active hover:bg-primary-500 bg-primary-700 text-white"
     let currentAppearence=$state({skin:[] as any[],stats:{points:{}},apparence:{}} as SaveFormat);
     let saver=$state({loader:localLoader,saver:localSaver});
     let loadedClb=$state(()=>{});
     let canExport=$state(false)
-    const pointsExports=(d:number)=>canExport=d<=0;
+    const pointsExports=(d:number)=>{canExport=data.factions==undefined || d<=0};
     if(data.sheet && data.sheet.id)
     {
      saver=getProfileSaver(data.sheet.id,data.sheet.data);
     }
-    
+    if(data.factions==undefined)
+        canExport=true;
     let loaded=false;
     onMount(()=>{
         if(browser && !loaded)
@@ -33,7 +35,11 @@
 <Tabs tabStyle="pill"  class=" pb-4" contentClass=" p-3 h-fit rounded-lg bg-primary-300">
     <TabItem open  title="Caracteristiques" activeClass={active} inactiveClass={inactive}>
         <div  class="bg-primary-200 rounded-md">
-        <MainSh {data} bind:currentAppearence={currentAppearence} dataSaver={saver} bind:onloaded={loadedClb} onPointsUpdate={pointsExports}/>
+        {#if data.factions}
+            <MainSh {data} bind:currentAppearence={currentAppearence} dataSaver={saver} bind:onloaded={loadedClb} onPointsUpdate={pointsExports}/>
+        {:else}
+            <WithoutStats {data} bind:currentAppearence={currentAppearence} dataSaver={saver} bind:onloaded={loadedClb} onPointsUpdate={pointsExports}/>
+        {/if}
         </div>
     </TabItem>
     <TabItem title="Apparence" activeClass={active}  inactiveClass={inactive}>
@@ -42,4 +48,3 @@
         </div>
     </TabItem>
 </Tabs>
-

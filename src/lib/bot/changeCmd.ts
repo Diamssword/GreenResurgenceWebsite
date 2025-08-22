@@ -1,7 +1,6 @@
 import { SlashCommandAttachmentOption, SlashCommandBuilder, SlashCommandStringOption } from "discord.js";
 import type { Command } from "../../app";
 import * as fs from "fs"
-import { VITE_BASE_URL } from "$env/static/private";
 export default {
     command: new SlashCommandBuilder().setName("modif_image").setDescription("Remplace une image sans changer son lien")
         .addAttachmentOption(new SlashCommandAttachmentOption().setName("image").setDescription("la nouvelle image, doit avoir la même extension que l'ancienne (png,jpg...)").setRequired(true))
@@ -19,7 +18,7 @@ export default {
                 try {
                     await ctx.deferReply({ ephemeral: true })
                     await saveImage(img.url, res)
-                    const link = VITE_BASE_URL + "/files/image/" + res;
+                    const link = process.env.BASE_URL + "/files/image/" + res;
                     await ctx.editReply({ content: "Image modifié!\nLien (toujours le même):" + link })
 
                 } catch (err) {

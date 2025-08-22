@@ -22,8 +22,8 @@
         onPointsUpdate:(left:number)=>void;
     } = $props();
     $SHARED.title="Caracteristiques"
-    const skills = data.skills
-    const factions = data.factions
+    const skills= data.skills!
+    const factions = data.factions!
     let selectedFaction = $state(Object.keys(factions)[0]);
     let selectedOrigine = $state() as string;
     let selectedJob = $state() as string;

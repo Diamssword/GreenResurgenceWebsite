@@ -17,6 +17,7 @@ export const load = (async (event) => {
           if(!sh.stats)
             sh.stats={};
           return {
+            stats_enabled:process.env.DISABLE_SKILLS!="true",
             sheet:{
               id:sheet.id as number,
               name:sheet.name as string,
@@ -25,5 +26,5 @@ export const load = (async (event) => {
           }
         }
     }
-    return {};
+    return {stats_enabled:process.env.DISABLE_SKILLS!="true"};
 }) satisfies PageServerLoad;

@@ -1,17 +1,23 @@
-import { ENABLE_BOT } from '$env/static/private';
+import("dotenv/config")
 import { deleteSessionTokenCookie, setSessionTokenCookie, validateSessionToken } from '$lib/session/session';
 import type { Handle } from '@sveltejs/kit';
+import {init} from "$lib/layers_visitor";
+import * as fs from 'fs'
 
-if(ENABLE_BOT?.toLowerCase()=="true")
+if(process.env.ENABLE_BOT?.toLowerCase()=="true")
 	import("$lib/bot/bot").catch(console.error)
 else
 	console.log("ENABLE_BOT not set to 'true', skipping...")
 import("$lib/DB").catch(console.error)
-import("$lib/layers_visitor").catch(console.error)
-import * as fs from 'fs'
 clearCache();
+var inited=false;
 export const handle: Handle = async ({ event, resolve }) => {
 	let ips=event.request.headers.get("x-forwarded-for");
+	if(!inited)
+	{
+		init(event as any).catch(console.error)
+		inited=true;
+	}
 	if(ips)
 	{
 	  event.locals.user_ip=ips.split(',')[0];

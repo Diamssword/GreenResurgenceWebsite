@@ -4,7 +4,6 @@ import type { Command } from '../../app';
 import changeCmd from '$lib/bot/changeCmd';
 import RoleCmd from './RoleCmd';
 import RoleListCmd from './RoleListCmd';
-import { ALLOWED_DISCORD, DISCORD_ID, DISCORD_TOKEN } from '$env/static/private';
 const commands=[
     uploadCmd,
     changeCmd,
@@ -12,11 +11,11 @@ const commands=[
     RoleListCmd
 ] as Command[]
 console.info("Starting Discord Bot...")
-async function start()
+async function start(id:string,token:string,discords:string)
 {
-    const rest = new REST({ version: '10' }).setToken(DISCORD_TOKEN);
-    ALLOWED_DISCORD.split(",").forEach(guild=>{
-        rest.put(Routes.applicationGuildCommands(DISCORD_ID,guild), { body: commands.map(c=>c.command) });
+    const rest = new REST({ version: '10' }).setToken(token);
+    discords.split(",").forEach(guild=>{
+        rest.put(Routes.applicationGuildCommands(id,guild), { body: commands.map(c=>c.command) });
     })
     
 
@@ -42,9 +41,9 @@ client.on('interactionCreate', async interaction => {
         await interaction.reply("Commande inconnu")
   });
 
-  client.login(DISCORD_TOKEN).catch(console.error)
+  client.login(token).catch(console.error)
 }
-if(DISCORD_ID && DISCORD_TOKEN)
-    start().catch(console.error);
+if(process.env.DISCORD_ID && process.env.DISCORD_TOKEN && process.env.ALLOWED_DISCORD)
+    start(process.env.DISCORD_ID,process.env.DISCORD_TOKEN,process.env.ALLOWED_DISCORD).catch(console.error);
 else
     console.warn("Les tokens bots sont inexistant, bot désactivé.")

@@ -1,33 +1,40 @@
 import fs from "fs";
 import {join} from "path";
 import type { SkinLayersFormat, SkinPartsFormat, TextureInfos } from "../routes/editor/[id]/skin/skinTypes"
+import type { RequestEvent } from "../routes/$types";
 
-const route=join(process.cwd(), 'datas/skins/');
-if(!fs.existsSync(route))
-{
-  fs.mkdirSync(route,{recursive:true});
-}
-console.log("trying to read files from ",route)
-const layers=await(await fetch(import.meta.env.VITE_BASE_URL+"/datas/layers.json")).json() as SkinLayersFormat[];
-var generated:{[key:string]:SkinPartsFormat}={};
-for(let layer of layers)
+export async function init(event:RequestEvent)
 {
     
-    if(fs.existsSync(route+layer.name))
+    const route=join(process.cwd(), 'datas/skins/');
+    if(!fs.existsSync(route))
     {
-        if(layer.cats)
-        {
-            const g=generated[layer.name]={title:layer.display||layer.name,cats:{} as any,splited:layer.splited};            
-            for(let k1 of Object.keys(layer.cats))
-            {
-                if(fs.existsSync(route+layer.name+"/"+k1))
-                    g.cats[k1]={name:layer.cats[k1].name,images:readFiles(route+layer.name+"/"+k1,layer.clearable)}
-            }
-        }
-        else
-            generated[layer.name]={title:layer.display||layer.name,images:readFiles(route+layer.name,layer.clearable),splited:layer.splited};
+    fs.mkdirSync(route,{recursive:true});
     }
-}
+    var generated:{[key:string]:SkinPartsFormat}={};
+
+    console.log("trying to read files from ",route)
+    const layers=await(await fetch(process.env.BASE_URL+"/datas/layers.json")).json() as SkinLayersFormat[];
+
+    for(let layer of layers)
+    {
+        
+        if(fs.existsSync(route+layer.name))
+        {
+            if(layer.cats)
+            {
+                const g=generated[layer.name]={title:layer.display||layer.name,cats:{} as any,splited:layer.splited};            
+                for(let k1 of Object.keys(layer.cats))
+                {
+                    if(fs.existsSync(route+layer.name+"/"+k1))
+                        g.cats[k1]={name:layer.cats[k1].name,images:readFiles(route+layer.name+"/"+k1,layer.clearable)}
+                }
+            }
+            else
+                generated[layer.name]={title:layer.display||layer.name,images:readFiles(route+layer.name,layer.clearable),splited:layer.splited};
+        }
+    }
+
 function readFiles(path:string,withClear?:boolean)
 {
     let res:TextureInfos[]=[];
@@ -54,3 +61,4 @@ function readFiles(path:string,withClear?:boolean)
     return res;
 }
 fs.writeFileSync(join(process.cwd(), 'datas/skin_datas.json'),JSON.stringify(generated));
+}
