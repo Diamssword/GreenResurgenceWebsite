@@ -8,40 +8,39 @@
     import { SHARED } from "$lib/sharedDatas";
     import { fade } from "svelte/transition";
     import { browser } from "$app/environment";
-    import {  SkinEditor } from "./panel";1
+    import {  SkinEditor } from "./panel";
     import type { SaveFormat } from "./skinTypes";
     import { onMount } from "svelte";
-    let {data,currentAppearence=$bindable(),dataSaver,onloaded=$bindable(),canExport}:{data:PageData,currentAppearence:SaveFormat,onloaded:()=>void, dataSaver: {loader:()=>SaveFormat,saver:(data:SaveFormat)=>void},canExport:boolean }=$props();
+    let {data,currentAppearence=$bindable(),dataSaver,canExport}:{data:PageData,currentAppearence:{data:SaveFormat,isLoaded:boolean,listeners:(()=>void)[]}, dataSaver: {loader:()=>SaveFormat,saver:(data:SaveFormat)=>void},canExport:boolean }=$props();
     let viewer:SkinViewer=$state(undefined as any);
     let skinEditor= new SkinEditor(data);
-    let ldExtra: (slim: boolean, taille: number) => void=$state(undefined as any);
     $SHARED.title="Customiseur"
-
     function onPhysicChange(slim:boolean,size:number)
     {
         if(viewer)
         {
-            currentAppearence.apparence={size,slim};
-            dataSaver.saver(currentAppearence);
+            currentAppearence.data.apparence={size,slim};
+            dataSaver.saver(currentAppearence.data);
             viewer.playerObject.forLayers(l=>l.modelType=(slim?"slim":"default"));    
             size=100+size
             skinEditor.slim=slim;
             viewer.playerObject.scale.set(size/200,size/200,size/200)
         }
     }
-    onloaded=()=>{
-        if(viewer && browser)
+    function onloaded(){
+        if(viewer && currentAppearence.isLoaded)
         {
-            skinEditor.slim=currentAppearence.apparence?.slim||false;
+            skinEditor.slim=currentAppearence.data.apparence?.slim||false;
             skinEditor.setViewer(viewer);
-            skinEditor.loadSavedOrDefault(currentAppearence.skin)
-            ldExtra(currentAppearence.apparence?.slim,currentAppearence.apparence?.size||67);
+            skinEditor.loadSavedOrDefault(currentAppearence.data.skin)
             skinEditor.saveFn=(dt)=>{
-                currentAppearence.skin=dt;
-                dataSaver.saver(currentAppearence);
+                currentAppearence.data.skin=dt;
+                dataSaver.saver(currentAppearence.data);
             }
         }
     }
+
+    currentAppearence.listeners.push(onloaded);
     onMount(onloaded)
     var infos=["L'affichage de certains élèments (notament les couleurs) peut differer légèrement en jeu. ","Pour garder une sauvgarde de votre skin, utilisez l'option \"Sauvegarder mes paramètres\"","Vous pouvez télécharger votre skin pour l'utilser ailleurs!","Ça va vous sinon?"]
     var pickedInfo=$state(0);
@@ -58,13 +57,13 @@
 <div class="w-full flex-1 p-2">
     <div class="flex w-full mb-5 rounded-md">
         <div class="w-3/6 mr-5 max-h-[65vh]">
-        <PanelLeft data={data} {skinEditor} onExtra={onPhysicChange} bind:setExtra={ldExtra} />
+        <PanelLeft currentAppearence={currentAppearence} data={data} {skinEditor} {dataSaver} onExtra={onPhysicChange}  />
         </div>
-        <div class="rounded-md bgimg flex grow justify-center">
+        <div class="rounded-md bgimg flex w-2/6 justify-center items-center">
             <Viewer bind:viewer={viewer}/>
         </div>
        <div class="w-1/6 ml-5 max-h-[65vh]">
-        <PanelRight {canExport} editor={skinEditor} currentSave={currentAppearence} changePhysicFn={onPhysicChange} sheetName={data.sheet?.name}/>
+        <PanelRight {canExport} editor={skinEditor} currentSave={currentAppearence.data} changePhysicFn={onPhysicChange} sheetName={data.sheet?.name}/>
        </div>
     </div>
     <Alert color="blue">

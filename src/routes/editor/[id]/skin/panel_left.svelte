@@ -5,15 +5,23 @@
     import SimpleCat from './SimpleCat.svelte';
     import MutliCat from './MutliCat.svelte';
     import SplittedMutliCat from './SplittedMutliCat.svelte';
-    var {data,skinEditor,onExtra,setExtra=$bindable()} :{data:PageData,skinEditor:SkinEditor,onExtra:(slime:boolean,size:number)=>void,setExtra:(slim:boolean,taille:number)=>void} = $props();
+    import WithoutStats from '../sheet/without_stats.svelte';
+    import type { SaveFormat } from './skinTypes';
+    import { onMount } from 'svelte';
+    var {data,skinEditor,onExtra,currentAppearence,dataSaver} :{data:PageData,currentAppearence:{data:SaveFormat,isLoaded:boolean,listeners:(()=>void)[]},skinEditor:SkinEditor,onExtra:(slime:boolean,size:number)=>void,dataSaver: {loader: () => SaveFormat; saver: (data: SaveFormat) => void;}} = $props();
     var taille:number=$state(40);
     var slim=$state(false);   
-    setExtra=(silm:boolean,taill:number)=>
+    function onLoaded()
     {
-        slim=silm||false;
-        taille=taill||67;
-        onExtra(slim,taille)
+        if(currentAppearence.isLoaded)
+        {
+            slim=currentAppearence.data.apparence?.slim||false;
+            taille=currentAppearence.data.apparence?.size||67;
+            onExtra(slim,taille)
+        }
     }
+    currentAppearence.listeners.push(onLoaded)
+    onMount(onLoaded);
   </script>
   <div class="h-full overflow-auto">
     <Tabs contentClass="p-4 rounded-lg dark:bg-gray-800 mt-4 bg-primary-300">
@@ -30,8 +38,10 @@
                 <div>
                     <Label for="bras"  class="mb-2 ml=5 mt-5 text-secondary-text text-xl">Bras fins:</Label>
                     <Toggle id="bras" checked={slim} onchange={(e)=>{slim=e.target.checked; onExtra(slim,taille)}} class="text-secondary-text cursor-pointer"></Toggle>
-                    
                 </div>    
+                {#if !data.factions}
+                    <WithoutStats dataSaver={dataSaver} {currentAppearence} ></WithoutStats>
+                {/if}
            </div>
         </SimpleCat>
         {#each data.layers as layer  }

@@ -23,6 +23,11 @@
     {$SHARED.error}
   </Toast>
 {/if}
+{#if $SHARED.info}
+<Toast class="fixed bottom-4 right-4 rounded-lg bg-green-300 text-primary-50" onclose={()=>{$SHARED.info=undefined}}>
+    {$SHARED.info}
+  </Toast>
+{/if}
 </main>
 </div>
 <style>

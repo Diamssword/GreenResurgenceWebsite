@@ -2,6 +2,7 @@
     import { Button, Dropdown, DropdownItem, Input,Popover,Tooltip } from 'flowbite-svelte'; 
     import { exportCharacter, SkinEditor } from './panel';
     import type { SaveFormat } from './skinTypes';
+    import { SHARED } from '$lib/sharedDatas';
     type Props={
       changePhysicFn:(slim:boolean,taille:number)=>void
     currentSave:SaveFormat
@@ -78,6 +79,17 @@
         reader.readAsText(v,"utf-8")
       }
     }
+    function copyCode()
+    {
+      if(code)
+      {
+        navigator.clipboard.writeText(code)
+        SHARED.update(o=>{return {...o,info:"Code copié dans le presse papier"}})
+        setTimeout(() => {
+        SHARED.update(o=>{return {...o,info:undefined}})
+        }, 2000);
+      }
+    }
 </script>
 <div class="h-full overflow-auto w-full">
         <div class="grid gap-6 mb-6 md:grid-cols-2">
@@ -88,13 +100,12 @@
             </div>
           {/if}
           <Button id="export-button" type="button" class=col-span-2>
-           Exporter
-           <svg class="w-6 h-6 text-primary-50 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
-            <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m8 10 4 4 4-4"/>
-          </svg>
-         
+            Exporter
+            <svg class="w-6 h-6 text-primary-50 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
+              <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m8 10 4 4 4-4"/>
+            </svg>
           </Button>
-          <Dropdown triggeredBy="#export-button" >
+          <Dropdown simple triggeredBy="#export-button" >
             <DropdownItem class="flex items-center" onclick={saveDatas}>
               Sauvgarder mes paramètres
             </DropdownItem>
@@ -122,7 +133,13 @@
           {#if code}
             <div class="col-span-2">
               <p class="text-primary-800">Copier ce code et collez le dans votre jeu avec Ctrl+ V pour lier ce skin à votre compte.</p>
-              <Input class="w-22" type="text" readonly value={code}/>
+              <div class="flex items-center">
+              <Input class="rounded-none w-22 h-10 rounded-l-lg " type="text" readonly value={code}/>
+              <Button class=" rounded-none bg-secondary-text col-span-2 p-0 rounded-r-lg w-12 h-9" type="button" onclick={copyCode}>
+              <img src="/images/svg/copy.svg" alt="copy icon" class="w-8 h-8">
+              </Button>
+              <Tooltip>Copier le code</Tooltip>
+              </div>
               <p  class="text-primary-800"> Vous avez <b class="text-secondary-text">{timer}</b> secondes avant de devoir recréer un code</p>
             </div>
           {/if}

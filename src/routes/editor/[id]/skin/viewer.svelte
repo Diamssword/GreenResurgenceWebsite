@@ -20,6 +20,13 @@
                   
                     if(canvas?.parentElement)
                     {
+                       var maxW=window.innerWidth/3;
+                        console.log(maxW)
+                        h=Math.max(maxW-10,0);
+                        viewer.setSize(h,h)
+                    }
+                  /*  if(canvas?.parentElement)
+                    {
                        var maxH=window.innerHeight;
                        var top=canvas.getBoundingClientRect().top;
                        var nh=90;
@@ -30,7 +37,7 @@
                        }
                         h=Math.max(maxH-top-nh-10,0);
                         viewer.setSize(h,h)
-                    }
+                    }*/
                 } );
                 resizeObserver.observe(canvas.parentElement);
             }            

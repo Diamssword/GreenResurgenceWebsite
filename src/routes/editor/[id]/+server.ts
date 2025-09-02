@@ -5,7 +5,7 @@ import dayjs from "dayjs"
 import { error, json } from '@sveltejs/kit';
 import { skin_datas } from '$lib/server_functions';
 import db from '$lib/DB';
-import type { PickedTextureInfos } from './skin/skinTypes';
+import type { PickedTextureInfos, SaveFormat } from './skin/skinTypes';
 const uid = new ShortUniqueId({ length: 6 });
 
 export const POST: RequestHandler = async (ev) => {
@@ -24,7 +24,7 @@ export const POST: RequestHandler = async (ev) => {
         }
         else if(ev.locals.user?.id && dt.action=="save" && dt.sheet && dt.datas)
         {
-           var d=db.prepare("UPDATE skinlayout SET data = ?, edit_at = ? WHERE user_id=  (SELECT id FROM user WHERE id = ?) AND id = ?").run(JSON.stringify(sanitizeData(dt.datas)),new Date().toUTCString(),ev.locals.user.id,dt.sheet)
+           var d=db.prepare("UPDATE skinlayout SET data = ?, edit_at = ? WHERE user_id=  (SELECT id FROM user WHERE id = ?) AND id = ?").run(JSON.stringify(sanitizeSaveProfile(dt.datas)),new Date().toUTCString(),ev.locals.user.id,dt.sheet)
             if(d && d.changes>0)
                 return new Response("saved");
             return error(500,"failed")
@@ -39,12 +39,26 @@ function maxStrLength(text:string,max:number=300)
         return text.substring(0,max);
     return text;
 }
+function sanitizeSaveProfile(data:SaveFormat)
+{
+    data.apparence.size=typeof data.apparence.size=="number"?data.apparence.size:80;
+    data.apparence.slim=data.apparence.slim==true;
+    data.stats={
+            firstname:maxStrLength(data.stats?.firstname||"Jean",128),
+            lastname:maxStrLength(data.stats?.lastname||"Fète",128),
+            faction:maxStrLength(data.stats?.faction||"cites_emeraude",100),
+            origine:maxStrLength(data.stats?.origine||"n_granda",100),
+            job:maxStrLength(data.stats?.job||"electron_libre",100),
+            age:data.stats.age,
+            points:data.stats?.points
+        }
+    return data;
+}
 function sanitizeData(data:any)
 {
     var b={
          appearance:{
             additional:{},
-            underwear:maxStrLength(data.appearance?.underwear||"default"),
             size:maxStrLength(data.appearance?.size||67,2),
             slim:data.appearance?.slim==true?true:false,
         },

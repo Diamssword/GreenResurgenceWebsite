@@ -38,23 +38,26 @@ export class SkinEditor {
     setViewer(viewer:SkinViewer)
     {
         this.viewer=viewer;
-        this.skinLib.layers.forEach(k=>{
-            if(k.splited)
-            {
-                var l=this.findLayer(k.name,this.createLayer(k,"left"));
-                 var l1=this.findLayer(k.name,this.createLayer(k,"right"));
-                if(l)
+        if(this.layers.length==0)
+        {
+            this.skinLib.layers.forEach(k=>{
+                if(k.splited)
+                {
+                    var l=this.findLayer(k.name,this.createLayer(k,"left"));
+                    var l1=this.findLayer(k.name,this.createLayer(k,"right"));
+                    if(l)
+                        l.texture=this.getDefaultTextureFor(k.name);
+                    if(l1)
+                        l1.texture=this.getDefaultTextureFor(k.name);
+                }
+                else
+                {
+                    var l=this.findLayer(k.name,this.createLayer(k));
+                    if(l)
                     l.texture=this.getDefaultTextureFor(k.name);
-                 if(l1)
-                    l1.texture=this.getDefaultTextureFor(k.name);
-            }
-            else
-            {
-                var l=this.findLayer(k.name,this.createLayer(k));
-                if(l)
-                   l.texture=this.getDefaultTextureFor(k.name);
-            }
-        })
+                }
+            })
+        }
     }
     pickTexture(layer:string,texture:PickedTextureInfos,index?:number)
     {

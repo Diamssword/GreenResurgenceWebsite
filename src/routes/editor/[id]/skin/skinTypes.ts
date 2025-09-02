@@ -13,7 +13,7 @@ export type SaveFormat={
     apparence:{
         size:number,
         slim:boolean,
-    }
+    },
     skin:{
         id:string,
         index:number,

@@ -31,6 +31,7 @@ export async function GET(event: RequestEvent): Promise<Response> {
 		});
 	}
 	const claims:any = decodeIdToken(tokens.idToken());
+	//const claims={sub:"fake",name:"faker"}
 	const googleUserId = claims.sub;
 	const username = claims.name;
 

@@ -8,13 +8,11 @@
     let {
         currentAppearence = $bindable(),
         dataSaver,
-        onloaded = $bindable(),
         onPointsUpdate,
         data
     }: {
         data:PageData,
-        currentAppearence: SaveFormat;
-        onloaded: () => void;
+        currentAppearence: {data:SaveFormat,isLoaded:boolean,listeners:(()=>void)[]};
         dataSaver: {
             loader: () => SaveFormat;
             saver: (data: SaveFormat) => void;
@@ -48,9 +46,9 @@
         loreContent=text;
         loreModal=true;
     }
-    onloaded = () => {
-        if (browser) {
-            let stats = currentAppearence.stats;
+    function onloaded(){
+        if (currentAppearence.isLoaded) {
+            let stats = currentAppearence.data.stats;
             if (Object.keys(factions).includes(stats.faction)) {
                 let fac = factions[stats.faction];
                 if (fac) {
@@ -80,6 +78,7 @@
             updateDescs(true);
         }
     };
+    currentAppearence.listeners.push(onloaded);
     onMount(onloaded);
     function onChangeFac(e?: any) {
         if (e?.target.value) selectedFaction = e.target.value;
@@ -97,8 +96,8 @@
     }
     function onChangeText(value:string, field:"firstname"|"lastname") {
         
-        currentAppearence.stats[field]=value;
-        dataSaver.saver(currentAppearence);
+        currentAppearence.data.stats[field]=value;
+        dataSaver.saver(currentAppearence.data);
     }
     function fillSelects(pickedFaction: (typeof factions)[0],init?:boolean) {
         originesItems = Object.keys(pickedFaction.origines).map((v) => {
@@ -127,14 +126,14 @@
         points = fillPoints(pickedFac);
         if(!init)
         {
-          currentAppearence.stats.points={};
-          Object.keys(points).filter(v=>points[v].value>0).forEach(v=>{currentAppearence.stats.points[v]=points[v].value;})
+          currentAppearence.data.stats.points={};
+          Object.keys(points).filter(v=>points[v].value>0).forEach(v=>{currentAppearence.data.stats.points[v]=points[v].value;})
         }
-        currentAppearence.stats.origine = selectedOrigine;
-        currentAppearence.stats.job = selectedJob;
-        currentAppearence.stats.faction = selectedFaction;
+        currentAppearence.data.stats.origine = selectedOrigine;
+        currentAppearence.data.stats.job = selectedJob;
+        currentAppearence.data.stats.faction = selectedFaction;
         if(!init)
-            dataSaver.saver(currentAppearence);
+            dataSaver.saver(currentAppearence.data);
     }
     function fillPoints(pickedFaction?: (typeof factions)[0]) {
         remainingPoints = 50;
@@ -182,8 +181,8 @@
         if (added > 0 && remainingPoints <= 0) return;
         var old = points[key].value;
         points[key].value = Math.max(Math.min(points[key].value + added, 20),points[key].min);
-        currentAppearence.stats.points[key]=points[key].value;
-        dataSaver.saver(currentAppearence)
+        currentAppearence.data.stats.points[key]=points[key].value;
+        dataSaver.saver(currentAppearence.data)
         remainingPoints += old - points[key].value;
         onPointsUpdate(remainingPoints);
     }

@@ -32,7 +32,7 @@ export const actions = {
             var ob= await event.request.json()
             if(ob.name && ob.name.length>1 && ob.lastname && ob.lastname.length>1)
             {
-                var dt={stats:{firstname:ob.name,lastname:ob.lastname,points:{}},appearence:{}}
+                var dt={stats:{firstname:ob.name,lastname:ob.lastname,points:{}},apparence:{},skin:[]}
                 var res=db.prepare("INSERT INTO skinlayout ( user_id, name,data) VALUES (?, ?, ?)").run(event.locals.user.id,ob.name+" "+ob.lastname,JSON.stringify(dt));
                 return {id:res.lastInsertRowid,name:ob.name+" "+ob.lastname}
             }
