@@ -345,3 +345,10 @@ function formatSendingDatas(profile:SaveFormat,layers:LayerInfo[])
     })
     return res;
 }
+export async function tryLoadResource(url:string)
+{
+    var res=await fetch(url);
+    if(res.ok)
+        return await res.json();
+    return undefined;
+}

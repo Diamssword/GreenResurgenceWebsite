@@ -3,28 +3,28 @@
     import { exportCharacter, SkinEditor } from './panel';
     import type { SaveFormat } from './skinTypes';
     import { SHARED } from '$lib/sharedDatas';
+    import { currentAppearence } from '../shared.svelte';
     type Props={
-      changePhysicFn:(slim:boolean,taille:number)=>void
-    currentSave:SaveFormat
+    changePhysicFn:(slim:boolean,taille:number)=>void
     editor:SkinEditor
     sheetName?:string,
     canExport:boolean
     }
-    var {changePhysicFn,editor,currentSave,sheetName,canExport}:Props=$props();
+    var {changePhysicFn,editor,sheetName,canExport}:Props=$props();
     var code:string|undefined=$state();
     var timer=$state(0);
     var int: NodeJS.Timeout | undefined;
     function allGood(){
-      if(!currentSave.stats.firstname  ||currentSave.stats.firstname?.trim().length<1)
+      if(!currentAppearence.data.stats.firstname  ||currentAppearence.data.stats.firstname?.trim().length<1)
         return "Vous devez remplir le Prénom."
-      if(!currentSave.stats.lastname|| currentSave.stats.lastname?.trim().length<1)
+      if(!currentAppearence.data.stats.lastname|| currentAppearence.data.stats.lastname?.trim().length<1)
         return "Vous devez remplir le Nom."
       if(!canExport)
         return "Vous devez utiliser tout vos points."
     }
     function exporte()
     {
-      exportCharacter(editor,currentSave).then(e=>{
+      exportCharacter(editor,currentAppearence.data).then(e=>{
           code=e
           timer=60;
           clearInterval(int);
@@ -44,7 +44,7 @@
       var dt=editor.toPNG(true);
       var element = document.createElement('a');
       element.setAttribute('href', dt);
-      element.setAttribute('download', (currentSave.stats.firstname||"skin")+".png");
+      element.setAttribute('download', (currentAppearence.data.stats.firstname||"skin")+".png");
       element.style.display = 'none';
       document.body.appendChild(element);
       element.click();
@@ -52,10 +52,10 @@
     }
     function saveDatas()
     {
-      var file = new Blob([JSON.stringify(currentSave)], {type: "text/json"});
+      var file = new Blob([JSON.stringify(currentAppearence.data)], {type: "text/json"});
       var element = document.createElement('a');
       element.setAttribute('href', URL.createObjectURL(file));
-      element.setAttribute('download', (currentSave.stats.firstname||"profileResurgence")+".json");
+      element.setAttribute('download', (currentAppearence.data.stats.firstname||"profileResurgence")+".json");
       element.style.display = 'none';
       document.body.appendChild(element);
       element.click();

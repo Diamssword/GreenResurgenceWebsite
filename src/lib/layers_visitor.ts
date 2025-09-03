@@ -14,7 +14,7 @@ export async function init(event:RequestEvent)
     var generated:{[key:string]:SkinPartsFormat}={};
 
     console.log("trying to read files from ",route)
-    const layers=await(await fetch(process.env.BASE_URL+"/datas/layers.json")).json() as SkinLayersFormat[];
+    const layers=await(await event.fetch("/datas/layers.json")).json() as SkinLayersFormat[];
 
     for(let layer of layers)
     {

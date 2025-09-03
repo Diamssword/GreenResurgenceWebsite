@@ -2,8 +2,9 @@
     import {Avatar,Input, Label, } from "flowbite-svelte";
     import type { SaveFormat } from "../skin/skinTypes";
     import { onMount } from "svelte";
-    let {currentAppearence,dataSaver}:
-        {currentAppearence:{data:SaveFormat,isLoaded:boolean,listeners:(()=>void)[]}, dataSaver: { loader: () => SaveFormat; saver: (data: SaveFormat) => void;} } = $props();
+    import { currentAppearence } from "../shared.svelte";
+    let {dataSaver}:
+        {dataSaver: { loader: () => SaveFormat; saver: (data: SaveFormat) => void;} } = $props();
     
     let selectedNom = $state() as string;
     let selectedPrenom = $state() as string;

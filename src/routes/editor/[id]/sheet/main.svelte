@@ -1,18 +1,17 @@
 <script lang="ts">
     import {Alert, Avatar,Button,Card,Input, Label,Modal,Select, } from "flowbite-svelte";
-    import type { SaveFormat } from "../skin/skinTypes";
+    import type { Factions, SaveFormat, Skills } from "../skin/skinTypes";
     import { onMount } from "svelte";
     import { browser } from "$app/environment";
     import { SHARED } from "$lib/sharedDatas";
     import type { PageData } from "../$types";
+    import { currentAppearence } from "../shared.svelte";
     let {
-        currentAppearence = $bindable(),
         dataSaver,
         onPointsUpdate,
         data
     }: {
-        data:PageData,
-        currentAppearence: {data:SaveFormat,isLoaded:boolean,listeners:(()=>void)[]};
+        data:{skills:Skills,factions:Factions},
         dataSaver: {
             loader: () => SaveFormat;
             saver: (data: SaveFormat) => void;

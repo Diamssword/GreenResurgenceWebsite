@@ -6,9 +6,10 @@
     import MutliCat from './MutliCat.svelte';
     import SplittedMutliCat from './SplittedMutliCat.svelte';
     import WithoutStats from '../sheet/without_stats.svelte';
-    import type { SaveFormat } from './skinTypes';
+    import type { SaveFormat, SkinLayersFormat, SkinParts } from './skinTypes';
     import { onMount } from 'svelte';
-    var {data,skinEditor,onExtra,currentAppearence,dataSaver} :{data:PageData,currentAppearence:{data:SaveFormat,isLoaded:boolean,listeners:(()=>void)[]},skinEditor:SkinEditor,onExtra:(slime:boolean,size:number)=>void,dataSaver: {loader: () => SaveFormat; saver: (data: SaveFormat) => void;}} = $props();
+    import { currentAppearence } from '../shared.svelte';
+    var {data,skinEditor,onExtra,dataSaver} :{data:{hasStats:boolean, datas:SkinParts,layers:SkinLayersFormat[]},skinEditor:SkinEditor,onExtra:(slime:boolean,size:number)=>void,dataSaver: {loader: () => SaveFormat; saver: (data: SaveFormat) => void;}} = $props();
     var taille:number=$state(40);
     var slim=$state(false);   
     function onLoaded()
@@ -39,8 +40,8 @@
                     <Label for="bras"  class="mb-2 ml=5 mt-5 text-secondary-text text-xl">Bras fins:</Label>
                     <Toggle id="bras" checked={slim} onchange={(e)=>{slim=e.target.checked; onExtra(slim,taille)}} class="text-secondary-text cursor-pointer"></Toggle>
                 </div>    
-                {#if !data.factions}
-                    <WithoutStats dataSaver={dataSaver} {currentAppearence} ></WithoutStats>
+                {#if !data.hasStats}
+                    <WithoutStats dataSaver={dataSaver}></WithoutStats>
                 {/if}
            </div>
         </SimpleCat>

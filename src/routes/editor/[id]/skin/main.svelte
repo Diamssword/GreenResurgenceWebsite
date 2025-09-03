@@ -9,9 +9,10 @@
     import { fade } from "svelte/transition";
     import { browser } from "$app/environment";
     import {  SkinEditor } from "./panel";
-    import type { SaveFormat } from "./skinTypes";
+    import type { SaveFormat, SkinLayersFormat, SkinParts } from "./skinTypes";
     import { onMount } from "svelte";
-    let {data,currentAppearence=$bindable(),dataSaver,canExport}:{data:PageData,currentAppearence:{data:SaveFormat,isLoaded:boolean,listeners:(()=>void)[]}, dataSaver: {loader:()=>SaveFormat,saver:(data:SaveFormat)=>void},canExport:boolean }=$props();
+    import { currentAppearence } from "../shared.svelte";
+    let {data,dataSaver,canExport}:{data:{datas:SkinParts,layers:SkinLayersFormat[],hasStats:boolean }, dataSaver: {loader:()=>SaveFormat,saver:(data:SaveFormat)=>void},canExport:boolean }=$props();
     let viewer:SkinViewer=$state(undefined as any);
     let skinEditor= new SkinEditor(data);
     $SHARED.title="Customiseur"
@@ -57,13 +58,13 @@
 <div class="w-full flex-1 p-2">
     <div class="flex w-full mb-5 rounded-md">
         <div class="w-3/6 mr-5 max-h-[65vh]">
-        <PanelLeft currentAppearence={currentAppearence} data={data} {skinEditor} {dataSaver} onExtra={onPhysicChange}  />
+        <PanelLeft data={data} {skinEditor} {dataSaver} onExtra={onPhysicChange}  />
         </div>
         <div class="rounded-md bgimg flex w-2/6 justify-center items-center">
             <Viewer bind:viewer={viewer}/>
         </div>
        <div class="w-1/6 ml-5 max-h-[65vh]">
-        <PanelRight {canExport} editor={skinEditor} currentSave={currentAppearence.data} changePhysicFn={onPhysicChange} sheetName={data.sheet?.name}/>
+        <PanelRight {canExport} editor={skinEditor} changePhysicFn={onPhysicChange} sheetName={data.sheet?.name}/>
        </div>
     </div>
     <Alert color="blue">
