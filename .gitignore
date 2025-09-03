@@ -10,9 +10,6 @@ node_modules
 .DS_Store
 Thumbs.db
 package-lock.json
-DB.sqlite
-DB.sqlite-shm
-DB.sqlite-wal
 # Env
 .env
 .env.*
@@ -26,6 +23,6 @@ vite.config.ts.timestamp-*
 /uploaded
 /datas/skins
 /datas/skins_display
-DB.sqlite
 DB.sqlite-shm
 DB.sqlite-wal
+DB.sqlite

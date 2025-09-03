@@ -21,7 +21,6 @@
                     if(canvas?.parentElement)
                     {
                        var maxW=window.innerWidth/3;
-                        console.log(maxW)
                         h=Math.max(maxW-10,0);
                         viewer.setSize(h,h)
                     }
