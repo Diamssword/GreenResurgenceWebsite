@@ -251,11 +251,11 @@
                     <p class=" text-secondary-text text-nowrap">
                         {descs.faction.name}:
                     </p>
-                    <Button class="cursor-pointer bg-secondary-text flex-shrink-0 p-0 w-15 h-8" onclick={()=>openLoreModal(descs.job.name,descs.job.desc)}>Infos</Button>
+                    <Button class="cursor-pointer bg-secondary-text flex-shrink-0 p-0 w-15 h-8" onclick={()=>openLoreModal(descs.faction.name,descs.faction.desc)}>Infos</Button>
                     <p class=" text-secondary-text text-nowrap">
                         {descs.origine.name}:
                     </p>
-                    <Button class="cursor-pointer bg-secondary-text flex-shrink-0 p-0 w-15 h-8" onclick={()=>openLoreModal(descs.job.name,descs.job.desc)}>Infos</Button>
+                    <Button class="cursor-pointer bg-secondary-text flex-shrink-0 p-0 w-15 h-8" onclick={()=>openLoreModal(descs.origine.name,descs.origine.desc)}>Infos</Button>
                     <p class=" text-secondary-text text-nowrap">
                         {descs.job.name}:
                     </p>
