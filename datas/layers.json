@@ -18,41 +18,41 @@
         "external":true
     },
     {
-        "name":"brows",
-        "display":"Sourcils",
+        "name":"cosmetic",
+        "display":"Cosmetiques",
         "clearable":true,
         "multi":true,
-        "size":0.017,
+        "size":0.001,
         "displayGen":"face"
     },
     {
         "name":"eyes",
         "display":"Yeux",
         "splited":true,
-        "size":0.005,
+        "size":0.0021,
         "displayGen":"face"
     },
     {
         "name":"mouth",
         "display":"Bouche",
-        "size":0.005,
+        "size":0.002,
+        "displayGen":"face"
+    },
+    {
+        "name":"brows",
+        "display":"Sourcils",
+        "clearable":true,
+        "multi":true,
+        "size":0.003,
         "displayGen":"face"
     },
     {
         "name":"beard",
         "display":"Barbe",
         "clearable":true,
-        "size":0.02,
+        "size":0.011,
         "external":true,
         "displayGen":"headfull"
-    },
-    {
-        "name":"cosmetic",
-        "display":"Cosmetiques",
-        "clearable":true,
-        "multi":true,
-        "size":0.03,
-        "displayGen":"face"
     },
    {
         "name":"underwear",

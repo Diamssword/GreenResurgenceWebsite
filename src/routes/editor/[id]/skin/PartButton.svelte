@@ -20,7 +20,7 @@
     <Tooltip type="light">Aucun</Tooltip>
 {:else}
     <Button class="cursor-pointer ml-2 p-0 {picked?"bg-secondary-text hover:bg-secondary-text2":""}" {onclick}><img class="size-14" src="/datas/skins_display/{skinEditor.getTextureIconPath(layer,texture.id,undefined,category)}" alt={texture.name||texture.id}/> </Button>  
-    {#if texture.name}  
-        <Tooltip type="light">{texture.name}</Tooltip>
+    {#if texture.id}  
+        <Tooltip type="light">{texture.id}</Tooltip>
     {/if}
 {/if}

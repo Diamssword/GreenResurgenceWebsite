@@ -21,6 +21,9 @@
         "face":{x:0,y:0,z:14.83,o:-12},
         
     }
+    var progress=$state(0);
+    var currentLayer=$state("")
+    var total=$state(0)
     onMount(() => {
         if (browser) {
             setSkinSize((data.layers.find(v=>v.name==BASE) as any).skinRes)
@@ -44,8 +47,12 @@
     });
     async function start()
     {
+        
+
         for(let l of data.layers)
         {
+            progress++;
+            currentLayer=l.name
             var dts=data.datas[l.name];
             if(dts.cats)
             {
@@ -108,6 +115,7 @@
         viewer.loadSkin("main",url);
         setTimeout(()=>{
             fetch("",{method:"post", body:JSON.stringify({id,image:canvas.toDataURL("png")})});
+        total++;
         },200)
         return new Promise<void>(res=>{
             setTimeout(res,300);
@@ -126,3 +134,7 @@
 <Button onclick={()=>start()}>Start</Button>
 <Range bind:value={height} min="-50" max=50 />
 </div>
+<p>Layer ({currentLayer}) {progress}/{data.layers.length}</p>
+{#if total>0}
+<p>{total} assets generated</p>
+{/if}
