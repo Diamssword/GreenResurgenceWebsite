@@ -114,9 +114,9 @@
             fetch("", { method: "post", body: JSON.stringify({ id, image: canvas[index].toDataURL("png") }) });
             total++;
             available[index] = true;
-        }, 200);
+        }, 500);
         return new Promise<void>((res) => {
-            setTimeout(res, 300);
+            setTimeout(res, 1000);
         });
     }
     var height = $state(0);
