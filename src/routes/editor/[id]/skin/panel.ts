@@ -153,7 +153,7 @@ export class SkinEditor {
     var res: SaveFormat["skin"] = [];
     for (let k of this.layers) {
       //if(k.texture)
-      res.push({ id: k.parent.name, index: k.index, texture: k.texture });
+      res.push({ id: k.parent.name, index: k.index, texture: k.texture, side: k.side });
     }
     return res;
   }
@@ -257,15 +257,15 @@ export function localSaver(data: SaveFormat) {
 }
 export function exportCharacter(skinEditor: SkinEditor, profile: SaveFormat) {
   return new Promise<string>((res, err) => {
-    var dt = skinEditor.toPNG();
-    var head = skinEditor.toPNGHead(true);
+    //    var dt = skinEditor.toPNG();
+    //  var head = skinEditor.toPNGHead(true);
     fetch("", {
       method: "post",
       body: JSON.stringify({
         action: "export",
-        datas: formatSendingDatas(profile, skinEditor.skinLib.layers),
-        image: dt,
-        head: head,
+        datas: formatSendingDatas(profile),
+        //  image: dt,
+        //  head: head,
       }),
     }).then((r) => {
       if (r.status == 200) r.text().then(res);
@@ -273,20 +273,24 @@ export function exportCharacter(skinEditor: SkinEditor, profile: SaveFormat) {
     });
   });
 }
-function formatSendingDatas(profile: SaveFormat, layers: LayerInfo[]) {
-  const externals = layers.filter((v) => v.external == true);
+function formatSendingDatas(profile: SaveFormat) {
   var res = {
     appearance: {
       size: profile.apparence.size,
       slim: profile.apparence.slim,
-      additional: {},
+      layers: [],
     },
     stats: profile.stats,
   } as any;
-  externals.forEach((v) => {
-    let skin = profile.skin.find((v1) => v1.id == v.name);
-    if (skin?.texture) res.appearance.additional[v.name] = skin.texture;
+  //externals.forEach((v) => {
+  //  let skin = profile.skin.find((v1) => v1.id == v.name);
+
+  profile.skin.forEach((skin) => {
+    console.log(skin);
+    if (skin?.texture) res.appearance.layers.push({ id: skin.id, texture: skin.texture, side: skin.side });
   });
+
+  //});
   return res;
 }
 export async function tryLoadResource(url: string) {
