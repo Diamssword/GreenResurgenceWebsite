@@ -27,20 +27,37 @@ export async function init(event: RequestEvent) {
   function readFiles(path: string, withClear?: boolean) {
     let res: TextureInfos[] = [];
     if (withClear) res.push({ id: "clear" });
-    fs.readdirSync(path).forEach((v) => {
+    fs.readdirSync(path).forEach((v1) => {
+      let v = sanitizeName(path, v1);
       if (fs.statSync(path + "/" + v).isDirectory()) {
         let subs: TextureInfos[] = [];
         // if(withClear)
         //   subs.push({id:"clear"})
-        fs.readdirSync(path + "/" + v).forEach((v1) => {
-          if (v1.endsWith(".png")) subs.push({ id: v1.substring(0, v1.length - 4) });
+        fs.readdirSync(path + "/" + v).forEach((v2) => {
+          if (v2.endsWith(".png")) {
+            let v3 = sanitizeName(path, v2);
+            subs.push({ id: v3.substring(0, v3.length - 4), name: v2.substring(0, v2.length - 4) });
+          }
         });
-        res.push({ id: v, subs });
+        res.push({ id: v, subs, name: v1 });
       } else {
-        if (v.endsWith(".png")) res.push({ id: v.substring(0, v.length - 4) });
+        if (v.endsWith(".png")) res.push({ id: v.substring(0, v.length - 4), name: v1.substring(0, v.length - 4) });
       }
     });
     return res;
   }
   fs.writeFileSync(join(process.cwd(), "datas/skin_datas.json"), JSON.stringify(generated));
+}
+function sanitizeName(path: string, file: string) {
+  const sanitized = file
+    .normalize("NFD") // Separate accents from letters
+    .replace(/[\u0300-\u036f]/g, "") // Remove accent marks
+    .toLowerCase()
+    .replace(/[^a-z0-9._/-]/g, "_");
+  if (file != sanitized) {
+    console.info("Renamed: " + path + "/" + file + "=>" + path + "/" + sanitized);
+    fs.renameSync(join(path, file), join(path, sanitized));
+    return sanitized;
+  }
+  return file;
 }
