@@ -2,6 +2,7 @@ import fs from "fs";
 import { join } from "path";
 import type { SkinLayersFormat, SkinPartsFormat, TextureInfos } from "../routes/editor/[id]/skin/skinTypes";
 import type { RequestEvent } from "../routes/$types";
+import create from "./vignetteGenerator";
 export var layers: SkinLayersFormat[];
 export async function init(event: RequestEvent) {
   const route = join(process.cwd(), "datas/skins/");
@@ -47,6 +48,9 @@ export async function init(event: RequestEvent) {
     return res;
   }
   fs.writeFileSync(join(process.cwd(), "datas/skin_datas.json"), JSON.stringify(generated));
+
+  if (process.env.DISABLE_VIGNETTE_GEN?.toLowerCase() != "true") create(event).catch(console.error);
+  else console.log("DISABLE_VIGNETTE_GEN set to 'true', skipping vignette generation...");
 }
 function sanitizeName(path: string, file: string) {
   const sanitized = file
