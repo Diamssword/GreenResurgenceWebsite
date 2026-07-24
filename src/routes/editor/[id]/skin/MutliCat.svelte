@@ -38,13 +38,13 @@
         {#key layers}
             {#each layers as l, i}
                 <TabItem title={i + 1} open={firstLoad ? i == 0 : i == layers.length - 1}>
-                    {#each Object.keys(cat.cats || { "": { name: "", images: cat.images } }) as subk}
+                    {#each Object.keys(cat.cats || { "": { name: "", images: cat.images } }) as subk, i1}
                         {@const sub = cat.cats ? cat.cats[subk] : { name: "", images: cat.images }}
                         {#if cat.cats}
                             <h2>{sub.name}</h2>
                         {/if}
                         <div class="my-3">
-                            {#if i > 0}
+                            {#if i > 0 && i1 == 0}
                                 <div class="w-full relative">
                                     <Button color="red" class="absolute right-0 top-0 py-1 px-2 cursor-pointer" onclick={() => removeLayer(l)}>X</Button>
                                     <Tooltip type="light">Supprimer la couche</Tooltip>
