@@ -1,11 +1,12 @@
 <script lang="ts">
-    import { Button, Input, Label, TabItem, Toggle, Tooltip } from "flowbite-svelte";
+    import { Button, Tabs, Label, TabItem, Toggle, Tooltip } from "flowbite-svelte";
     import { type SkinEditor } from "./panel";
     import type { PickedTextureInfos, SkinPartsFormat } from "./skinTypes";
     import type { LayerInfo } from "$lib/skinviewer3d/model";
     import { onMount } from "svelte";
     import DrawerButton from "./DrawerButton.svelte";
     import PartButton from "./PartButton.svelte";
+    let firstLoad = $state(true);
     let { children, skinEditor, cat, layer }: { children?: any; skinEditor: SkinEditor; cat: SkinPartsFormat; layer: string } = $props();
     let layers: number[] = $state([0, 1]);
     let splitted = $derived.by(() => {
@@ -57,6 +58,7 @@
         }
     }
     function addLayer() {
+        firstLoad = false;
         const l = skinEditor.skinLib.layers.find((v) => v.name == layer);
         if (l) {
             const ind = skinEditor.createLayer(l, "left");
@@ -88,47 +90,90 @@
 <TabItem title={cat.title} open={layer == "base"}>
     <p class=" text-secondary-text text-2xl">{cat.title}</p>
     <div class="my-4 flex">
-        <Label for="bras" class="cursor-pointer text-secondary-text text-lg mr-2">Avancé:</Label>
-        <Toggle id="bras" checked={splitted} onchange={(e) => switchMode(e.target.checked)} class="text-secondary-text cursor-pointer"></Toggle>
+        <Label for="advanced" class="cursor-pointer text-secondary-text text-lg mr-2">Avancé:</Label>
+        <Toggle id="advanced" checked={splitted} onchange={(e) => switchMode(e.target.checked)} class="text-secondary-text cursor-pointer"></Toggle>
     </div>
-    {#key layers}
-        {#each layers as l, i}
-            {#if i % 2 == 0 && i > 0}
-                <hr class="border border-primary-700 my-3" />
-                <div class="w-full relative my-5">
-                    <Button color="red" class="absolute right-0 -top-4.5 py-1 px-2.5 cursor-pointer" onclick={() => removeLayer(l)}>X</Button>
-                    <Tooltip type="light">Supprimer la couche</Tooltip>
-                </div>
-            {/if}
-            {#if splitted || i % 2 == 0}
-                {#if splitted}
-                    <h2 class="text-secondary-text">{i % 2 == 0 ? "Gauche" : "Droite"}</h2>
-                {/if}
-                <div class="border-primary-600 {cat.cats ? 'border-2' : ''} rounded-md pl-2">
-                    {#each Object.keys(cat.cats || { "": { name: "", images: cat.images } }) as subk}
-                        {@const sub = cat.cats ? cat.cats[subk] : { name: "", images: cat.images }}
-                        {#if cat.cats}
-                            <h3>{sub.name}</h3>
-                        {/if}
-                        <div class="my-3">
-                            {#if sub.images}
-                                {#each sub.images as skin}
-                                    {#if skin.subs}
-                                        <DrawerButton index={l} category={subk} {layer} {skinEditor} texture={skin} onclick={(sub) => pickTexture(layer, l, { subs: skin.id, category: subk, id: sub.id })} />
-                                    {:else}
-                                        <PartButton {layer} index={l} category={subk} {skinEditor} texture={skin} onclear={() => pickTexture(layer, l)} onclick={() => pickTexture(layer, l, { id: skin.id, subs: subk })} />
-                                    {/if}
-                                {/each}
+    {#if multiLayerEnabled()}
+        <Tabs>
+            {#key layers}
+                {#each layers as l, i}
+                    {#if i % 2 == 0}
+                        <TabItem title={parseInt(i / 2) + 1} open={firstLoad ? i == 0 : i == layers.length - 2}>
+                            {#if i > 0}
+                                <div class="w-full relative my-5">
+                                    <Button color="red" class="absolute right-0 -top-4.5 py-1 px-2.5 cursor-pointer" onclick={() => removeLayer(l)}>X</Button>
+                                    <Tooltip type="light">Supprimer la couche</Tooltip>
+                                </div>
                             {/if}
-                        </div>
-                    {/each}
-                </div>
-            {/if}
-        {/each}
-    {/key}
-    {#if multiLayerEnabled() == true}
-        <Button class="mt-2 cursor-pointer" onclick={addLayer}>+</Button>
-        <Tooltip type="light">Ajouter une couche</Tooltip>
+                            {#each [i, i + 1] as i1}
+                                {#if splitted || i1 % 2 == 0}
+                                    {#if splitted}
+                                        <h2 class="text-secondary-text">{i1 % 2 == 0 ? "Gauche" : "Droite"}</h2>
+                                    {/if}
+                                    <div class="border-primary-600 {cat.cats ? 'border-2' : ''} rounded-md pl-2">
+                                        {#each Object.keys(cat.cats || { "": { name: "", images: cat.images } }) as subk}
+                                            {@const sub = cat.cats ? cat.cats[subk] : { name: "", images: cat.images }}
+                                            {#if cat.cats}
+                                                <h3>{sub.name}</h3>
+                                            {/if}
+                                            <div class="my-3">
+                                                {#if sub.images}
+                                                    {#each sub.images as skin}
+                                                        {#if skin.subs}
+                                                            <DrawerButton index={l} category={subk} {layer} {skinEditor} texture={skin} onclick={(sub) => pickTexture(layer, l, { subs: skin.id, category: subk, id: sub.id })} />
+                                                        {:else}
+                                                            <PartButton {layer} index={l} category={subk} {skinEditor} texture={skin} onclear={() => pickTexture(layer, l)} onclick={() => pickTexture(layer, l, { id: skin.id, subs: subk })} />
+                                                        {/if}
+                                                    {/each}
+                                                {/if}
+                                            </div>
+                                        {/each}
+                                    </div>
+                                {/if}
+                            {/each}
+                        </TabItem>
+                        <Tooltip type="light">Couche {parseInt(i / 2) + 1}</Tooltip>
+                    {/if}
+                {/each}
+            {/key}
+            <TabItem title="+" onclick={addLayer} inactiveClass=" nline-block text-sm font-medium text-center cursor-pointer p-4 hover:text-gray-100 rounded-4xl text-secondary-text bg-gray-50 hover:bg-secondary-text dark:text-gray-400 dark:hover:bg-gray-800 dark:hover:text-gray-300" />
+            <Tooltip type="light">Ajouter une couche</Tooltip>
+        </Tabs>
+    {:else}
+        {#key layers}
+            {#each layers as l, i}
+                {#if i % 2 == 0 && i > 0}
+                    <div class="w-full relative my-5">
+                        <Button color="red" class="absolute right-0 -top-4.5 py-1 px-2.5 cursor-pointer" onclick={() => removeLayer(l)}>X</Button>
+                        <Tooltip type="light">Supprimer la couche</Tooltip>
+                    </div>
+                {/if}
+                {#if splitted || i % 2 == 0}
+                    {#if splitted}
+                        <h2 class="text-secondary-text">{i % 2 == 0 ? "Gauche" : "Droite"}</h2>
+                    {/if}
+                    <div class="border-primary-600 {cat.cats ? 'border-2' : ''} rounded-md pl-2">
+                        {#each Object.keys(cat.cats || { "": { name: "", images: cat.images } }) as subk}
+                            {@const sub = cat.cats ? cat.cats[subk] : { name: "", images: cat.images }}
+                            {#if cat.cats}
+                                <h3>{sub.name}</h3>
+                            {/if}
+                            <div class="my-3">
+                                {#if sub.images}
+                                    {#each sub.images as skin}
+                                        {#if skin.subs}
+                                            <DrawerButton index={l} category={subk} {layer} {skinEditor} texture={skin} onclick={(sub) => pickTexture(layer, l, { subs: skin.id, category: subk, id: sub.id })} />
+                                        {:else}
+                                            <PartButton {layer} index={l} category={subk} {skinEditor} texture={skin} onclear={() => pickTexture(layer, l)} onclick={() => pickTexture(layer, l, { id: skin.id, subs: subk })} />
+                                        {/if}
+                                    {/each}
+                                {/if}
+                            </div>
+                        {/each}
+                    </div>
+                {/if}
+            {/each}
+        {/key}
     {/if}
     {@render children?.()}
 </TabItem>

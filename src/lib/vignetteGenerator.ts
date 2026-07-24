@@ -3,17 +3,9 @@ import * as path from "path";
 import * as fs from "fs";
 import type { SkinViewer } from "$lib/skinviewer3d/skinview3d";
 import puppeteer from "puppeteer";
-import viewerHtml from "./vignetteGenerator.html?raw";
 import type { SkinLayersFormat, SkinPartsFormat, TextureInfos } from "../routes/editor/[id]/skin/skinTypes";
 import type { RequestEvent } from "@sveltejs/kit";
 
-const size = 128;
-
-const layers: skinViewer.LayerInfo[] = [
-  { name: "head", size: 0 },
-  { name: "base", size: 0 },
-  { name: "main", size: 0.05, external: false },
-];
 const settings = {
   bodyfull: { x: -30.75, y: -4.08, z: 27.87, o: 0 },
   body: { x: -30.75, y: -4.08, z: 27.87, o: 0 },
@@ -23,7 +15,6 @@ const settings = {
   face: { x: 0, y: 0, z: 14.83, o: -12 },
 };
 var progress = 0;
-var currentLayer = "";
 var total = 0;
 
 export default async function create(event: RequestEvent) {
